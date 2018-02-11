@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_library"
+
+            android:title="@string/library" />
+        <item
+            android:id="@+id/nav_playlists"
+
+            android:title="@string/playlists" />
+        <item
+            android:id="@+id/nav_folders"
+
+            android:title="@string/folders" />
+
+        <item
+            android:id="@+id/nav_queue"
+
+            android:title="@string/playing_queue" />
+
+        <item
+            android:id="@+id/nav_nowplaying"
+            android:checkable="false"
+            android:title="@string/now_playing" />
+
+        <item
+            android:id="@+id/nav_driver_mode"
+            android:title="@string/driver_mode" />
+
+        <item
+            android:id="@+id/nav_mp3_cutter"
+            android:title="@string/mp3_cutter" />
+
+        <item
+            android:id="@+id/nav_record"
+            android:title="@string/record" />
+
+        <item
+            android:id="@+id/nav_find_duplicate"
+            android:title="@string/find_duplicate" />
+
+        <item
+            android:id="@+id/nav_timer"
+            android:title="@string/timer" />
+
+    </group>
+
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="none">
+        <item
+
+            android:id="@+id/nav_settings"
+            android:title="@string/settings" />
+
+        <item
+
+            android:id="@+id/nav_about"
+            android:title="@string/about" />
+
+    </group>
+
+</menu>

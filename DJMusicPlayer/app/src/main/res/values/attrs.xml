@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleImageView">
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+        <attr name="border_overlay" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="app">
+        <attr name="bottomDragVisibleHeight" format="dimension" />
+        <attr name="bototmExtraIndicatorHeight" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="MultiViewPager">
+        <!-- Child view inside a page to match the page size against. -->
+        <attr name="matchChildWidth" format="reference" />
+        <!-- Maximum size. -->
+        <attr name="android:maxWidth" />
+        <!-- Maximum size. -->
+        <attr name="android:maxHeight" />
+    </declare-styleable>
+</resources>

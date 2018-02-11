@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:id="@+id/cardView"
+        android:elevation="8dp">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/cardBackground"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/mlTitleTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MusicLibrary Title"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="#fff"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:id="@+id/mlCountTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="count"
+                android:layout_below="@id/mlTitleTv"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="#fff"
+                android:textSize="20sp"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"/>
+</FrameLayout>

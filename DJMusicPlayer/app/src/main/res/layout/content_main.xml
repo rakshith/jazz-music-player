@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoOverlay="false"
+        sothree:umanoPanelHeight="55dp"
+        sothree:umanoShadowHeight="5dp">
+
+    <!-- MAIN CONTENT -->
+    <FrameLayout
+        android:id="@+id/songContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- SLIDING LAYOUT -->
+    <FrameLayout
+        android:id="@+id/sliding_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/quick_play_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <FrameLayout
+                android:id="@+id/expand_play_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+    </FrameLayout>
+
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>
