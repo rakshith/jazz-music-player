@@ -59,7 +59,7 @@ public class VideoListAdapter extends BaseSongAdapter<VideoListAdapter.ItemHolde
         Video localItem = arraylist.get(i);
 
         itemHolder.title.setText(localItem.title);
-        itemHolder.duration.setText(""+localItem.duration);
+        itemHolder.duration.setText(JazzUtils.getReadableDurationString(localItem.duration));
 
         ImageLoader.getInstance().displayImage("file://" + localItem.miniThumbMagic,
                 itemHolder.videoThumbnail, new DisplayImageOptions.Builder().cacheInMemory(true)

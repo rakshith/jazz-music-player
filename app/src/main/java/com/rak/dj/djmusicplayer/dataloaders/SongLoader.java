@@ -28,7 +28,12 @@ import com.rak.dj.djmusicplayer.models.Song;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SongLoader {
 
@@ -120,6 +125,8 @@ public class SongLoader {
         return getSongsForCursor(makeSongCursor(context, null, null));
     }
 
+
+
     public static long[] getSongListInFolder(Context context, String path) {
         String[] whereArgs = new String[]{path + "%"};
         return getSongListForCursor(makeSongCursor(context, MediaStore.Audio.Media.DATA + " LIKE ?", whereArgs, null));
@@ -137,6 +144,45 @@ public class SongLoader {
         return result.size() < limit ? result : result.subList(0, limit);
     }
 
+    public static ArrayList<Song> getMiniSongs(Context context){
+        return getMiniSongsForCursor(makeMiniSongCursor(context, "duration <= 60000", null));
+    }
+
+    public static ArrayList<Song> getMiniSongsForCursor(Cursor cursor) {
+        ArrayList arrayList = new ArrayList();
+        if ((cursor != null) && (cursor.moveToFirst()))
+            do {
+                long id = cursor.getLong(0);
+                String title = cursor.getString(1);
+                String artist = cursor.getString(2);
+                String album = cursor.getString(3);
+                int duration = cursor.getInt(4);
+                int trackNumber = cursor.getInt(5);
+                long artistId = cursor.getInt(6);
+                long albumId = cursor.getLong(7);
+
+                arrayList.add(new Song(id, albumId, artistId, title, artist, album, duration, trackNumber));
+            }
+            while (cursor.moveToNext());
+        if (cursor != null)
+            cursor.close();
+        return arrayList;
+    }
+
+    public static Cursor makeMiniSongCursor(Context context, String selection, String[] paramArrayOfString) {
+        final String songSortOrder = PreferencesUtility.getInstance(context).getSongSortOrder();
+        return makeMiniSongCursor(context, selection, paramArrayOfString, songSortOrder);
+    }
+
+    private static Cursor makeMiniSongCursor(Context context, String selection, String[] paramArrayOfString, String sortOrder) {
+        String selectionStatement = "is_music=1 AND title != ''";
+
+        if (!TextUtils.isEmpty(selection)) {
+            selectionStatement = selectionStatement + " AND " + selection;
+        }
+        return context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{"_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id"}, selectionStatement, paramArrayOfString, sortOrder);
+
+    }
 
     public static Cursor makeSongCursor(Context context, String selection, String[] paramArrayOfString) {
         final String songSortOrder = PreferencesUtility.getInstance(context).getSongSortOrder();
@@ -152,6 +198,20 @@ public class SongLoader {
         return context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{"_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id"}, selectionStatement, paramArrayOfString, sortOrder);
 
     }
+
+
+    public static ArrayList<Song> findDuplicateSong(Context context){
+        ArrayList<Song> duplicateSongList = new ArrayList<>();
+
+        ArrayList<Song> songList = getAllSongs(context);
+
+      songList.stream().filter(i -> Collections.frequency(songList, i) >1)
+                .collect(Collectors.toSet()).forEach(System.out::println);
+
+
+        return duplicateSongList;
+    }
+
 
     public static Song songFromFile(String filePath) {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();

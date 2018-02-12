@@ -22,8 +22,10 @@ import android.view.ViewGroup;
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.Config;
 import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
 import com.rak.dj.djmusicplayer.dataloaders.VideoLoader;
 import com.rak.dj.djmusicplayer.models.AlbumVideo;
+import com.rak.dj.djmusicplayer.models.Song;
 import com.rak.dj.djmusicplayer.models.Video;
 import com.rak.dj.djmusicplayer.musiclibrary.genres.GenresFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.minitracks.MiniTracksFragment;
@@ -103,9 +105,9 @@ public class MusicLibraryFragment extends Fragment {
 
         Handler handler = new Handler();
         handler.postDelayed(()-> {
-            List<AlbumVideo> videos = VideoLoader.getAlbumVideos(getActivity());
-            Log.d(TAG, "Jazz Video Files"+videos.size());
-            Log.d(TAG, "Jazz Video Files"+videos.get(1).toString());
+            List<Song> songs = SongLoader.findDuplicateSong(getActivity());
+            //Log.d(TAG, "Jazz Video Files"+songs.size());
+            //Log.d(TAG, "Jazz Video Files"+songs.get(1).toString());
         }, 200);
     }
 

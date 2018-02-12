@@ -3,6 +3,7 @@ package com.rak.dj.djmusicplayer.helpers;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -139,6 +141,18 @@ public class JazzUtils {
         return String.format(durationFormat, hours, mins, secs);
     }
 
+    public static String getReadableDurationString(long songDurationMillis) {
+        long minutes = (songDurationMillis / 1000) / 60;
+        long seconds = (songDurationMillis / 1000) % 60;
+        if (minutes < 60) {
+            return String.format("%01d:%02d", minutes, seconds);
+        } else {
+            long hours = minutes / 60;
+            minutes = minutes % 60;
+            return String.format("%d:%02d:%02d", hours, minutes, seconds);
+        }
+    }
+
     public static int getBlackWhiteColor(int color) {
         double darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;
         if (darkness >= 0.5) {
@@ -149,6 +163,40 @@ public class JazzUtils {
     public static Uri getAlbumArtUri(long albumId) {
         return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId);
     }
+
+    /*public static void setRingtone(@NonNull final Context context, final int id) {
+        final ContentResolver resolver = context.getContentResolver();
+        final Uri uri = getSongFileUri(id);
+        try {
+            final ContentValues values = new ContentValues(2);
+            values.put(MediaStore.Audio.AudioColumns.IS_RINGTONE, "1");
+            values.put(MediaStore.Audio.AudioColumns.IS_ALARM, "1");
+            resolver.update(uri, values, null, null);
+        } catch (@NonNull final UnsupportedOperationException ignored) {
+            return;
+        }
+
+        try {
+            Cursor cursor = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    new String[]{MediaStore.MediaColumns.TITLE},
+                    BaseColumns._ID + "=?",
+                    new String[]{String.valueOf(id)},
+                    null);
+            try {
+                if (cursor != null && cursor.getCount() == 1) {
+                    cursor.moveToFirst();
+                    Settings.System.putString(resolver, Settings.System.RINGTONE, uri.toString());
+                    final String message = context.getString(R.string.x_has_been_set_as_ringtone, cursor.getString(0));
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                }
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        } catch (SecurityException ignored) {
+        }
+    }*/
 
     public static Intent createEffectsIntent() {
         final Intent effects = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);

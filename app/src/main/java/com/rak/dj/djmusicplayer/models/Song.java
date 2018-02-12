@@ -46,4 +46,34 @@ public class Song {
         this.duration = _duration;
         this.trackNumber = _trackNumber;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Song song = (Song) o;
+
+        return title != null ? title.equals(song.title) : song.title == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return title != null ? title.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                "albumId=" + albumId +
+                ", albumName='" + albumName + '\'' +
+                ", artistId=" + artistId +
+                ", artistName='" + artistName + '\'' +
+                ", duration=" + duration +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", trackNumber=" + trackNumber +
+                '}';
+    }
 }

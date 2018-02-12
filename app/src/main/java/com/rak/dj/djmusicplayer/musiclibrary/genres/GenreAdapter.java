@@ -50,14 +50,14 @@ public class GenreAdapter extends BaseSongAdapter<GenreAdapter.ItemHolder> imple
     }
 
     @Override
-    public GenreAdapter.ItemHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public ItemHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_genre, null);
-        GenreAdapter.ItemHolder ml = new GenreAdapter.ItemHolder(v);
+        ItemHolder ml = new ItemHolder(v);
         return ml;
     }
 
     @Override
-    public void onBindViewHolder(GenreAdapter.ItemHolder itemHolder, int i) {
+    public void onBindViewHolder(ItemHolder itemHolder, int i) {
         Genre localItem = arraylist.get(i);
 
         itemHolder.title.setText(localItem.name);
