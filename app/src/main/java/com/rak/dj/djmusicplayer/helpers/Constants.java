@@ -13,6 +13,7 @@ public final class Constants {
     public static final String NAVIGATE_ARTIST = "navigate_artist";
     public static final String NAVIGATE_NOWPLAYING = "navigate_nowplaying";
     public static final String NAVIGATE_LYRICS = "navigate_lyrics";
+    public static final String NAVIGATE_TAG_EDITOR = "navigate_tag_editor";
 
     public static final String ALBUM_ID = "album_id";
     public static final String ARTIST_ID = "artist_id";

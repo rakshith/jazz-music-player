@@ -75,7 +75,7 @@ public class ArtistMusicFragment extends Fragment {
 
         // adding one dummy song to top of arraylist
         //there will be albums header at this position in recyclerview
-        songList.add(0, new Song(-1, -1, -1, "dummy", "dummy", "dummy", -1, -1));
+        songList.add(0, new Song(-1, -1, -1, "dummy", "dummy", "dummy", -1, -1, "dummy"));
 
         mSongAdapter = new ArtistSongAdapter(getActivity(), songList, artistID);
         songsRecyclerview.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));

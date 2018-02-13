@@ -24,6 +24,7 @@ public class Song {
     public final long id;
     public final String title;
     public final int trackNumber;
+    public final String data;
 
     public Song() {
         this.id = -1;
@@ -34,9 +35,10 @@ public class Song {
         this.albumName = "";
         this.duration = -1;
         this.trackNumber = -1;
+        this.data = "";
     }
 
-    public Song(long _id, long _albumId, long _artistId, String _title, String _artistName, String _albumName, int _duration, int _trackNumber) {
+    public Song(long _id, long _albumId, long _artistId, String _title, String _artistName, String _albumName, int _duration, int _trackNumber, String _data) {
         this.id = _id;
         this.albumId = _albumId;
         this.artistId = _artistId;
@@ -45,6 +47,7 @@ public class Song {
         this.albumName = _albumName;
         this.duration = _duration;
         this.trackNumber = _trackNumber;
+        this.data = _data;
     }
 
 
@@ -74,6 +77,7 @@ public class Song {
                 ", id=" + id +
                 ", title='" + title + '\'' +
                 ", trackNumber=" + trackNumber +
+                ", data='" + data + '\'' +
                 '}';
     }
 }

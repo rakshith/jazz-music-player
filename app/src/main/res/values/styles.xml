@@ -126,7 +126,7 @@
         <item name="cardBackgroundColor">@color/window_background_black</item>
     </style>
 
-    <style name="ExpandToolbar">
+    <style name="Toolbar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?actionBarSize</item>
         <item name="android:layout_gravity">top</item>
@@ -134,5 +134,67 @@
         <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
+
+    <style name="FabParent">
+        <item name="borderWidth">0dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Fab" parent="FabParent" />
+
+    <!-- Ringdroid style -->
+    <style name="AudioFileInfoOverlayText">
+        <item name="android:paddingLeft">4px</item>
+        <item name="android:paddingBottom">4px</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="ToolbarBackground">
+        <item name="android:background">#222233</item>
+    </style>
+
+    <style name="ChooseContactBackground">
+        <item name="android:background">#cc9933</item>
+    </style>
+
+    <style name="VerticalDividerForList">
+        <item name="android:layout_width">1px</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_marginLeft">4px</item>
+        <item name="android:background">#444444</item>
+    </style>
+
+    <style name="VerticalDividerLeft">
+        <item name="android:layout_width">1px</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_marginLeft">4px</item>
+        <item name="android:background">#666677</item>
+    </style>
+    <style name="VerticalDividerRight">
+        <item name="android:layout_width">1px</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_marginRight">4px</item>
+        <item name="android:background">#000022</item>
+    </style>
+
+    <style name="HorizontalDividerTop">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">#666677</item>
+    </style>
+    <style name="HorizontalDividerBottom">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">#000022</item>
+    </style>
+
+    <!-- ends -->
 
 </resources>

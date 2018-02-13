@@ -13,4 +13,13 @@
     <dimen name="card_margin">16dp</dimen>
     <dimen name="spacing_card">10dp</dimen>
     <dimen name="spacing_card_album_grid">3dp</dimen>
+
+
+    <!-- Tag Editor values -->
+    <dimen name="title_view_height">72dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="tagEditorHeaderVariableSpace">100dp</dimen>
+    <!-- ONLY 0dp WHILE THERE IS THE BUG IN DESIGN SUPPORT LIBRARY 22.2.0-->
+    <dimen name="fab_margin_top_left_right">0dp</dimen>
 </resources>

@@ -103,12 +103,12 @@ public class MusicLibraryFragment extends Fragment {
         }
         viewPager.setCurrentItem(mPreferences.getStartPageIndex());
 
-        Handler handler = new Handler();
+        /*Handler handler = new Handler();
         handler.postDelayed(()-> {
             List<Song> songs = SongLoader.findDuplicateSong(getActivity());
-            //Log.d(TAG, "Jazz Video Files"+songs.size());
-            //Log.d(TAG, "Jazz Video Files"+songs.get(1).toString());
-        }, 200);
+            Log.d(TAG, "Jazz Video Files"+songs.size());
+            Log.d(TAG, "Jazz Video Files"+songs.get(1).toString());
+        }, 200);*/
     }
 
     @Override

@@ -20,12 +20,16 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.providers.RecentStore;
 import com.rak.dj.djmusicplayer.providers.SongPlayCount;
@@ -164,7 +168,11 @@ public class JazzUtils {
         return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId);
     }
 
-    /*public static void setRingtone(@NonNull final Context context, final int id) {
+    public static Uri getSongFileUri(long songId) {
+        return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId);
+    }
+
+    public static void setRingtone(@NonNull final Context context, final long id) {
         final ContentResolver resolver = context.getContentResolver();
         final Uri uri = getSongFileUri(id);
         try {
@@ -196,7 +204,7 @@ public class JazzUtils {
             }
         } catch (SecurityException ignored) {
         }
-    }*/
+    }
 
     public static Intent createEffectsIntent() {
         final Intent effects = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
@@ -378,5 +386,15 @@ public class JazzUtils {
 
     public static boolean isJellyBeanMR1() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
+    }
+
+    public static void hideSoftKeyboard(@Nullable Activity activity) {
+        if (activity != null) {
+            View currentFocus = activity.getCurrentFocus();
+            if (currentFocus != null) {
+                InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+            }
+        }
     }
 }

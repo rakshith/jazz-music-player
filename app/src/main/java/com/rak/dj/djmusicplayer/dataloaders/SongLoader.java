@@ -26,6 +26,7 @@ import android.text.TextUtils;
 
 import com.rak.dj.djmusicplayer.models.Song;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.musiclibrary.BaseMusicLibraryFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SongLoader {
+public class SongLoader extends BaseLoader{
 
     private static final long[] sEmptyList = new long[0];
 
@@ -51,8 +52,8 @@ public class SongLoader {
                 int trackNumber = cursor.getInt(5);
                 long artistId = cursor.getInt(6);
                 long albumId = cursor.getLong(7);
-
-                arrayList.add(new Song(id, albumId, artistId, title, artist, album, duration, trackNumber));
+                String data = cursor.getString(8);
+                arrayList.add(new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data));
             }
             while (cursor.moveToNext());
         if (cursor != null)
@@ -71,8 +72,8 @@ public class SongLoader {
             int trackNumber = cursor.getInt(5);
             long artistId = cursor.getInt(6);
             long albumId = cursor.getLong(7);
-
-            song = new Song(id, albumId, artistId, title, artist, album, duration, trackNumber);
+            String data = cursor.getString(8);
+            song = new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data);
         }
 
         if (cursor != null)
@@ -108,7 +109,16 @@ public class SongLoader {
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.DATA;
         String[] selectionArgs = {songPath};
-        String[] projection = new String[]{"_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id"};
+        String[] projection = new String[]{
+                BaseColumns._ID,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.ARTIST,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.TRACK,
+                MediaStore.Audio.AudioColumns.ARTIST_ID,
+                MediaStore.Audio.AudioColumns.ALBUM_ID,
+                MediaStore.Audio.AudioColumns.DATA};
         String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
 
         Cursor cursor = cr.query(uri, projection, selection + "=?", selectionArgs, sortOrder);
@@ -160,8 +170,8 @@ public class SongLoader {
                 int trackNumber = cursor.getInt(5);
                 long artistId = cursor.getInt(6);
                 long albumId = cursor.getLong(7);
-
-                arrayList.add(new Song(id, albumId, artistId, title, artist, album, duration, trackNumber));
+                String data = cursor.getString(8);
+                arrayList.add(new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data));
             }
             while (cursor.moveToNext());
         if (cursor != null)
@@ -180,7 +190,15 @@ public class SongLoader {
         if (!TextUtils.isEmpty(selection)) {
             selectionStatement = selectionStatement + " AND " + selection;
         }
-        return context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{"_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id"}, selectionStatement, paramArrayOfString, sortOrder);
+        return context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{BaseColumns._ID,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.ARTIST,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.TRACK,
+                MediaStore.Audio.AudioColumns.ARTIST_ID,
+                MediaStore.Audio.AudioColumns.ALBUM_ID,
+                MediaStore.Audio.AudioColumns.DATA}, selectionStatement, paramArrayOfString, sortOrder);
 
     }
 
@@ -195,7 +213,15 @@ public class SongLoader {
         if (!TextUtils.isEmpty(selection)) {
             selectionStatement = selectionStatement + " AND " + selection;
         }
-        return context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{"_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id"}, selectionStatement, paramArrayOfString, sortOrder);
+        return context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{BaseColumns._ID,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.ARTIST,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.TRACK,
+                MediaStore.Audio.AudioColumns.ARTIST_ID,
+                MediaStore.Audio.AudioColumns.ALBUM_ID,
+                MediaStore.Audio.AudioColumns.DATA}, selectionStatement, paramArrayOfString, sortOrder);
 
     }
 
@@ -206,7 +232,7 @@ public class SongLoader {
         ArrayList<Song> songList = getAllSongs(context);
 
       songList.stream().filter(i -> Collections.frequency(songList, i) >1)
-                .collect(Collectors.toSet()).forEach(System.out::println);
+                .collect(Collectors.toList()).forEach(System.out::println);
 
 
         return duplicateSongList;
@@ -224,7 +250,8 @@ public class SongLoader {
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
                 Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)),
-                0
+                0,
+                ""
         );
     }
 

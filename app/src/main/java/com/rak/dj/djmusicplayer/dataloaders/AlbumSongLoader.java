@@ -18,6 +18,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
 
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
@@ -47,8 +48,8 @@ public class AlbumSongLoader {
                 }
                 long artistId = cursor.getInt(6);
                 long albumId = albumID;
-
-                arrayList.add(new Song(id, albumId, artistId, title, artist, album, duration, trackNumber));
+                String data = cursor.getString(7);
+                arrayList.add(new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data));
             }
             while (cursor.moveToNext());
         if (cursor != null)
@@ -61,7 +62,15 @@ public class AlbumSongLoader {
         final String albumSongSortOrder = PreferencesUtility.getInstance(context).getAlbumSongSortOrder();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String string = "is_music=1 AND title != '' AND album_id=" + albumID;
-        Cursor cursor = contentResolver.query(uri, new String[]{"_id", "title", "artist", "album", "duration", "track", "artist_id"}, string, null, albumSongSortOrder);
+
+        Cursor cursor = contentResolver.query(uri, new String[]{BaseColumns._ID,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.ARTIST,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.TRACK,
+                MediaStore.Audio.AudioColumns.ARTIST_ID,
+                MediaStore.Audio.AudioColumns.DATA}, string, null, albumSongSortOrder);
         return cursor;
     }
 }

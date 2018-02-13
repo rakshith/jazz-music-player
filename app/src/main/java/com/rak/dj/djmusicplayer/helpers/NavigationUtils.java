@@ -3,6 +3,7 @@ package com.rak.dj.djmusicplayer.helpers;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import android.content.ActivityNotFoundException;
@@ -23,6 +24,7 @@ import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.musiclibrary.AlbumDetailFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.ArtistDetailFragment;
 import com.rak.dj.djmusicplayer.searchmanager.SearchActivity;
+import com.rak.dj.djmusicplayer.tageditormanager.TagEditorActivity;
 
 import java.util.ArrayList;
 
@@ -62,7 +64,13 @@ public class NavigationUtils {
         transaction.hide(((AppCompatActivity) context).getSupportFragmentManager().findFragmentById(R.id.songContainer));
         transaction.add(R.id.songContainer, fragment);
         transaction.addToBackStack(null).commit();
+    }
 
+    public static void navigateToSongTagEditor(Activity context, long id){
+        final Intent intent = new Intent(context, TagEditorActivity.class);
+        intent.putExtra("extra_id", id);
+        intent.setAction(Constants.NAVIGATE_TAG_EDITOR);
+        context.startActivity(intent);
     }
 
     public static void navigateToSearch(Activity context) {

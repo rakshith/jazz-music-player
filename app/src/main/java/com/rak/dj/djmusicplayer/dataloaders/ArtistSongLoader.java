@@ -18,6 +18,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
 
 
@@ -41,8 +42,8 @@ public class ArtistSongLoader {
                 int trackNumber = cursor.getInt(5);
                 long albumId = cursor.getInt(6);
                 long artistId = artistID;
-
-                songsList.add(new Song(id, albumId, artistID, title, artist, album, duration, trackNumber));
+                String data = cursor.getString(7);
+                songsList.add(new Song(id, albumId, artistID, title, artist, album, duration, trackNumber, data));
             }
             while (cursor.moveToNext());
         if (cursor != null)
@@ -56,7 +57,15 @@ public class ArtistSongLoader {
         final String artistSongSortOrder = PreferencesUtility.getInstance(context).getArtistSongSortOrder();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String string = "is_music=1 AND title != '' AND artist_id=" + artistID;
-        return contentResolver.query(uri, new String[]{"_id", "title", "artist", "album", "duration", "track", "album_id"}, string, null, artistSongSortOrder);
+        return contentResolver.query(uri, new String[]{
+                BaseColumns._ID,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.ARTIST,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.TRACK,
+                MediaStore.Audio.AudioColumns.ALBUM_ID,
+                MediaStore.Audio.AudioColumns.DATA}, string, null, artistSongSortOrder);
     }
 
 }

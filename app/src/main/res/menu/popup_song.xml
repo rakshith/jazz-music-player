@@ -28,11 +28,21 @@
 
     <item
         android:id="@+id/popup_song_goto_artist"
-    android:title="@string/go_to_artist" />
+        android:title="@string/go_to_artist" />
+
+    <item
+        android:id="@+id/popup_cut"
+        android:title="@string/cut"/>
+
+    <item
+        android:id="@+id/popup_tag_editor"
+        android:title="@string/tag_editor"/>
 
     <item
         android:id="@+id/popup_song_share"
         android:title="@string/share" />
+
+
 
     <item
         android:id="@+id/popup_song_delete"

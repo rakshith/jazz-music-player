@@ -52,7 +52,7 @@ public class DjMusicPlayerApp extends MultiDexApplication{
         L.writeDebugLogs(false);
         Nammu.init(this);
 
-       /* if (!ATE.config(this, "light_theme").isConfigured()) {
+        if (!ATE.config(this, "light_theme").isConfigured()) {
             ATE.config(this, "light_theme")
                     .activityTheme(R.style.AppThemeLight)
                     .primaryColorRes(R.color.colorPrimaryLightDefault)
@@ -89,7 +89,7 @@ public class DjMusicPlayerApp extends MultiDexApplication{
                     .coloredNavigationBar(true)
                     .usingMaterialDialogs(true)
                     .commit();
-        }*/
+        }
 
     }
 }

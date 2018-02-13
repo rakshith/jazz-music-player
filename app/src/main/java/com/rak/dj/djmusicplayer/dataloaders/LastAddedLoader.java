@@ -16,6 +16,7 @@ package com.rak.dj.djmusicplayer.dataloaders;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.AudioColumns;
 
@@ -45,8 +46,8 @@ public class LastAddedLoader {
                 int trackNumber = mCursor.getInt(5);
                 long artistId = mCursor.getInt(6);
                 long albumId = mCursor.getLong(7);
-
-                final Song song = new Song(id, albumId, artistId, title, artist, album, duration, trackNumber);
+                String data = mCursor.getString(8);
+                final Song song = new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data);
 
                 mSongList.add(song);
             } while (mCursor.moveToNext());
@@ -74,6 +75,14 @@ public class LastAddedLoader {
         selection.append(cutoff);
 
         return context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                new String[]{"_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id"}, selection.toString(), null, MediaStore.Audio.Media.DATE_ADDED + " DESC");
+                new String[]{BaseColumns._ID,
+                        MediaStore.Audio.AudioColumns.TITLE,
+                        MediaStore.Audio.AudioColumns.ARTIST,
+                        MediaStore.Audio.AudioColumns.ALBUM,
+                        MediaStore.Audio.AudioColumns.DURATION,
+                        MediaStore.Audio.AudioColumns.TRACK,
+                        MediaStore.Audio.AudioColumns.ARTIST_ID,
+                        MediaStore.Audio.AudioColumns.ALBUM_ID,
+                        MediaStore.Audio.AudioColumns.DATA}, selection.toString(), null, MediaStore.Audio.Media.DATE_ADDED + " DESC");
     }
 }

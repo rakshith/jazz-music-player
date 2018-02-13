@@ -359,8 +359,10 @@ public abstract class BaseActivity extends ATEActivity implements ServiceConnect
         //playerFragment.setMenuVisibility(false);
        // playerFragment.setUserVisibleHint(false);
        // playerFragment.onHide();
-        quickPlayFragment.getView().setVisibility(View.VISIBLE);
-        quickPlayExpandedFragment.getView().setVisibility(View.GONE);
+        if(quickPlayFragment != null && quickPlayExpandedFragment != null){
+            quickPlayFragment.getView().setVisibility(View.VISIBLE);
+            quickPlayExpandedFragment.getView().setVisibility(View.GONE);
+        }
 
     }
 
@@ -374,8 +376,10 @@ public abstract class BaseActivity extends ATEActivity implements ServiceConnect
         //playerFragment.setMenuVisibility(true);
         //playerFragment.setUserVisibleHint(true);
         //playerFragment.onShow();
-        quickPlayFragment.getView().setVisibility(View.GONE);
-        quickPlayExpandedFragment.getView().setVisibility(View.VISIBLE);
+        if(quickPlayFragment != null && quickPlayExpandedFragment != null) {
+            quickPlayFragment.getView().setVisibility(View.GONE);
+            quickPlayExpandedFragment.getView().setVisibility(View.VISIBLE);
+        }
     }
 
     public SlidingUpPanelLayout.PanelState getPanelState() {

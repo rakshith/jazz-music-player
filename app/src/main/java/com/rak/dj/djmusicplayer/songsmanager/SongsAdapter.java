@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.afollestad.appthemeengine.Config;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.rak.dj.djmusicplayer.helpers.MusicUtils;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 import com.rak.dj.djmusicplayer.R;
@@ -146,6 +147,13 @@ public class SongsAdapter extends BaseSongAdapter<SongsAdapter.ItemHolder>  impl
                                 break;
                             case R.id.popup_song_addto_playlist:
                                 AddPlaylistDialog.newInstance(arraylist.get(position)).show(mContext.getSupportFragmentManager(), "ADD_PLAYLIST");
+                                break;
+                            case R.id.popup_cut:
+
+                                MusicUtils.startRingdroidEditor(mContext.getBaseContext(), arraylist.get(position).data);
+                                break;
+                            case R.id.popup_tag_editor:
+                                NavigationUtils.navigateToSongTagEditor(mContext, arraylist.get(position).id);
                                 break;
                             case R.id.popup_song_share:
                                 JazzUtils.shareTrack(mContext, arraylist.get(position).id);

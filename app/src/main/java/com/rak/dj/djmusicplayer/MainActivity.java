@@ -348,8 +348,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
             navigationView.getMenu().findItem(R.id.nav_queue).setIcon(R.drawable.music_note);
             navigationView.getMenu().findItem(R.id.nav_nowplaying).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.BOOKMARK_MUSIC));
             navigationView.getMenu().findItem(R.id.nav_driver_mode).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.CAR));
-            navigationView.getMenu().findItem(R.id.nav_mp3_cutter).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.CONTENT_CUT));
-            navigationView.getMenu().findItem(R.id.nav_record).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.VOICE));
+            navigationView.getMenu().findItem(R.id.nav_music_tools).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.CONTENT_CUT));
+
             navigationView.getMenu().findItem(R.id.nav_find_duplicate).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.CONTENT_COPY));
             navigationView.getMenu().findItem(R.id.nav_timer).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.TIMER));
             navigationView.getMenu().findItem(R.id.nav_settings).setIcon(R.drawable.settings);
@@ -361,8 +361,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
             navigationView.getMenu().findItem(R.id.nav_queue).setIcon(R.drawable.music_note_white);
             navigationView.getMenu().findItem(R.id.nav_nowplaying).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.BOOKMARK_MUSIC));
             navigationView.getMenu().findItem(R.id.nav_driver_mode).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.CAR));
-            navigationView.getMenu().findItem(R.id.nav_mp3_cutter).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.CONTENT_CUT));
-            navigationView.getMenu().findItem(R.id.nav_record).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.VOICE));
+            navigationView.getMenu().findItem(R.id.nav_music_tools).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.CONTENT_CUT));
+
             navigationView.getMenu().findItem(R.id.nav_find_duplicate).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.CONTENT_COPY));
             navigationView.getMenu().findItem(R.id.nav_timer).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.TIMER));
             navigationView.getMenu().findItem(R.id.nav_settings).setIcon(R.drawable.settings_white);

@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
         android:name=".DjMusicPlayerApp"
@@ -20,7 +22,8 @@
         android:label="Jazz${appNameSuffix}"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme.FullScreen.Light"
-        tools:replace="android:allowBackup, android:label">
+        tools:replace="android:allowBackup, android:label"
+        android:largeHeap="true">
         <activity
             android:name=".MainActivity"
             android:label="Jazz${appNameSuffix}"
@@ -80,12 +83,22 @@
         <activity
             android:name=".playingmanager.NowPlayingActivity"
             android:theme="@style/AppTheme.FullScreen.Light" />
-
         <activity android:name=".playlistmanager.PlaylistDetailActivity" />
-
-        <activity android:name=".musiclibrary.video.VideoPlayerActivity"
+        <activity
+            android:name=".musiclibrary.video.VideoPlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".tageditormanager.TagEditorActivity" />
+
+        <activity android:name=".musiceditmanager.MusicEditActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="adjustResize"
+            android:hardwareAccelerated="true">
+            <!--<intent-filter android:label="@string/edit_intent">
+                <action android:name="android.intent.action.EDIT" />
+                <data android:mimeType="audio/*" />
+            </intent-filter>-->
+        </activity>
     </application>
 
 </manifest>

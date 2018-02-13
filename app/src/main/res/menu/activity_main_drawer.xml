@@ -34,12 +34,8 @@
             android:title="@string/driver_mode" />
 
         <item
-            android:id="@+id/nav_mp3_cutter"
-            android:title="@string/mp3_cutter" />
-
-        <item
-            android:id="@+id/nav_record"
-            android:title="@string/record" />
+            android:id="@+id/nav_music_tools"
+            android:title="@string/music_tools" />
 
         <item
             android:id="@+id/nav_find_duplicate"

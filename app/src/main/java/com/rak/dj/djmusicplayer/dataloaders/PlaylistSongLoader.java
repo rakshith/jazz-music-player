@@ -108,7 +108,9 @@ public class PlaylistSongLoader {
                 final int tracknumber = mCursor.getInt(mCursor
                         .getColumnIndexOrThrow(AudioColumns.TRACK));
 
-                final Song song = new Song(id, albumId, artistId, songName, artist, album, durationInSecs, tracknumber);
+                final String data = mCursor.getString(mCursor.getColumnIndexOrThrow(AudioColumns.DATA));
+
+                final Song song = new Song(id, albumId, artistId, songName, artist, album, durationInSecs, tracknumber, data);
 
                 mSongList.add(song);
             } while (mCursor.moveToNext());

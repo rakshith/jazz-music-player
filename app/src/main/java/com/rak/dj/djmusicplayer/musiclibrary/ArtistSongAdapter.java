@@ -101,7 +101,7 @@ public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHol
         return (null != arraylist ? arraylist.size() : 0);
     }
 
-    private void setOnPopupMenuListener(ItemHolder itemHolder, final int position) {
+    protected void setOnPopupMenuListener(ItemHolder itemHolder, final int position) {
 
         itemHolder.menu.setOnClickListener(v -> {
 
@@ -132,6 +132,9 @@ public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHol
                         break;
                     case R.id.popup_song_share:
                         JazzUtils.shareTrack(mContext, arraylist.get(position).id);
+                        break;
+                    case R.id.popup_tag_editor:
+                        NavigationUtils.navigateToSongTagEditor(mContext, arraylist.get(position).id);
                         break;
                     case R.id.popup_song_delete:
                         long[] deleteIds = {arraylist.get(position + 1).id};

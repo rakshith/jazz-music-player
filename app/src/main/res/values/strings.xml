@@ -10,6 +10,7 @@
     <string name="add_to_playlist">Add to playlist</string>
     <string name="go_to_album">Go to album</string>
     <string name="go_to_artist">Go to artist</string>
+    <string name="set_as_ringtone">Set as ringtone</string>
     <string name="add_to_queue">Add to queue</string>
     <string name="play_next">Play next</string>
     <string name="new_playlist">New playlist</string>
@@ -58,7 +59,7 @@
     <string name="playing_queue">Playing Queue</string>
     <string name="now_playing">Now Playing</string>
     <string name="driver_mode">Driver Mode</string>
-    <string name="mp3_cutter">MP3 Cutter</string>
+    <string name="music_tools">Music Tools</string>
     <string name="record">Record</string>
     <string name="find_duplicate">Find Duplicate</string>
     <string name="timer">Timer</string>
@@ -95,4 +96,62 @@
     <string name="menu_show_as_entry_list">List</string>
     <string name="menu_show_as_entry_grid">Grid</string>
     <string name="menu_show_as_entry_default">Default</string>
+
+    <string name="x_has_been_set_as_ringtone">Set %1$s as your ringtone.</string>
+
+    <!-- Tag editor values -->
+    <string name="song">Song</string>
+    <string name="album">Album</string>
+    <string name="artist">Artist</string>
+    <string name="genre">Genre</string>
+    <string name="track_hint">"Track (2 for track 2 or 3004 for CD3 track 4)"</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="year">Year</string>
+    <string name="cut">Cut</string>
+    <string name="tag_editor">Tag editor</string>
+    <string name="saving_changes">Saving changes</string>
+    <string name="saving_to_file">Saving to file…</string>
+    <string name="scanned_files">Scanned %1$d of %2$d files.</string>
+    <string name="could_not_scan_files">Could not scan %d files.</string>
+    <string name="web_search">Web search</string>
+    <string name="download_from_last_fm">Download from Last.fm</string>
+    <string name="pick_from_local_storage">Pick from local storage</string>
+    <string name="remove_cover">Remove cover</string>
+    <string name="update_image">Update image</string>
+
+    <!-- Ringdroid values -->
+    <string name="start_marker">Start marker</string>
+    <string name="end_marker">End marker</string>
+    <string name="rewind">Rewind</string>
+    <string name="stop">Stop</string>
+    <string name="ffwd">Fast forward</string>
+    <string name="zoom_in">Zoom In</string>
+    <string name="zoom_out">Zoom Out</string>
+    <string name="save_button">Save</string>
+
+    <string name="progress_dialog_loading">Loading…</string>
+    <string name="progress_dialog_recording">Recording…</string>
+    <string name="progress_dialog_saving">Saving…</string>
+    <string name="progress_dialog_cancel">Cancel</string>
+    <string name="progress_dialog_stop">Stop</string>
+
+    <string name="bad_extension_error">Sorry, Ringdroid is not yet able to edit files of type</string>
+    <string name="no_extension_error">Sorry, Ringdroid can\'t edit a file if it doesn\'t have an extension like .mp3 or .wav</string>
+    <string name="write_error">Error writing file</string>
+    <string name="read_error">Error reading file</string>
+
+    <string name="time_seconds">seconds</string>
+    <string name="alert_title_success">Success</string>
+    <string name="alert_title_failure">Error</string>
+    <string name="alert_ok_button">OK</string>
+    <string name="alert_yes_button">Yes, please!</string>
+    <string name="alert_no_button">No, thanks.</string>
+    <string name="record_error">Error recording audio</string>
+    <string name="play_error">Unable to play this media file</string>
+
+    <string name="start_label">Start:</string>
+    <string name="end_label">End:</string>
+
+    <string name="edit_intent">Edit</string>
+
 </resources>

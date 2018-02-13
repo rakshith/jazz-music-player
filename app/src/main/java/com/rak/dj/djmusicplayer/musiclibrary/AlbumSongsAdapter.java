@@ -112,6 +112,9 @@ public class AlbumSongsAdapter extends BaseSongAdapter<AlbumSongsAdapter.ItemHol
                         case R.id.popup_song_share:
                             JazzUtils.shareTrack(mContext, arraylist.get(position).id);
                             break;
+                        case R.id.popup_tag_editor:
+                            NavigationUtils.navigateToSongTagEditor(mContext, arraylist.get(position).id);
+                            break;
                         case R.id.popup_song_delete:
                             long[] deleteIds = {arraylist.get(position).id};
                             JazzUtils.showDeleteDialog(mContext,arraylist.get(position).title, deleteIds, AlbumSongsAdapter.this, position);
