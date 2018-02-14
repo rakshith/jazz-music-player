@@ -39,6 +39,7 @@ public class AfterSaveActionDialog extends Dialog {
         ((Button)findViewById(R.id.button_make_default))
             .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
+
                         closeAndSendResult(R.id.button_make_default);
                     }
                 });

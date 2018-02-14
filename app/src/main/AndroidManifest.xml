@@ -90,11 +90,11 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".tageditormanager.TagEditorActivity" />
 
-        <activity android:name=".musiceditmanager.MusicEditActivity"
+        <activity android:name=".musiceditmanager.RingDroidActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="adjustResize"
             android:hardwareAccelerated="true"
-            android:theme="@style/Theme.AppCompat">
+            android:theme="@style/AppTheme.NoActionBar">
             <!--<intent-filter android:label="@string/edit_intent">
                 <action android:name="android.intent.action.EDIT" />
                 <data android:mimeType="audio/*" />

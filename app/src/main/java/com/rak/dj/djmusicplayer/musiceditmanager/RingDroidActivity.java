@@ -3,6 +3,7 @@ package com.rak.dj.djmusicplayer.musiceditmanager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -11,8 +12,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -26,6 +29,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.appthemeengine.ATE;
+import com.afollestad.appthemeengine.ATEActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.musiceditmanager.soundfile.SoundFile;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.MarkerView;
@@ -38,7 +43,7 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.io.StringWriter;
 
-public class MusicEditActivity extends AppCompatActivity implements MarkerView.MarkerListener,
+public class RingDroidActivity extends ATEActivity implements MarkerView.MarkerListener,
         WaveformView.WaveformListener {
 
     private long mLoadingLastUpdateTime;
@@ -92,15 +97,15 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
     private int mTouchInitialEndPos;
     private long mWaveformTouchStartMsec;
     private float mDensity;
-    private int mMarkerLeftInset;
-    private int mMarkerRightInset;
-    private int mMarkerTopOffset;
-    private int mMarkerBottomOffset;
+    private int mMarkerLeftInset=0;
+    private int mMarkerRightInset=0;
+    private int mMarkerTopOffset=0;
+    private int mMarkerBottomOffset=0;
 
     private Thread mLoadSoundFileThread;
     private Thread mRecordAudioThread;
     private Thread mSaveSoundFileThread;
-
+    private Context mContext;
     // Result codes
     private static final int REQUEST_CODE_CHOOSE_CONTACT = 1;
 
@@ -117,6 +122,7 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mContext = getApplicationContext();
         mPlayer = null;
         mIsPlaying = false;
 
@@ -164,12 +170,14 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
         if (mArtist != null && mArtist.length() > 0) {
             titleLabel += " - " + mArtist;
         }
-        setTitle(titleLabel);
+
+        getSupportActionBar().setTitle(titleLabel);
+       // setTitle(titleLabel);
 
         mLoadingLastUpdateTime = getCurrentTime();
         mLoadingKeepGoing = true;
         mFinishActivity = false;
-        mProgressDialog = new ProgressDialog(MusicEditActivity.this);
+        mProgressDialog = new ProgressDialog(RingDroidActivity.this);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setTitle(R.string.progress_dialog_loading);
         mProgressDialog.setCancelable(true);
@@ -251,7 +259,7 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
                     };
                     mHandler.post(runnable);
                 } else if (mFinishActivity){
-                    MusicEditActivity.this.finish();
+                    RingDroidActivity.this.finish();
                 }
             }
         };
@@ -318,7 +326,7 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
             title = getResources().getText(R.string.alert_title_success);
         }
 
-        new AlertDialog.Builder(MusicEditActivity.this)
+        new AlertDialog.Builder(RingDroidActivity.this)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(
@@ -337,7 +345,6 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_music_edit, menu);
-
         return true;
     }
 
@@ -352,6 +359,9 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                return true;
             case R.id.action_save:
                 onSave();
                 return true;
@@ -665,7 +675,7 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
         // If it's a notification, give the user the option of making
         // this their default notification.  If they say no, we're finished.
         if (mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION) {
-            new AlertDialog.Builder(MusicEditActivity.this)
+            new AlertDialog.Builder(RingDroidActivity.this)
                     .setTitle(R.string.alert_title_success)
                     .setMessage(R.string.set_default_notification)
                     .setPositiveButton(R.string.alert_yes_button,
@@ -673,7 +683,7 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
                                     RingtoneManager.setActualDefaultRingtoneUri(
-                                            MusicEditActivity.this,
+                                            RingDroidActivity.this,
                                             RingtoneManager.TYPE_NOTIFICATION,
                                             newUri);
                                     finish();
@@ -701,11 +711,11 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
                 switch (actionId) {
                     case R.id.button_make_default:
                         RingtoneManager.setActualDefaultRingtoneUri(
-                                MusicEditActivity.this,
+                                RingDroidActivity.this,
                                 RingtoneManager.TYPE_RINGTONE,
                                 newUri);
                         Toast.makeText(
-                                MusicEditActivity.this,
+                                RingDroidActivity.this,
                                 R.string.default_ringtone_success_message,
                                 Toast.LENGTH_SHORT)
                                 .show();
@@ -735,7 +745,7 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
         mRecordingLastUpdateTime = getCurrentTime();
         mRecordingKeepGoing = true;
         mFinishActivity = false;
-        AlertDialog.Builder adBuilder = new AlertDialog.Builder(MusicEditActivity.this);
+        AlertDialog.Builder adBuilder = new AlertDialog.Builder(RingDroidActivity.this);
         adBuilder.setTitle(getResources().getText(R.string.progress_dialog_recording));
         adBuilder.setCancelable(true);
         adBuilder.setNegativeButton(
@@ -819,7 +829,7 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
                 }
                 mAlertDialog.dismiss();
                 if (mFinishActivity){
-                    MusicEditActivity.this.finish();
+                    RingDroidActivity.this.finish();
                 } else {
                     Runnable runnable = new Runnable() {
                         public void run() {
@@ -907,6 +917,14 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.editor);
 
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            final ActionBar ab = getSupportActionBar();
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle("");
+        }
+
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         mDensity = metrics.density;
@@ -966,6 +984,12 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
         mEndVisible = true;
 
         updateDisplay();
+
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false)) {
+            ATE.apply(this, "dark_theme");
+        } else {
+            ATE.apply(this, "light_theme");
+        }
     }
 
     private View.OnClickListener mPlayListener = new View.OnClickListener() {
@@ -1019,6 +1043,8 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
                 mPlayer.seekTo(newPos);
             } else {
                 mStartMarker.requestFocus();
+                mStartMarker.setImageResource(R.drawable.start_dragger_selected);
+                mEndMarker.setImageResource(R.drawable.end_dragger);
                 markerFocus(mStartMarker);
             }
         }
@@ -1033,6 +1059,8 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
                 mPlayer.seekTo(newPos);
             } else {
                 mEndMarker.requestFocus();
+                mEndMarker.setImageResource(R.drawable.end_dragger_selected);
+                mStartMarker.setImageResource(R.drawable.start_dragger);
                 markerFocus(mEndMarker);
             }
         }
@@ -1050,10 +1078,10 @@ public class MusicEditActivity extends AppCompatActivity implements MarkerView.M
 
     private void enableDisableButtons() {
         if (mIsPlaying) {
-            mPlayButton.setImageResource(android.R.drawable.ic_media_pause);
+            mPlayButton.setImageResource(R.drawable.pause);
             mPlayButton.setContentDescription(getResources().getText(R.string.stop));
         } else {
-            mPlayButton.setImageResource(android.R.drawable.ic_media_play);
+            mPlayButton.setImageResource(R.drawable.play);
             mPlayButton.setContentDescription(getResources().getText(R.string.play));
         }
     }

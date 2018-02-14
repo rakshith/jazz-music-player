@@ -11,7 +11,7 @@
         android:layout_height="?attr/actionBarSize"
         android:elevation="5dp"
         android:layout_alignParentTop="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:theme="@style/Theme.AppCompat.Light"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <com.rak.dj.djmusicplayer.widgets.BaseRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"

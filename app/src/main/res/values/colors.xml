@@ -50,4 +50,7 @@
     <color name="type_bkgnd_notification">#88666600</color>
     <color name="type_bkgnd_music">#88000000</color>
     <color name="type_bkgnd_unsupported">#88cccccc</color>
+    <color name="white">#ffffff</color>
+    <color name="transparent_black">#60000000</color>
+    <color name="black">#000000</color>
 </resources>
