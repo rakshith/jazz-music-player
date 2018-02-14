@@ -1,8 +1,7 @@
 package com.rak.dj.djmusicplayer;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,13 +9,11 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +25,7 @@ import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.rak.dj.djmusicplayer.appintro.AppIntroActivity;
 import com.rak.dj.djmusicplayer.foldermanager.FoldersFragment;
 import com.rak.dj.djmusicplayer.helpers.ATEUtils;
 import com.rak.dj.djmusicplayer.helpers.Constants;
@@ -42,7 +40,6 @@ import com.rak.dj.djmusicplayer.musiclibrary.MusicLibraryFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.video.VideoListFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.permissions.Nammu;
-import com.rak.dj.djmusicplayer.permissions.PermissionCallback;
 import com.rak.dj.djmusicplayer.playingmanager.NowPlayingActivity;
 import com.rak.dj.djmusicplayer.playingmanager.QuickPlayExpandedFragment;
 import com.rak.dj.djmusicplayer.playlistmanager.PlaylistFragment;
@@ -123,11 +120,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
             setupNavigationIcons(navigationView);
         }, 700);
 
-        if (JazzUtils.isMarshmallow()) {
-            checkPermissionAndThenLoad();
-        } else {
-            loadEverything();
-        }
+
+        shouldNavigateToAppIntro.run();
 
         if (slidingUpPanelLayout.getPanelState()!= SlidingUpPanelLayout.PanelState.HIDDEN  && MusicPlayer.getTrackName() == null ) {
             slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
@@ -144,21 +138,53 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         }
     }
 
+    private Runnable shouldNavigateToAppIntro =() -> {
+        //  Initialize SharedPreferences
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+        //  If the activity has never started before...
+        if (isFirstStart) {
+            //  Launch app intro
+            final Intent i = new Intent(MainActivity.this, AppIntroActivity.class);
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    startActivity(i);
+                }
+            });
+            //  Make a new preferences editor
+            SharedPreferences.Editor e = getPrefs.edit();
+            //  Edit preference to make it false because we don't want this to run again
+            e.putBoolean("firstStart", false);
+            //  Apply changes
+            e.apply();
+        }else{
+            runOnUiThread(() -> {
+                if (JazzUtils.isMarshmallow()) {
+                    checkExternalStoragePermissionAndThenLoad();
+                } else {
+                    loadOnPermissionGranted();
+                }
+            });
+        }
+    };
+
     /*
     way to safely perform Fragment Transactions after Activity.onSaveInstanceState(…)
      */
     private Runnable navigateMusicLibrary =() -> {
-            navigationView.getMenu().findItem(R.id.nav_library).setChecked(true);
-            Fragment fragment = new MusicLibraryFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.songContainer, fragment).commitAllowingStateLoss();
+        navigationView.getMenu().findItem(R.id.nav_library).setChecked(true);
+        Fragment fragment = new MusicLibraryFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.songContainer, fragment).commitAllowingStateLoss();
     };
 
     private Runnable navigatePlaylist = () -> {
-            navigationView.getMenu().findItem(R.id.nav_playlists).setChecked(false);
-            Fragment fragment = new PlaylistFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.songContainer, fragment).commit();
+        navigationView.getMenu().findItem(R.id.nav_playlists).setChecked(false);
+        Fragment fragment = new PlaylistFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.songContainer, fragment).commit();
     };
 
     private Runnable navigateFolder = new Runnable() {
@@ -197,18 +223,18 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
     };
 
     private Runnable navigateArtist = () -> {
-            long artistID = getIntent().getExtras().getLong(Constants.ARTIST_ID);
-            Fragment fragment = ArtistDetailFragment.newInstance(artistID, false, null);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.songContainer, fragment).commit();
+        long artistID = getIntent().getExtras().getLong(Constants.ARTIST_ID);
+        Fragment fragment = ArtistDetailFragment.newInstance(artistID, false, null);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.songContainer, fragment).commit();
     };
 
     private Runnable navigateLyrics = () -> {
-            Fragment fragment = new LyricsFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.songContainer, fragment).commit();
+        Fragment fragment = new LyricsFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.songContainer, fragment).commit();
     };
 
     private boolean isNavigatingMain() {
@@ -382,17 +408,7 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         }
     }
 
-    private final PermissionCallback permissionReadstorageCallback = new PermissionCallback() {
-        @Override
-        public void permissionGranted() {
-            loadEverything();
-        }
 
-        @Override
-        public void permissionRefused() {
-            finish();
-        }
-    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -404,7 +420,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         return isDarkTheme ? R.style.AppThemeNormalDark : R.style.AppThemeNormalLight;
     }
 
-    private void loadEverything(){
+    @Override
+    protected void loadOnPermissionGranted(){
         Runnable navigation = navigationMap.get(action);
         if (navigation != null) {
             navigation.run();
@@ -412,21 +429,6 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
             navigateMusicLibrary.run();
         }
         new initQuickControls().execute("");
-    }
-
-    private void checkPermissionAndThenLoad() {
-        //check for permission
-        if (Nammu.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            loadEverything();
-        } else {
-            if (Nammu.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                Snackbar.make(slidingUpPanelLayout, "DJ Music Player will need to read external storage to display songs on your device.",
-                        Snackbar.LENGTH_INDEFINITE)
-                        .setAction("OK", view -> Nammu.askForPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE, permissionReadstorageCallback)).show();
-            } else {
-                Nammu.askForPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE, permissionReadstorageCallback);
-            }
-        }
     }
 
     private void addBackstackListener() {

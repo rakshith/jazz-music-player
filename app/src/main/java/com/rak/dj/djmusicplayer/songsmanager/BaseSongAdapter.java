@@ -1,15 +1,21 @@
 package com.rak.dj.djmusicplayer.songsmanager;
 
 import android.app.Activity;
+import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.helpers.MusicUtils;
 import com.rak.dj.djmusicplayer.musiclibrary.ArtistSongAdapter;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
 import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 
 import java.util.List;
 
@@ -18,7 +24,8 @@ import java.util.List;
  * Created by naman on 7/12/17.
  */
 
-public class BaseSongAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> {
+public abstract class BaseSongAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> {
+
 
     @Override
     public V onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -59,6 +66,55 @@ public class BaseSongAdapter<V extends RecyclerView.ViewHolder> extends Recycler
         }
     }
 
+    protected void menuFunctionalityForSong(AppCompatActivity mContext, MenuItem menuItem, Song song, long playlistId, long[] songIDs){
+        int position = getItemPosition();
+        switch (menuItem.getItemId()) {
+            case R.id.popup_song_remove_playlist:
+                JazzUtils.removeFromPlaylist(mContext, song.id, playlistId);
+                removeSongAt(position);
+                notifyItemRemoved(position);
+                break;
+            case R.id.popup_song_play:
+                MusicPlayer.playAll(mContext,songIDs , position, -1, JazzUtils.IdType.NA, false);
+                break;
+            case R.id.popup_song_play_next:
+                long[] ids = new long[1];
+                ids[0] = song.id;
+                MusicPlayer.playNext(mContext, ids, -1, JazzUtils.IdType.NA);
+                break;
+            case R.id.popup_song_goto_album:
+                NavigationUtils.goToAlbum(mContext, song.albumId);
+                break;
+            case R.id.popup_song_goto_artist:
+                NavigationUtils.goToArtist(mContext, song.artistId);
+                break;
+            case R.id.popup_song_addto_queue:
+                long[] id = new long[1];
+                id[0] = song.id;
+                MusicPlayer.addToQueue(mContext, id, -1, JazzUtils.IdType.NA);
+                break;
+            case R.id.popup_song_addto_playlist:
+                AddPlaylistDialog.newInstance(song).show(mContext.getSupportFragmentManager(), "ADD_PLAYLIST");
+                break;
+            case R.id.popup_cut:
+
+                MusicUtils.startRingdroidEditor(mContext.getBaseContext(), song.data);
+                break;
+            case R.id.popup_tag_editor:
+                NavigationUtils.navigateToSongTagEditor(mContext, song.id);
+                break;
+            case R.id.popup_song_share:
+                JazzUtils.shareTrack(mContext, song.id);
+                break;
+            case R.id.popup_song_delete:
+                long[] deleteIds = {song.id};
+                JazzUtils.showDeleteDialog(mContext,song.title, deleteIds, BaseSongAdapter.this, position);
+                break;
+        }
+    }
+
     public void removeSongAt(int i){}
     public void updateDataSet(List<Song> arraylist) {}
+
+    public abstract int getItemPosition();
 }

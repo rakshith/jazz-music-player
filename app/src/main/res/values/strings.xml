@@ -1,4 +1,14 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- App Intro Strings -->
+
+    <string name="app_title"> Jazz Music Player</string>
+    <string name="app_description">
+        A Beautifully crafted app to play our music and to customize your experience while listening to the music, it has so many features bundled into one app which
+        performs all the necessity of a music lover and singer.
+    </string>
+
+    <!-- ends -->
     <string name="app_name">Jazz</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

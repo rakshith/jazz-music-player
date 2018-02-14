@@ -210,6 +210,11 @@ public class SearchAdapter extends BaseSongAdapter<SearchAdapter.ItemHolder> {
         return 3;
     }
 
+    @Override
+    public int getItemPosition() {
+        return 0;
+    }
+
     public void updateSearchResults(List searchResults) {
         this.searchResults = searchResults;
     }

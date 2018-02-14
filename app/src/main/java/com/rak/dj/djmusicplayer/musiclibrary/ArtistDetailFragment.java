@@ -128,7 +128,7 @@ public class ArtistDetailFragment extends Fragment {
 
         final Artist artist = ArtistLoader.getArtist(getActivity(), artistID);
         List<Song> songList = ArtistSongLoader.getSongsForArtist(getActivity(), artistID);
-        mAdapter = new ArtistSongAdapter(getActivity(), songList, artistID);
+        mAdapter = new ArtistSongAdapter((AppCompatActivity) getActivity(), songList, artistID);
 
         collapsingToolbarLayout.setTitle(artist.name);
 

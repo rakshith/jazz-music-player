@@ -13,17 +13,17 @@
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".DjMusicPlayerApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Jazz${appNameSuffix}"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme.FullScreen.Light"
-        tools:replace="android:allowBackup, android:label"
-        android:largeHeap="true">
+        tools:replace="android:allowBackup, android:label">
         <activity
             android:name=".MainActivity"
             android:label="Jazz${appNameSuffix}"
@@ -89,17 +89,21 @@
             android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".tageditormanager.TagEditorActivity" />
-
-        <activity android:name=".musiceditmanager.RingDroidActivity"
+        <activity
+            android:name=".musiceditmanager.RingDroidActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:windowSoftInputMode="adjustResize"
             android:hardwareAccelerated="true"
-            android:theme="@style/AppTheme.NoActionBar">
-            <!--<intent-filter android:label="@string/edit_intent">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
+
+            <!--
+            <intent-filter android:label="@string/edit_intent">
                 <action android:name="android.intent.action.EDIT" />
                 <data android:mimeType="audio/*" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
+        <activity android:name=".appintro.AppIntroActivity"></activity>
     </application>
 
 </manifest>

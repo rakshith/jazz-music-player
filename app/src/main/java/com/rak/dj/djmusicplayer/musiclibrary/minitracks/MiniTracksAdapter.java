@@ -2,6 +2,7 @@ package com.rak.dj.djmusicplayer.musiclibrary.minitracks;
 
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.rak.dj.djmusicplayer.models.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.songsmanager.BaseSongAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
+import com.rak.dj.djmusicplayer.widgets.PopupImageView;
 
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class MiniTracksAdapter extends BaseSongAdapter<MiniTracksAdapter.ItemHol
     private long[] songIDs;
     private String ateKey;
     private boolean animate;
-    private int lastPosition = -1;
+    private int lastPosition = -1, itemPosition;
 
     public MiniTracksAdapter(AppCompatActivity context, List<Song> arraylist, boolean animate) {
         this.arraylist = arraylist;
@@ -54,8 +56,10 @@ public class MiniTracksAdapter extends BaseSongAdapter<MiniTracksAdapter.ItemHol
     }
 
     @Override
-    public void onBindViewHolder(MiniTracksAdapter.ItemHolder itemHolder, int i) {
-        Song localItem = arraylist.get(i);
+    public void onBindViewHolder(MiniTracksAdapter.ItemHolder itemHolder, int position) {
+        this.itemPosition = position;
+
+        Song localItem = arraylist.get(position);
 
         itemHolder.title.setText(localItem.title);
         itemHolder.songArtist.setText(localItem.artistName);
@@ -75,12 +79,14 @@ public class MiniTracksAdapter extends BaseSongAdapter<MiniTracksAdapter.ItemHol
 
         if (animate) {
             if (JazzUtils.isLollipop())
-                setAnimation(itemHolder.itemView, i);
+                setAnimation(itemHolder.itemView, position);
             else {
-                if (i > 10)
-                    setAnimation(itemHolder.itemView, i);
+                if (position > 10)
+                    setAnimation(itemHolder.itemView, position);
             }
         }
+
+        setOnPopupMenuListener(itemHolder, position);
     }
 
     private void setAnimation(View viewToAnimate, int position) {
@@ -101,9 +107,29 @@ public class MiniTracksAdapter extends BaseSongAdapter<MiniTracksAdapter.ItemHol
         return ret;
     }
 
+    private void setOnPopupMenuListener(ItemHolder itemHolder, final int position) {
+
+        itemHolder.popupMenu.setOnClickListener(v -> {
+
+            final PopupMenu menu = new PopupMenu(mContext, v);
+            menu.inflate(R.menu.popup_song);
+            menu.setOnMenuItemClickListener(item -> {
+                menuFunctionalityForSong(mContext, item, arraylist.get(position), -1, songIDs);
+                return false;
+            });
+
+            menu.show();
+        });
+    }
+
     @Override
     public int getItemCount() {
         return (null != arraylist ? arraylist.size() : 0);
+    }
+
+    @Override
+    public int getItemPosition() {
+        return itemPosition;
     }
 
     @Override
@@ -120,6 +146,7 @@ public class MiniTracksAdapter extends BaseSongAdapter<MiniTracksAdapter.ItemHol
     public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         protected TextView title, songArtist, songDuration;
         protected ImageView albumArt;
+        protected PopupImageView popupMenu;
 
         public ItemHolder(View view) {
             super(view);
@@ -127,6 +154,7 @@ public class MiniTracksAdapter extends BaseSongAdapter<MiniTracksAdapter.ItemHol
             this.songArtist = (TextView) view.findViewById(R.id.song_artist);
             this.albumArt = (ImageView) view.findViewById(R.id.albumArt);
             this.songDuration = (TextView) view.findViewById(R.id.song_duration);
+            this.popupMenu = (PopupImageView) view.findViewById(R.id.popup_menu);
             view.setOnClickListener(this);
         }
 

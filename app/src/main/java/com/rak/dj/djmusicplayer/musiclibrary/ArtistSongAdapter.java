@@ -45,11 +45,11 @@ import java.util.List;
 public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHolder> {
 
     private List<Song> arraylist;
-    private Activity mContext;
+    private AppCompatActivity mContext;
     private long artistID;
     private long[] songIDs;
 
-    public ArtistSongAdapter(Activity context, List<Song> arraylist, long artistID) {
+    public ArtistSongAdapter(AppCompatActivity context, List<Song> arraylist, long artistID) {
         this.arraylist = arraylist;
         this.mContext = context;
         this.artistID = artistID;
@@ -107,7 +107,10 @@ public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHol
 
             final PopupMenu menu = new PopupMenu(mContext, v);
             menu.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
+
+                menuFunctionalityForSong(mContext, item, arraylist.get(position), -1, songIDs);
+
+               /* switch (item.getItemId()) {
                     case R.id.popup_song_play:
                         MusicPlayer.playAll(mContext, songIDs, position, -1, JazzUtils.IdType.NA, false);
                         break;
@@ -140,7 +143,7 @@ public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHol
                         long[] deleteIds = {arraylist.get(position + 1).id};
                         JazzUtils.showDeleteDialog(mContext,arraylist.get(position + 1).title, deleteIds, ArtistSongAdapter.this, position + 1);
                         break;
-                }
+                }*/
                 return false;
             });
             menu.inflate(R.menu.popup_song);
@@ -190,6 +193,11 @@ public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHol
     public void updateDataSet(List<Song> arraylist) {
         this.arraylist = arraylist;
         this.songIDs = getSongIds();
+    }
+
+    @Override
+    public int getItemPosition() {
+        return 0;
     }
 
     @Override

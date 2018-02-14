@@ -30,8 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.appthemeengine.ATE;
-import com.afollestad.appthemeengine.ATEActivity;
 import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.musiceditmanager.soundfile.SoundFile;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.MarkerView;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.SamplePlayer;
@@ -43,7 +43,7 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.io.StringWriter;
 
-public class RingDroidActivity extends ATEActivity implements MarkerView.MarkerListener,
+public class RingDroidActivity extends AbsPermissionsActivity implements MarkerView.MarkerListener,
         WaveformView.WaveformListener {
 
     private long mLoadingLastUpdateTime;
@@ -363,7 +363,11 @@ public class RingDroidActivity extends ATEActivity implements MarkerView.MarkerL
                 super.onBackPressed();
                 return true;
             case R.id.action_save:
-                onSave();
+                if (JazzUtils.isMarshmallow()) {
+                    checkWriteSettingsPermissionAndThenLoad(getBaseContext());
+                } else {
+                    loadOnPermissionGranted();
+                }
                 return true;
             case R.id.action_reset:
                 resetPositions();
@@ -916,6 +920,8 @@ public class RingDroidActivity extends ATEActivity implements MarkerView.MarkerL
     private void loadGui() {
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.editor);
+
+        ringDroidLayout = findViewById(R.id.ringDroid_layout);
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -1527,5 +1533,10 @@ public class RingDroidActivity extends ATEActivity implements MarkerView.MarkerL
         StringWriter writer = new StringWriter();
         e.printStackTrace(new PrintWriter(writer));
         return writer.toString();
+    }
+
+    @Override
+    protected void loadOnPermissionGranted() {
+        onSave();
     }
 }

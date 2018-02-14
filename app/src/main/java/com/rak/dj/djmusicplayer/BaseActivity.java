@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.ATEActivity;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.musiceditmanager.AbsPermissionsActivity;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
@@ -40,10 +41,10 @@ import java.util.ArrayList;
 
 import static com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer.mService;
 
-public abstract class BaseActivity extends ATEActivity implements ServiceConnection, MusicStateListener, SlidingUpPanelLayout.PanelSlideListener {
+public abstract class BaseActivity extends AbsPermissionsActivity implements ServiceConnection, MusicStateListener, SlidingUpPanelLayout.PanelSlideListener {
 
 
-    protected SlidingUpPanelLayout slidingUpPanelLayout;
+
 
     private QuickPlayFragment quickPlayFragment;
     private QuickPlayExpandedFragment quickPlayExpandedFragment;

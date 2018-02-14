@@ -190,6 +190,11 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         }
     }
 
+    @Override
+    protected void loadOnPermissionGranted() {
+
+    }
+
     private class SearchTask extends AsyncTask<String,Void,ArrayList<Object>> {
 
         @Override

@@ -79,4 +79,9 @@ public class NowPlayingActivity extends BaseActivity  implements ATEActivityThem
             recreate();
         }
     }
+
+    @Override
+    protected void loadOnPermissionGranted() {
+
+    }
 }

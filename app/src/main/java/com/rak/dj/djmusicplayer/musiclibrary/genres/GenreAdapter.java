@@ -39,7 +39,7 @@ public class GenreAdapter extends BaseSongAdapter<GenreAdapter.ItemHolder> imple
     private long[] songIDs;
     private String ateKey;
     private boolean animate;
-    private int lastPosition = -1;
+    private int lastPosition = -1, itemPosition;
 
     public GenreAdapter(AppCompatActivity context, List<Genre> arraylist, boolean animate) {
         this.arraylist = arraylist;
@@ -57,8 +57,9 @@ public class GenreAdapter extends BaseSongAdapter<GenreAdapter.ItemHolder> imple
     }
 
     @Override
-    public void onBindViewHolder(ItemHolder itemHolder, int i) {
-        Genre localItem = arraylist.get(i);
+    public void onBindViewHolder(ItemHolder itemHolder, int position) {
+        this.itemPosition = position;
+        Genre localItem = arraylist.get(position);
 
         itemHolder.title.setText(localItem.name);
         itemHolder.songCount.setText(localItem.songCount+" Songs");
@@ -77,10 +78,10 @@ public class GenreAdapter extends BaseSongAdapter<GenreAdapter.ItemHolder> imple
 
         if (animate) {
             if (JazzUtils.isLollipop())
-                setAnimation(itemHolder.itemView, i);
+                setAnimation(itemHolder.itemView, position);
             else {
-                if (i > 10)
-                    setAnimation(itemHolder.itemView, i);
+                if (position > 10)
+                    setAnimation(itemHolder.itemView, position);
             }
         }
     }
@@ -106,6 +107,11 @@ public class GenreAdapter extends BaseSongAdapter<GenreAdapter.ItemHolder> imple
     @Override
     public int getItemCount() {
         return (null != arraylist ? arraylist.size() : 0);
+    }
+
+    @Override
+    public int getItemPosition() {
+        return itemPosition;
     }
 
     @Override

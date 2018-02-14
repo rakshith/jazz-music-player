@@ -37,7 +37,7 @@ public class VideoListAdapter extends BaseSongAdapter<VideoListAdapter.ItemHolde
     private AppCompatActivity mContext;
     private String ateKey;
     private boolean animate;
-    private int lastPosition = -1;
+    private int lastPosition = -1, itemPosition;
 
     public VideoListAdapter(AppCompatActivity context, List<Video> arraylist, boolean animate) {
         this.arraylist = arraylist;
@@ -55,8 +55,9 @@ public class VideoListAdapter extends BaseSongAdapter<VideoListAdapter.ItemHolde
 
 
     @Override
-    public void onBindViewHolder(VideoListAdapter.ItemHolder itemHolder, int i) {
-        Video localItem = arraylist.get(i);
+    public void onBindViewHolder(VideoListAdapter.ItemHolder itemHolder, int position) {
+        this.itemPosition = position;
+        Video localItem = arraylist.get(position);
 
         itemHolder.title.setText(localItem.title);
         itemHolder.duration.setText(JazzUtils.getReadableDurationString(localItem.duration));
@@ -70,10 +71,10 @@ public class VideoListAdapter extends BaseSongAdapter<VideoListAdapter.ItemHolde
 
         if (animate) {
             if (JazzUtils.isLollipop())
-                setAnimation(itemHolder.itemView, i);
+                setAnimation(itemHolder.itemView, position);
             else {
-                if (i > 10)
-                    setAnimation(itemHolder.itemView, i);
+                if (position > 10)
+                    setAnimation(itemHolder.itemView, position);
             }
         }
     }
@@ -90,6 +91,11 @@ public class VideoListAdapter extends BaseSongAdapter<VideoListAdapter.ItemHolde
     @Override
     public int getItemCount() {
         return (null != arraylist ? arraylist.size() : 0);
+    }
+
+    @Override
+    public int getItemPosition() {
+        return itemPosition;
     }
 
 

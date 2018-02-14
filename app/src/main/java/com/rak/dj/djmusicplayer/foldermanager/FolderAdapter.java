@@ -44,7 +44,7 @@ public class FolderAdapter extends BaseSongAdapter<FolderAdapter.ItemHolder> imp
     private Activity mContext;
     private final Drawable[] mIcons;
     private boolean mBusy = false;
-
+    private int itemPostion;
 
     public FolderAdapter(Activity context, File root) {
         mContext = context;
@@ -76,9 +76,10 @@ public class FolderAdapter extends BaseSongAdapter<FolderAdapter.ItemHolder> imp
     }
 
     @Override
-    public void onBindViewHolder(final FolderAdapter.ItemHolder itemHolder, int i) {
-        File localItem = mFileSet.get(i);
-        Song song = mSongs.get(i);
+    public void onBindViewHolder(final FolderAdapter.ItemHolder itemHolder, int position) {
+        itemPostion = position;
+        File localItem = mFileSet.get(position);
+        Song song = mSongs.get(position);
         itemHolder.title.setText(localItem.getName());
         if (localItem.isDirectory()) {
             itemHolder.albumArt.setImageDrawable("..".equals(localItem.getName()) ? mIcons[1] : mIcons[0]);
@@ -94,6 +95,11 @@ public class FolderAdapter extends BaseSongAdapter<FolderAdapter.ItemHolder> imp
     @Override
     public int getItemCount() {
         return mFileSet.size();
+    }
+
+    @Override
+    public int getItemPosition() {
+        return itemPostion;
     }
 
     @Deprecated

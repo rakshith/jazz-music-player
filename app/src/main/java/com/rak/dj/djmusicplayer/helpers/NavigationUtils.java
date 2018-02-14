@@ -154,6 +154,11 @@ public class NavigationUtils {
         }
     }
 
+    public static void navigateToMainApp(Activity context){
+        final Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
+
     public static Fragment getFragmentForNowplayingID(String fragmentID) {
         switch (fragmentID) {
             /*case Constants.TIMBER1:

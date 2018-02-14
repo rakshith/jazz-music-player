@@ -167,6 +167,11 @@ public class PlaylistDetailActivity extends BaseActivity implements ATEActivityT
         return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false) ? R.style.AppTheme_FullScreen_Dark : R.style.AppTheme_FullScreen_Light;
     }
 
+    @Override
+    protected void loadOnPermissionGranted() {
+
+    }
+
     private class loadLastAdded extends AsyncTask<String, Void, String> {
 
         @Override

@@ -34,6 +34,7 @@ public final class Constants {
     public static final String NAVIGATE_PLAYLIST_LASTADDED = "navigate_playlist_lastadded";
     public static final String NAVIGATE_PLAYLIST_TOPTRACKS = "navigate_playlist_toptracks";
     public static final String NAVIGATE_PLAYLIST_USERCREATED = "navigate_playlist";
+    public static final String NAVIGATE_MAIN_APP = "navigate_main_app";
     public static final String PLAYLIST_FOREGROUND_COLOR = "foreground_color";
     public static final String PLAYLIST_NAME = "playlist_name";
 
@@ -41,6 +42,9 @@ public final class Constants {
 
     public static final int PLAYLIST_ALBUM_ART_TAG = 888;
     public static final int ACTION_DELETE_PLAYLIST = 111;
+
+
+    public static final int ACTION_WRITE_SETTINGS_PERMISSION = 489;
 
     public static final String TIMBER1 = "timber1";
     public static final String TIMBER2 = "timber2";
