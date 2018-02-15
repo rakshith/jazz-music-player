@@ -2,7 +2,6 @@ package com.rak.dj.djmusicplayer;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -21,16 +20,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.appthemeengine.ATE;
-import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.appintro.AppIntroActivity;
 import com.rak.dj.djmusicplayer.foldermanager.FoldersFragment;
-import com.rak.dj.djmusicplayer.helpers.ATEUtils;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.ImageUtils;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
 import com.rak.dj.djmusicplayer.lyricsmanager.LyricsFragment;
@@ -46,12 +41,10 @@ import com.rak.dj.djmusicplayer.playlistmanager.PlaylistFragment;
 import com.rak.dj.djmusicplayer.queuemanager.QueueFragment;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends BaseActivity implements ATEActivityThemeCustomizer {
+public class MainActivity extends BaseMainActivity {
 
     private TextView songtitle, songartist;
     private ImageView albumart;
@@ -60,7 +53,7 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
 
     private Map<String, Runnable> navigationMap = new HashMap<String, Runnable>();
     private DrawerLayout mDrawerLayout;
-    private boolean isDarkTheme;
+
     private String action;
     private Handler navDrawerRunnable = new Handler();
     private Runnable runnable;
@@ -86,15 +79,9 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
     protected void onCreate(Bundle savedInstanceState) {
         action = getIntent().getAction();
 
-        isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false);
+
 
         super.onCreate(savedInstanceState);
-
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false)) {
-            ATE.apply(this, "dark_theme");
-        } else {
-            ATE.apply(this, "light_theme");
-        }
 
         addBackstackListener();
 
@@ -268,13 +255,14 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
     @Override
     public void onResume() {
         super.onResume();
-        String ateKey = Helpers.getATEKey(this);
-        ATEUtils.setStatusBarColor(this, ateKey, Config.primaryColor(this, ateKey));
-    }
+        /*String ateKey = Helpers.getATEKey(this);
+        ATEUtils.setStatusBarColor(this, ateKey, Config.primaryColor(this, ateKey));*/
 
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
+        /*if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false)) {
+            ATE.apply(this, "dark_theme");
+        } else {
+            ATE.apply(this, "light_theme");
+        }*/
     }
 
     @Override
@@ -346,8 +334,9 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
                 break;
 
             case R.id.nav_settings:
-
+                NavigationUtils.navigateToSettings(MainActivity.this);
                 break;
+
             case R.id.nav_about:
 
                 break;
@@ -368,29 +357,29 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         //https://github.com/code-mc/material-icon-lib/issues/15
 
         if (!isDarkTheme) {
-            navigationView.getMenu().findItem(R.id.nav_library).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.LIBRARY_MUSIC));
+            navigationView.getMenu().findItem(R.id.nav_library).setIcon(R.drawable.ic_library_music_black_24dp);
             navigationView.getMenu().findItem(R.id.nav_playlists).setIcon(R.drawable.playlist_play);
             navigationView.getMenu().findItem(R.id.nav_folders).setIcon(R.drawable.ic_folder_open_black_24dp);
             navigationView.getMenu().findItem(R.id.nav_queue).setIcon(R.drawable.music_note);
-            navigationView.getMenu().findItem(R.id.nav_nowplaying).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.BOOKMARK_MUSIC));
-            navigationView.getMenu().findItem(R.id.nav_driver_mode).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.CAR));
-            navigationView.getMenu().findItem(R.id.nav_music_tools).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.CONTENT_CUT));
+            navigationView.getMenu().findItem(R.id.nav_nowplaying).setIcon(R.drawable.ic_bookmark_music_black_24dp);
+            navigationView.getMenu().findItem(R.id.nav_driver_mode).setIcon(R.drawable.ic_directions_car_black_24dp);
+            navigationView.getMenu().findItem(R.id.nav_music_tools).setIcon(R.drawable.ic_music_edit_black_24dp);
 
-            navigationView.getMenu().findItem(R.id.nav_find_duplicate).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.CONTENT_COPY));
-            navigationView.getMenu().findItem(R.id.nav_timer).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.BLACK, MaterialDrawableBuilder.IconValue.TIMER));
+            navigationView.getMenu().findItem(R.id.nav_find_duplicate).setIcon(R.drawable.ic_find_duplicate_black_24dp);
+            navigationView.getMenu().findItem(R.id.nav_timer).setIcon(R.drawable.ic_timelapse_black_24dp);
             navigationView.getMenu().findItem(R.id.nav_settings).setIcon(R.drawable.settings);
             navigationView.getMenu().findItem(R.id.nav_about).setIcon(R.drawable.information);
         } else {
-            navigationView.getMenu().findItem(R.id.nav_library).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.LIBRARY_MUSIC));
+            navigationView.getMenu().findItem(R.id.nav_library).setIcon(R.drawable.ic_library_music_white_24dp);
             navigationView.getMenu().findItem(R.id.nav_playlists).setIcon(R.drawable.playlist_play_white);
             navigationView.getMenu().findItem(R.id.nav_folders).setIcon(R.drawable.ic_folder_open_white_24dp);
             navigationView.getMenu().findItem(R.id.nav_queue).setIcon(R.drawable.music_note_white);
-            navigationView.getMenu().findItem(R.id.nav_nowplaying).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.BOOKMARK_MUSIC));
-            navigationView.getMenu().findItem(R.id.nav_driver_mode).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.CAR));
-            navigationView.getMenu().findItem(R.id.nav_music_tools).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.CONTENT_CUT));
+            navigationView.getMenu().findItem(R.id.nav_nowplaying).setIcon(R.drawable.ic_bookmark_music_white_24dp);
+            navigationView.getMenu().findItem(R.id.nav_driver_mode).setIcon(R.drawable.ic_directions_car_white_24dp);
+            navigationView.getMenu().findItem(R.id.nav_music_tools).setIcon(R.drawable.ic_music_edit_white_24dp);
 
-            navigationView.getMenu().findItem(R.id.nav_find_duplicate).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.CONTENT_COPY));
-            navigationView.getMenu().findItem(R.id.nav_timer).setIcon(ImageUtils.buildMaterialIcon(getBaseContext(), Color.WHITE, MaterialDrawableBuilder.IconValue.TIMER));
+            navigationView.getMenu().findItem(R.id.nav_find_duplicate).setIcon(R.drawable.ic_find_duplicate_white_24dp);
+            navigationView.getMenu().findItem(R.id.nav_timer).setIcon(R.drawable.ic_timelapse_white_24dp);
             navigationView.getMenu().findItem(R.id.nav_settings).setIcon(R.drawable.settings_white);
             navigationView.getMenu().findItem(R.id.nav_about).setIcon(R.drawable.information_white);
         }
@@ -416,11 +405,6 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
     }
 
     @Override
-    public int getActivityTheme() {
-        return isDarkTheme ? R.style.AppThemeNormalDark : R.style.AppThemeNormalLight;
-    }
-
-    @Override
     protected void loadOnPermissionGranted(){
         Runnable navigation = navigationMap.get(action);
         if (navigation != null) {
@@ -434,4 +418,5 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
     private void addBackstackListener() {
         getSupportFragmentManager().addOnBackStackChangedListener(() -> getSupportFragmentManager().findFragmentById(R.id.songContainer).onResume());
     }
+
 }

@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.appthemeengine.ATE;
+import com.afollestad.appthemeengine.Config;
+import com.afollestad.appthemeengine.customizers.ATEToolbarCustomizer;
+import com.rak.dj.djmusicplayer.BaseThemedActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.musiceditmanager.soundfile.SoundFile;
@@ -43,8 +47,8 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.io.StringWriter;
 
-public class RingDroidActivity extends AbsPermissionsActivity implements MarkerView.MarkerListener,
-        WaveformView.WaveformListener {
+public class RingDroidActivity extends BaseThemedActivity implements MarkerView.MarkerListener,
+        WaveformView.WaveformListener, ATEToolbarCustomizer {
 
     private long mLoadingLastUpdateTime;
     private boolean mLoadingKeepGoing;
@@ -118,6 +122,9 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
     // Public methods and protected overrides
     //
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,6 +164,8 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
             recordAudio();
         }
     }
+
+
 
     private void loadFromFile() {
         mFile = new File(mFilename);
@@ -913,6 +922,8 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         super.onDestroy();
     }
 
+
+
     /**
      * Called from both onCreate and onConfigurationChanged
      * (if the user switched layouts)
@@ -1533,6 +1544,16 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         StringWriter writer = new StringWriter();
         e.printStackTrace(new PrintWriter(writer));
         return writer.toString();
+    }
+
+    @Override
+    public int getToolbarColor() {
+        return Color.TRANSPARENT;
+    }
+
+    @Override
+    public int getLightToolbarMode() {
+        return Config.LIGHT_TOOLBAR_AUTO;
     }
 
     @Override

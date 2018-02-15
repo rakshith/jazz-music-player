@@ -19,7 +19,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.rak.dj.djmusicplayer.BaseActivity;
+import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.R;
@@ -49,7 +49,7 @@ public class QuickPlayFragment extends Fragment implements MusicStateListener  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ((BaseActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_quick_play, container, false);
     }

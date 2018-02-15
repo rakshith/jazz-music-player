@@ -87,7 +87,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder
         itemHolder.albums.setText(JazzUtils.makeCombinedString(mContext, albumNmber, songCount));
 
 
-        LastFmClient.getInstance(mContext).getArtistInfo(new ArtistQuery(localItem.name), new ArtistInfoListener() {
+        /*LastFmClient.getInstance(mContext).getArtistInfo(new ArtistQuery(localItem.name), new ArtistInfoListener() {
             @Override
             public void artistInfoSucess(LastfmArtist artist) {
                 if (artist != null && artist.mArtwork != null) {
@@ -146,7 +146,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder
             public void artistInfoFailed() {
 
             }
-        });
+        });*/
 
         if (JazzUtils.isLollipop())
             itemHolder.artistImage.setTransitionName("transition_artist_art" + i);

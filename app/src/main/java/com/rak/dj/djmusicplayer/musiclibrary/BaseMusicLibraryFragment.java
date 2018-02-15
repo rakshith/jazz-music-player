@@ -2,12 +2,14 @@ package com.rak.dj.djmusicplayer.musiclibrary;
 
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.appthemeengine.ATE;
 import com.rak.dj.djmusicplayer.widgets.BaseRecyclerView;
 import com.rak.dj.djmusicplayer.widgets.FastScroller;
 
@@ -31,7 +33,6 @@ public abstract class BaseMusicLibraryFragment extends Fragment {
 
 
     public abstract View setBaseListView(@NonNull  LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState );
-
 
 
 }

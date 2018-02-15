@@ -6,6 +6,8 @@
         <attr name="border_overlay" format="boolean" />
     </declare-styleable>
 
+    <attr name="ate_key" format="string" />
+
     <declare-styleable name="app">
         <attr name="bottomDragVisibleHeight" format="dimension" />
         <attr name="bototmExtraIndicatorHeight" format="dimension" />

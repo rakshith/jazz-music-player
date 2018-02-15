@@ -33,8 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="top"
-                android:background="@android:color/transparent"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+                android:background="@android:color/transparent"/>
 
             <android.support.percent.PercentRelativeLayout
                 android:layout_width="match_parent"

@@ -17,6 +17,7 @@ package com.rak.dj.djmusicplayer.musiclibrary;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,6 +38,7 @@ import android.widget.ImageView;
 
 import com.afollestad.appthemeengine.ATE;
 
+import com.afollestad.appthemeengine.Config;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -59,11 +61,10 @@ import com.rak.dj.djmusicplayer.models.Song;
 
 import java.util.List;
 
-public class ArtistDetailFragment extends Fragment {
+public class ArtistDetailFragment extends AbsMusicLibraryFragment {
 
     private long artistID = -1;
     private ImageView artistArt;
-    private Toolbar toolbar, mainToolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
     private boolean largeImageLoaded = false;
@@ -116,7 +117,6 @@ public class ArtistDetailFragment extends Fragment {
 
     private void setupToolbar() {
 
-
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         final ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
@@ -132,7 +132,7 @@ public class ArtistDetailFragment extends Fragment {
 
         collapsingToolbarLayout.setTitle(artist.name);
 
-        LastFmClient.getInstance(getActivity()).getArtistInfo(new ArtistQuery(artist.name), new ArtistInfoListener() {
+        /*LastFmClient.getInstance(getActivity()).getArtistInfo(new ArtistQuery(artist.name), new ArtistInfoListener() {
             @Override
             public void artistInfoSucess(final LastfmArtist artist) {
                 if (artist != null) {
@@ -170,12 +170,7 @@ public class ArtistDetailFragment extends Fragment {
                                 }
                             });
                     Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setBlurredPlaceholder(artist);
-                        }
-                    }, 100);
+                    handler.postDelayed(() -> setBlurredPlaceholder(artist), 100);
 
                 }
             }
@@ -184,7 +179,7 @@ public class ArtistDetailFragment extends Fragment {
             public void artistInfoFailed() {
 
             }
-        });
+        });*/
 
     }
 
@@ -228,13 +223,7 @@ public class ArtistDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        toolbar.setBackgroundColor(Color.TRANSPARENT);
 
-        if (primaryColor != -1 && getActivity() != null) {
-            collapsingToolbarLayout.setContentScrimColor(primaryColor);
-            String ateKey = Helpers.getATEKey(getActivity());
-            ATEUtils.setStatusBarColor(getActivity(), ateKey, primaryColor);
-        }
     }
 
     private class setBlurredAlbumArt extends AsyncTask<Bitmap, Void, Drawable> {

@@ -29,7 +29,7 @@ import com.afollestad.appthemeengine.customizers.ATEToolbarCustomizer;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.rak.dj.djmusicplayer.BaseActivity;
+import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.musicplayerutils.SimplelTransitionListener;
 import com.rak.dj.djmusicplayer.R;
@@ -47,7 +47,7 @@ import com.rak.dj.djmusicplayer.widgets.DragSortRecycler;
 import java.util.HashMap;
 import java.util.List;
 
-public class PlaylistDetailActivity extends BaseActivity implements ATEActivityThemeCustomizer, ATEToolbarCustomizer {
+public class PlaylistDetailActivity extends BaseMainActivity implements ATEToolbarCustomizer {
 
 
 

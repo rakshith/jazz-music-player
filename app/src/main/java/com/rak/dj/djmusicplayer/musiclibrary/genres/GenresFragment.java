@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rak.dj.djmusicplayer.BaseActivity;
+import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.GenreLoader;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseMusicLibraryFragment;
@@ -35,7 +35,7 @@ public class GenresFragment extends BaseMusicLibraryFragment implements MusicSta
 
     @Override
     public View setBaseListView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((BaseActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
         View rootView = inflater.inflate(R.layout.fragment_recylerview, container, false);
         fastScroller = rootView.findViewById(R.id.fastscroller);
         recyclerView = rootView.findViewById(R.id.recyclerView);

@@ -22,8 +22,8 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 import android.view.KeyEvent;
 
-import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 import com.rak.dj.djmusicplayer.MainActivity;
+import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 
 /**
  * Used to control headset playback.

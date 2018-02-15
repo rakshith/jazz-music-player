@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import com.rak.dj.djmusicplayer.R;
 
 
-public class ArtistTagFragment extends Fragment {
+public class ArtistTagFragment extends AbsMusicLibraryFragment {
 
     private static final String ARG_PAGE_NUMBER = "pageNumber";
 

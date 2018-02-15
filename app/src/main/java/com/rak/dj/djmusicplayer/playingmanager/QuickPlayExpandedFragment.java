@@ -8,10 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,18 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.Config;
-import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
-import com.afollestad.appthemeengine.customizers.ATEStatusBarCustomizer;
-import com.afollestad.appthemeengine.customizers.ATEToolbarCustomizer;
-import com.rak.dj.djmusicplayer.helpers.ATEUtils;
-import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
-import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.QueueLoader;
+import com.rak.dj.djmusicplayer.helpers.ATEUtils;
+import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.ImageUtils;
+import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
+import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 
 import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 
@@ -195,7 +188,6 @@ public class QuickPlayExpandedFragment extends BaseNowPlayingFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        String ateKey = Helpers.getATEKey(getActivity());
         toolbar.setBackgroundColor(Color.TRANSPARENT);
     }
 }

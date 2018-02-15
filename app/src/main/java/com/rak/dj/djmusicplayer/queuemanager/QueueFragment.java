@@ -28,7 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.appthemeengine.ATE;
-import com.rak.dj.djmusicplayer.BaseActivity;
+import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.QueueLoader;
 import com.rak.dj.djmusicplayer.models.Song;
@@ -62,7 +62,7 @@ public class QueueFragment extends Fragment implements MusicStateListener {
         recyclerView.setEmptyView(getActivity(), rootView.findViewById(R.id.list_empty), "No songs in queue");
 
         new loadQueueSongs().execute("");
-        ((BaseActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
 
         return rootView;
     }

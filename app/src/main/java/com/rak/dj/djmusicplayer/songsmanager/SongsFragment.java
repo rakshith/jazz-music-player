@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rak.dj.djmusicplayer.BaseActivity;
+import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
@@ -52,7 +52,7 @@ public class SongsFragment extends Fragment implements MusicStateListener {
         fastScroller.setRecyclerView(recyclerView);
 
         new loadSongs().execute("");
-        ((BaseActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
 
         return rootView;
     }

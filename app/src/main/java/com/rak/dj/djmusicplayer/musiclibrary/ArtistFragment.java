@@ -189,6 +189,8 @@ public class ArtistFragment extends BaseMusicLibraryFragment {
         }
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();

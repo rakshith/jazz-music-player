@@ -65,7 +65,7 @@ import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 
 import java.util.List;
 
-public class AlbumDetailFragment extends Fragment {
+public class AlbumDetailFragment extends AbsMusicLibraryFragment {
 
     private long albumID = -1;
 
@@ -336,13 +336,9 @@ public class AlbumDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        String ateKey = Helpers.getATEKey(getActivity());
         toolbar.setBackgroundColor(Color.TRANSPARENT);
-        if (primaryColor != -1 && getActivity() != null) {
-            collapsingToolbarLayout.setContentScrimColor(primaryColor);
-            ATEUtils.setFabBackgroundTint(fab, primaryColor);
-            ATEUtils.setStatusBarColor(getActivity(), ateKey, primaryColor);
-        }
+        String ateKey = Helpers.getATEKey(getActivity());
+        ATEUtils.setStatusBarColor(getActivity(), ateKey, Config.primaryColor(getActivity(), ateKey));
     }
 
     @Override

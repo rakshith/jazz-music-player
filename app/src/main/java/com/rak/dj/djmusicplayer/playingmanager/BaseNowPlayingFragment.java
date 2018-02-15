@@ -26,7 +26,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.rak.dj.djmusicplayer.BaseActivity;
+import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
@@ -89,7 +89,7 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
     };
 
     public void setMusicStateListener() {
-        ((BaseActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
     }
 
     public void restartLoader() {

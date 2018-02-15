@@ -15,8 +15,10 @@
 package com.rak.dj.djmusicplayer.searchmanager;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,7 +32,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 
-import com.rak.dj.djmusicplayer.BaseActivity;
+import com.afollestad.appthemeengine.ATE;
+import com.afollestad.appthemeengine.Config;
+import com.rak.dj.djmusicplayer.BaseMainActivity;
+import com.rak.dj.djmusicplayer.BaseThemedActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.AlbumLoader;
 import com.rak.dj.djmusicplayer.dataloaders.ArtistLoader;
@@ -46,7 +51,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class SearchActivity extends BaseActivity implements SearchView.OnQueryTextListener, View.OnTouchListener {
+public class SearchActivity extends BaseMainActivity implements SearchView.OnQueryTextListener, View.OnTouchListener {
 
     private final Executor mSearchExecutor = Executors.newSingleThreadExecutor();
     @Nullable
@@ -83,6 +88,8 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         adapter = new SearchAdapter(this);
         recyclerView.setAdapter(adapter);
     }
+
+
 
 
     @Override

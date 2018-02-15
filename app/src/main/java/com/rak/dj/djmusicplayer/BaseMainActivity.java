@@ -20,11 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.afollestad.appthemeengine.ATE;
-import com.afollestad.appthemeengine.ATEActivity;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.musiceditmanager.AbsPermissionsActivity;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
@@ -41,9 +39,7 @@ import java.util.ArrayList;
 
 import static com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer.mService;
 
-public abstract class BaseActivity extends AbsPermissionsActivity implements ServiceConnection, MusicStateListener, SlidingUpPanelLayout.PanelSlideListener {
-
-
+public abstract class BaseMainActivity extends BaseThemedActivity implements ServiceConnection, MusicStateListener, SlidingUpPanelLayout.PanelSlideListener {
 
 
     private QuickPlayFragment quickPlayFragment;
@@ -123,7 +119,7 @@ public abstract class BaseActivity extends AbsPermissionsActivity implements Ser
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        if (!JazzUtils.hasEffectsPanel(BaseActivity.this)) {
+        if (!JazzUtils.hasEffectsPanel(BaseMainActivity.this)) {
             menu.removeItem(R.id.action_equalizer);
         }
         ATE.applyMenu(this, getATEKey(), menu);
@@ -141,7 +137,7 @@ public abstract class BaseActivity extends AbsPermissionsActivity implements Ser
                 return true;
             case R.id.action_shuffle:
                 Handler handler = new Handler();
-                handler.postDelayed(() -> MusicPlayer.shuffleAll(BaseActivity.this), 80);
+                handler.postDelayed(() -> MusicPlayer.shuffleAll(BaseMainActivity.this), 80);
                 return true;
             case R.id.action_search:
                 NavigationUtils.navigateToSearch(this);
@@ -253,18 +249,18 @@ public abstract class BaseActivity extends AbsPermissionsActivity implements Ser
 
     private final static class PlaybackStatus extends BroadcastReceiver {
 
-        private final WeakReference<BaseActivity> mReference;
+        private final WeakReference<BaseMainActivity> mReference;
 
 
-        public PlaybackStatus(final BaseActivity activity) {
-            mReference = new WeakReference<BaseActivity>(activity);
+        public PlaybackStatus(final BaseMainActivity activity) {
+            mReference = new WeakReference<BaseMainActivity>(activity);
         }
 
         @SuppressLint("StringFormatInvalid")
         @Override
         public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
-            BaseActivity baseActivity = mReference.get();
+            BaseMainActivity baseActivity = mReference.get();
             if (baseActivity != null) {
                 if (action.equals(MusicService.META_CHANGED)) {
                     baseActivity.onMetaChanged();
@@ -336,7 +332,7 @@ public abstract class BaseActivity extends AbsPermissionsActivity implements Ser
     }
 
     private void setExpandPlayerAlphaProgress(@FloatRange(from = 0, to = 1) float progress){
-        if (quickPlayExpandedFragment.getView() == null) return;
+        if ((quickPlayExpandedFragment == null) && quickPlayExpandedFragment.getView() == null) return;
         float alpha = 0 + progress;
         quickPlayExpandedFragment.getView().setAlpha(alpha);
         // necessary to make the views below clickable
@@ -344,7 +340,7 @@ public abstract class BaseActivity extends AbsPermissionsActivity implements Ser
     }
 
     private void setMiniPlayerAlphaProgress(@FloatRange(from = 0, to = 1) float progress) {
-        if (quickPlayFragment.getView() == null) return;
+        if ((quickPlayFragment == null )&& quickPlayFragment.getView() == null) return;
         float alpha = 1 - progress;
         quickPlayFragment.getView().setAlpha(alpha);
         // necessary to make the views below clickable

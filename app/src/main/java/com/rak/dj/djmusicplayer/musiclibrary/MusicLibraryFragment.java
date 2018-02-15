@@ -96,11 +96,7 @@ public class MusicLibraryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("dark_theme", false)) {
-            ATE.apply(this, "dark_theme");
-        } else {
-            ATE.apply(this, "light_theme");
-        }
+
         viewPager.setCurrentItem(mPreferences.getStartPageIndex());
 
         /*Handler handler = new Handler();
@@ -119,11 +115,16 @@ public class MusicLibraryFragment extends Fragment {
         }
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
-        String ateKey = Helpers.getATEKey(getActivity());
-        ATEUtils.setStatusBarColor(getActivity(), ateKey, Config.primaryColor(getActivity(), ateKey));
+        if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("dark_theme", false)) {
+            ATE.apply(this, "dark_theme");
+        } else {
+            ATE.apply(this, "light_theme");
+        }
     }
 
     static class Adapter extends FragmentPagerAdapter {
