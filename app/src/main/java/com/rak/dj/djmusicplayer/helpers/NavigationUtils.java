@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.rak.dj.djmusicplayer.MainActivity;
 import com.rak.dj.djmusicplayer.musiclibrary.video.VideoListFragment;
+import com.rak.dj.djmusicplayer.musictoolsmanager.MusicToolsActivity;
 import com.rak.dj.djmusicplayer.playingmanager.NowPlayingActivity;
 import com.rak.dj.djmusicplayer.playingmanager.themes.JazzTheme5;
 import com.rak.dj.djmusicplayer.playlistmanager.PlaylistDetailActivity;
@@ -88,6 +89,11 @@ public class NavigationUtils {
 
     public static void navigateToNowplaying(Activity context, boolean withAnimations) {
         final Intent intent = new Intent(context, NowPlayingActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void navigateToMusicTools(Activity context, boolean withAnimations){
+        final Intent intent = new Intent(context, MusicToolsActivity.class);
         context.startActivity(intent);
     }
 

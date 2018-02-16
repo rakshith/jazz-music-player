@@ -33,7 +33,7 @@ import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.musicplayerutils.SimplelTransitionListener;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.songsmanager.SongsAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.songs.SongsAdapter;
 import com.rak.dj.djmusicplayer.dataloaders.LastAddedLoader;
 import com.rak.dj.djmusicplayer.dataloaders.PlaylistLoader;
 import com.rak.dj.djmusicplayer.dataloaders.PlaylistSongLoader;
@@ -47,9 +47,7 @@ import com.rak.dj.djmusicplayer.widgets.DragSortRecycler;
 import java.util.HashMap;
 import java.util.List;
 
-public class PlaylistDetailActivity extends BaseMainActivity implements ATEToolbarCustomizer {
-
-
+public class PlaylistDetailActivity extends BaseMainActivity implements ATEActivityThemeCustomizer, ATEToolbarCustomizer {
 
     private String action;
     private long playlistID;
@@ -171,6 +169,9 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEToolb
     protected void loadOnPermissionGranted() {
 
     }
+
+
+
 
     private class loadLastAdded extends AsyncTask<String, Void, String> {
 
@@ -347,12 +348,13 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEToolb
     }
 
     @Override
-    public int getToolbarColor() {
-        return Color.TRANSPARENT;
-    }
-
-    @Override
     public int getLightToolbarMode() {
         return Config.LIGHT_TOOLBAR_AUTO;
     }
+
+    @Override
+    public int getToolbarColor() {
+        return  Color.TRANSPARENT;
+    }
+
 }

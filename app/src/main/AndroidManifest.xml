@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
-        android:name=".DjMusicPlayerApp"
+        android:name=".JazzMusicPlayerApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Jazz${appNameSuffix}"
@@ -97,7 +97,6 @@
             android:name=".musiceditmanager.RingDroidActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:hardwareAccelerated="true"
-            android:theme="@style/AppTheme.FullScreen.Light"
             android:windowSoftInputMode="adjustResize">
 
             <!--
@@ -108,6 +107,8 @@
             -->
         </activity>
         <activity android:name=".appintro.AppIntroActivity" />
+
+        <activity android:name=".musictoolsmanager.MusicToolsActivity"/>
 
         <activity android:name=".settingsmanager.SettingsActivity"
             android:theme="@style/AppTheme.FullScreen.Light"></activity>

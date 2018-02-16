@@ -20,8 +20,7 @@ import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.models.Video;
-import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
-import com.rak.dj.djmusicplayer.songsmanager.BaseSongAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 
 import java.io.File;

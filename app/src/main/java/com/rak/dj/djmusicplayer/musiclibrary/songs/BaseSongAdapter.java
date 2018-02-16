@@ -1,7 +1,6 @@
-package com.rak.dj.djmusicplayer.songsmanager;
+package com.rak.dj.djmusicplayer.musiclibrary.songs;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -11,7 +10,6 @@ import android.view.ViewGroup;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.helpers.MusicUtils;
-import com.rak.dj.djmusicplayer.musiclibrary.ArtistSongAdapter;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
 import com.rak.dj.djmusicplayer.models.Song;

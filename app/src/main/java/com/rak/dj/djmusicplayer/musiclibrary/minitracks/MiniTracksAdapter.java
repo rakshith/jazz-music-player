@@ -20,7 +20,7 @@ import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.models.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
-import com.rak.dj.djmusicplayer.songsmanager.BaseSongAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 import com.rak.dj.djmusicplayer.widgets.PopupImageView;
 

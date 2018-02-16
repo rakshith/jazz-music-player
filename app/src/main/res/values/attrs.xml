@@ -21,4 +21,7 @@
         <!-- Maximum size. -->
         <attr name="android:maxHeight" />
     </declare-styleable>
+
+
+    <attr name="toolbar_popup_theme" format="reference" />
 </resources>

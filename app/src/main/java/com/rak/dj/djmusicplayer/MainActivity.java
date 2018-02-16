@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,7 +33,7 @@ import com.rak.dj.djmusicplayer.musiclibrary.ArtistDetailFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.MusicLibraryFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.video.VideoListFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
-import com.rak.dj.djmusicplayer.permissions.Nammu;
+import com.rak.dj.djmusicplayer.permissions.JazzPermissionManger;
 import com.rak.dj.djmusicplayer.playingmanager.NowPlayingActivity;
 import com.rak.dj.djmusicplayer.playingmanager.QuickPlayExpandedFragment;
 import com.rak.dj.djmusicplayer.playlistmanager.PlaylistFragment;
@@ -44,7 +43,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends BaseMainActivity {
+public class MainActivity extends BaseMainActivity implements ATEActivityThemeCustomizer{
 
     private TextView songtitle, songartist;
     private ImageView albumart;
@@ -57,6 +56,8 @@ public class MainActivity extends BaseMainActivity {
     private String action;
     private Handler navDrawerRunnable = new Handler();
     private Runnable runnable;
+
+    private boolean isDarkTheme;
 
     @Override
     protected void onPostResume() {
@@ -79,7 +80,7 @@ public class MainActivity extends BaseMainActivity {
     protected void onCreate(Bundle savedInstanceState) {
         action = getIntent().getAction();
 
-
+        isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false);
 
         super.onCreate(savedInstanceState);
 
@@ -93,7 +94,7 @@ public class MainActivity extends BaseMainActivity {
         navigationMap.put(Constants.NAVIGATE_ARTIST, navigateArtist);
         navigationMap.put(Constants.NAVIGATE_LYRICS, navigateLyrics);
 
-        setPanelSlideListeners(slidingUpPanelLayout);
+        //setPanelSlideListeners(slidingUpPanelLayout);
         mDrawerLayout =  findViewById(R.id.drawer_layout);
 
         navigationView =  findViewById(R.id.nav_view);
@@ -123,6 +124,11 @@ public class MainActivity extends BaseMainActivity {
                 navigateNowplaying.run();
             }, 350);
         }
+    }
+
+    @Override
+    public int getActivityTheme() {
+        return isDarkTheme ? R.style.AppThemeNormalDark : R.style.AppThemeNormalLight;
     }
 
     private Runnable shouldNavigateToAppIntro =() -> {
@@ -224,12 +230,15 @@ public class MainActivity extends BaseMainActivity {
                 .replace(R.id.songContainer, fragment).commit();
     };
 
+
     private boolean isNavigatingMain() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.songContainer);
         return (currentFragment instanceof MusicLibraryFragment || currentFragment instanceof QueueFragment
                 || currentFragment instanceof PlaylistFragment || currentFragment instanceof FoldersFragment
                 || currentFragment instanceof QuickPlayExpandedFragment || currentFragment instanceof VideoListFragment);
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -258,11 +267,11 @@ public class MainActivity extends BaseMainActivity {
         /*String ateKey = Helpers.getATEKey(this);
         ATEUtils.setStatusBarColor(this, ateKey, Config.primaryColor(this, ateKey));*/
 
-        /*if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false)) {
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false)) {
             ATE.apply(this, "dark_theme");
         } else {
             ATE.apply(this, "light_theme");
-        }*/
+        }
     }
 
     @Override
@@ -280,7 +289,7 @@ public class MainActivity extends BaseMainActivity {
                         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                     }
                 }
-            }, 50);
+            }, 200);
         }
     }
 
@@ -327,6 +336,10 @@ public class MainActivity extends BaseMainActivity {
 
             case R.id.nav_queue:
                 runnable = navigateQueue;
+                break;
+
+            case R.id.nav_music_tools:
+                NavigationUtils.navigateToMusicTools(MainActivity.this, false);
                 break;
 
             case R.id.nav_nowplaying:
@@ -401,7 +414,7 @@ public class MainActivity extends BaseMainActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Nammu.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        JazzPermissionManger.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

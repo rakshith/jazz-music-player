@@ -204,8 +204,8 @@ public class ArtistDetailFragment extends AbsMusicLibraryFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.artist_detail, menu);
-        if (getActivity() != null)
-            ATE.applyMenu(getActivity(), "dark_theme", menu);
+        //if (getActivity() != null)
+            //ATE.applyMenu(getActivity(), "dark_theme", menu);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

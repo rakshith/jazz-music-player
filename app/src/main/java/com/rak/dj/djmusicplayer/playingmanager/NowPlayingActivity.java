@@ -6,9 +6,11 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.afollestad.appthemeengine.Config;
@@ -26,7 +28,7 @@ public class NowPlayingActivity extends BaseMainActivity implements ATEActivityT
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_now_playing);
+        //setContentView(R.layout.activity_now_playing);
 
         SharedPreferences prefs = getSharedPreferences(Constants.FRAGMENT_ID, Context.MODE_PRIVATE);
         String fragmentID = prefs.getString(Constants.NOWPLAYING_FRAGMENT_ID, Constants.TIMBER5);
@@ -51,25 +53,7 @@ public class NowPlayingActivity extends BaseMainActivity implements ATEActivityT
         return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false) ? R.style.AppTheme_FullScreen_Dark : R.style.AppTheme_FullScreen_Light;
     }
 
-    @Override
-    public int getLightToolbarMode() {
-        return Config.LIGHT_TOOLBAR_AUTO;
-    }
 
-    @Override
-    public int getLightStatusBarMode() {
-        return Config.LIGHT_STATUS_BAR_OFF;
-    }
-
-    @Override
-    public int getToolbarColor() {
-        return Color.TRANSPARENT;
-    }
-
-    @Override
-    public int getStatusBarColor() {
-        return Color.TRANSPARENT;
-    }
 
     @Override
     public void onResume() {
@@ -83,5 +67,26 @@ public class NowPlayingActivity extends BaseMainActivity implements ATEActivityT
     @Override
     protected void loadOnPermissionGranted() {
 
+    }
+
+    @Override
+    public int getLightStatusBarMode() {
+        return Config.LIGHT_STATUS_BAR_OFF;
+    }
+
+    @Override
+    public int getStatusBarColor() {
+        return Color.TRANSPARENT;
+    }
+
+
+    @Override
+    public int getLightToolbarMode() {
+        return Config.LIGHT_STATUS_BAR_OFF;
+    }
+
+    @Override
+    public int getToolbarColor() {
+        return  Color.TRANSPARENT;
     }
 }

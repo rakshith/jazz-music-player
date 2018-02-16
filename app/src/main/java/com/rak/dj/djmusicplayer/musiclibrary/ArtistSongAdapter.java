@@ -14,7 +14,6 @@
 
 package com.rak.dj.djmusicplayer.musiclibrary;
 
-import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -31,12 +30,9 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
-import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.songsmanager.BaseSongAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
 import com.rak.dj.djmusicplayer.dataloaders.ArtistAlbumLoader;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
 import com.rak.dj.djmusicplayer.models.Song;
 
 import java.util.ArrayList;

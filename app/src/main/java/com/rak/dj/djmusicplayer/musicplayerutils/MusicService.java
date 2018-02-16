@@ -49,6 +49,7 @@ import android.util.Log;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.IAppService;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.permissions.JazzPermissionManger;
 import com.rak.dj.djmusicplayer.providers.MusicPlaybackState;
 import com.rak.dj.djmusicplayer.providers.RecentStore;
 import com.rak.dj.djmusicplayer.providers.SongPlayCount;
@@ -57,7 +58,6 @@ import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
 import com.rak.dj.djmusicplayer.helpers.MediaButtonIntentReceiver;
 import com.rak.dj.djmusicplayer.helpers.MusicPlaybackTrack;
-import com.rak.dj.djmusicplayer.permissions.Nammu;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -615,7 +615,7 @@ public class MusicService extends Service {
 
     private int getCardId() {
         if (JazzUtils.isMarshmallow()) {
-            if (Nammu.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            if (JazzPermissionManger.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 return getmCardId();
             } else return 0;
         } else {
@@ -1358,7 +1358,7 @@ public class MusicService extends Service {
 
     private void reloadQueueAfterPermissionCheck() {
         if (JazzUtils.isMarshmallow()) {
-            if (Nammu.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            if (JazzPermissionManger.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 reloadQueue();
             }
         } else {

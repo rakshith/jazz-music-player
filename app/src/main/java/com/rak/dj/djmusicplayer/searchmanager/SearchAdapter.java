@@ -41,7 +41,7 @@ import com.rak.dj.djmusicplayer.models.Artist;
 import com.rak.dj.djmusicplayer.models.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
-import com.rak.dj.djmusicplayer.songsmanager.BaseSongAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
 
 import java.util.Collections;
 import java.util.List;

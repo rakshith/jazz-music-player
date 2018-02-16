@@ -1,4 +1,4 @@
-package com.rak.dj.djmusicplayer.songsmanager;
+package com.rak.dj.djmusicplayer.musiclibrary.songs;
 
 
 import android.os.AsyncTask;
@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rak.dj.djmusicplayer.BaseMainActivity;
+import com.rak.dj.djmusicplayer.musiclibrary.songs.SongsAdapter;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.SongLoader;

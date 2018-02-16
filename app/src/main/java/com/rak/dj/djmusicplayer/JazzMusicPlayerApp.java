@@ -8,7 +8,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.L;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
-import com.rak.dj.djmusicplayer.permissions.Nammu;
+import com.rak.dj.djmusicplayer.permissions.JazzPermissionManger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,11 +17,11 @@ import java.io.InputStream;
  * Created by sraksh on 1/16/2018.
  */
 
-public class DjMusicPlayerApp extends MultiDexApplication{
+public class JazzMusicPlayerApp extends MultiDexApplication{
 
-    private static DjMusicPlayerApp mInstance;
+    private static JazzMusicPlayerApp mInstance;
 
-    public static synchronized DjMusicPlayerApp getInstance() {
+    public static synchronized JazzMusicPlayerApp getInstance() {
         return mInstance;
     }
 
@@ -36,7 +36,7 @@ public class DjMusicPlayerApp extends MultiDexApplication{
         Fabric.with(this, crashlyticsKit);*/
 
         ImageLoaderConfiguration localImageLoaderConfiguration = new ImageLoaderConfiguration.Builder(this).imageDownloader(new BaseImageDownloader(this) {
-            PreferencesUtility prefs = PreferencesUtility.getInstance(DjMusicPlayerApp.this);
+            PreferencesUtility prefs = PreferencesUtility.getInstance(JazzMusicPlayerApp.this);
 
             @Override
             protected InputStream getStreamFromNetwork(String imageUri, Object extra) throws IOException {
@@ -50,7 +50,7 @@ public class DjMusicPlayerApp extends MultiDexApplication{
         L.writeLogs(false);
         L.disableLogging();
         L.writeDebugLogs(false);
-        Nammu.init(this);
+        JazzPermissionManger.init(this);
 
         if (!ATE.config(this, "light_theme").isConfigured()) {
             ATE.config(this, "light_theme")
@@ -58,7 +58,6 @@ public class DjMusicPlayerApp extends MultiDexApplication{
                     .primaryColorRes(R.color.colorPrimaryLightDefault)
                     .accentColorRes(R.color.colorAccentLightDefault)
                     .coloredNavigationBar(false)
-                    .usingMaterialDialogs(true)
                     .commit();
         }
         if (!ATE.config(this, "dark_theme").isConfigured()) {
@@ -67,7 +66,6 @@ public class DjMusicPlayerApp extends MultiDexApplication{
                     .primaryColorRes(R.color.colorPrimaryDarkDefault)
                     .accentColorRes(R.color.colorAccentDarkDefault)
                     .coloredNavigationBar(false)
-                    .usingMaterialDialogs(true)
                     .commit();
         }
         if (!ATE.config(this, "light_theme_notoolbar").isConfigured()) {
@@ -77,7 +75,6 @@ public class DjMusicPlayerApp extends MultiDexApplication{
                     .primaryColorRes(R.color.colorPrimaryLightDefault)
                     .accentColorRes(R.color.colorAccentLightDefault)
                     .coloredNavigationBar(false)
-                    .usingMaterialDialogs(true)
                     .commit();
         }
         if (!ATE.config(this, "dark_theme_notoolbar").isConfigured()) {
@@ -87,7 +84,6 @@ public class DjMusicPlayerApp extends MultiDexApplication{
                     .primaryColorRes(R.color.colorPrimaryDarkDefault)
                     .accentColorRes(R.color.colorAccentDarkDefault)
                     .coloredNavigationBar(true)
-                    .usingMaterialDialogs(true)
                     .commit();
         }
 

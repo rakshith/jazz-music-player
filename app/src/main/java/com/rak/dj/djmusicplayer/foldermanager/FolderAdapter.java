@@ -24,7 +24,7 @@ import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
 import com.rak.dj.djmusicplayer.models.Song;
-import com.rak.dj.djmusicplayer.songsmanager.BaseSongAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 
 import java.io.File;

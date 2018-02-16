@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.FloatRange;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
@@ -24,22 +23,21 @@ import android.widget.Toast;
 
 import com.afollestad.appthemeengine.ATE;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.musiceditmanager.AbsPermissionsActivity;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.playingmanager.QuickPlayExpandedFragment;
-import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
 import com.rak.dj.djmusicplayer.playingmanager.QuickPlayFragment;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import static android.view.View.GONE;
 import static com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer.mService;
 
-public abstract class BaseMainActivity extends BaseThemedActivity implements ServiceConnection, MusicStateListener, SlidingUpPanelLayout.PanelSlideListener {
+public abstract class BaseMainActivity extends AbsPermissionsActivity implements ServiceConnection, MusicStateListener, SlidingUpPanelLayout.PanelSlideListener {
 
 
     private QuickPlayFragment quickPlayFragment;
@@ -48,6 +46,11 @@ public abstract class BaseMainActivity extends BaseThemedActivity implements Ser
     private MusicPlayer.ServiceToken mToken;
     private PlaybackStatus mPlaybackStatus;
     private final ArrayList<MusicStateListener> mMusicStateListener = new ArrayList<>();
+
+    @Override
+    protected void loadOnPermissionGranted() {
+        // implement any functionality after permission granted for the derived activity
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +153,7 @@ public abstract class BaseMainActivity extends BaseThemedActivity implements Ser
         return super.onOptionsItemSelected(item);
     }
 
-    public void setPanelSlideListeners(SlidingUpPanelLayout panelLayout) {
+    /*public void setPanelSlideListeners(SlidingUpPanelLayout panelLayout) {
         
         panelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
@@ -163,7 +166,7 @@ public abstract class BaseMainActivity extends BaseThemedActivity implements Ser
 
             }
         });
-    }
+    }*/
 
     @Override
     protected void onStop() {
@@ -174,12 +177,6 @@ public abstract class BaseMainActivity extends BaseThemedActivity implements Ser
     public void onResume() {
         onMetaChanged();
         super.onResume();
-    }
-
-    @Nullable
-    @Override
-    public String getATEKey() {
-        return Helpers.getATEKey(this);
     }
 
     @Override
@@ -300,6 +297,14 @@ public abstract class BaseMainActivity extends BaseThemedActivity implements Ser
         protected void onPostExecute(String result) {
             quickPlayFragment = (QuickPlayFragment) getSupportFragmentManager().findFragmentById(R.id.quick_play_fragment);
             quickPlayExpandedFragment = (QuickPlayExpandedFragment) getSupportFragmentManager().findFragmentById(R.id.expand_play_fragment);
+
+            switch (getPanelState()){
+                case COLLAPSED:
+                     if(quickPlayExpandedFragment.getView().getVisibility() == View.VISIBLE){
+                         quickPlayExpandedFragment.getView().setVisibility(View.GONE);
+                     }
+                    break;
+            }
         }
 
         @Override
@@ -332,49 +337,35 @@ public abstract class BaseMainActivity extends BaseThemedActivity implements Ser
     }
 
     private void setExpandPlayerAlphaProgress(@FloatRange(from = 0, to = 1) float progress){
-        if ((quickPlayExpandedFragment == null) && quickPlayExpandedFragment.getView() == null) return;
+        if ((quickPlayExpandedFragment == null) || quickPlayExpandedFragment.getView() == null) return;
+
         float alpha = 0 + progress;
         quickPlayExpandedFragment.getView().setAlpha(alpha);
         // necessary to make the views below clickable
-        quickPlayExpandedFragment.getView().setVisibility(alpha == 0 ? View.GONE : View.VISIBLE);
+        quickPlayExpandedFragment.getView().setVisibility(alpha == 0 ? GONE : View.VISIBLE);
     }
 
     private void setMiniPlayerAlphaProgress(@FloatRange(from = 0, to = 1) float progress) {
-        if ((quickPlayFragment == null )&& quickPlayFragment.getView() == null) return;
+        if ((quickPlayFragment == null ) || quickPlayFragment.getView() == null) return;
+
         float alpha = 1 - progress;
         quickPlayFragment.getView().setAlpha(alpha);
         // necessary to make the views below clickable
-        quickPlayFragment.getView().setVisibility(alpha == 0 ? View.GONE : View.VISIBLE);
+        quickPlayFragment.getView().setVisibility(alpha == 0 ? GONE : View.VISIBLE);
     }
 
     public void onPanelCollapsed(View panel) {
-        // restore values
-        //super.setLightStatusbar(lightStatusbar);
-        //super.setTaskDescriptionColor(taskColor);
-        //super.setNavigationbarColor(navigationbarColor);
-
-        //playerFragment.setMenuVisibility(false);
-       // playerFragment.setUserVisibleHint(false);
-       // playerFragment.onHide();
         if(quickPlayFragment != null && quickPlayExpandedFragment != null){
             quickPlayFragment.getView().setVisibility(View.VISIBLE);
-            quickPlayExpandedFragment.getView().setVisibility(View.GONE);
+            quickPlayExpandedFragment.getView().setVisibility(GONE);
         }
-
     }
 
-    public void onPanelExpanded(View panel) {
-        // setting fragments values
-        //int playerFragmentColor = playerFragment.getPaletteColor();
-        //super.setLightStatusbar(false);
-        //super.setTaskDescriptionColor(playerFragmentColor);
-        //super.setNavigationbarColor(playerFragmentColor);
 
-        //playerFragment.setMenuVisibility(true);
-        //playerFragment.setUserVisibleHint(true);
-        //playerFragment.onShow();
+
+    public void onPanelExpanded(View panel) {
         if(quickPlayFragment != null && quickPlayExpandedFragment != null) {
-            quickPlayFragment.getView().setVisibility(View.GONE);
+            quickPlayFragment.getView().setVisibility(GONE);
             quickPlayExpandedFragment.getView().setVisibility(View.VISIBLE);
         }
     }

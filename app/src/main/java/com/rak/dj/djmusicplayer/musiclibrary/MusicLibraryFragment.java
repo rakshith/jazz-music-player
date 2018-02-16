@@ -2,7 +2,6 @@ package com.rak.dj.djmusicplayer.musiclibrary;
 
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,25 +13,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.appthemeengine.ATE;
-import com.afollestad.appthemeengine.Config;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
-import com.rak.dj.djmusicplayer.dataloaders.VideoLoader;
-import com.rak.dj.djmusicplayer.models.AlbumVideo;
-import com.rak.dj.djmusicplayer.models.Song;
-import com.rak.dj.djmusicplayer.models.Video;
 import com.rak.dj.djmusicplayer.musiclibrary.genres.GenresFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.minitracks.MiniTracksFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.video.VideoFragment;
-import com.rak.dj.djmusicplayer.songsmanager.SongsFragment;
-import com.rak.dj.djmusicplayer.helpers.ATEUtils;
-import com.rak.dj.djmusicplayer.helpers.Helpers;
+import com.rak.dj.djmusicplayer.musiclibrary.songs.SongsFragment;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
 
 import java.util.ArrayList;

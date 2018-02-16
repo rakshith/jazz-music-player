@@ -39,8 +39,8 @@ import java.util.Set;
 /**
  * Created by Michal Tajchert on 2015-06-04.
  */
-public class Nammu {
-    private static final String TAG = Nammu.class.getSimpleName();
+public class JazzPermissionManger {
+    private static final String TAG = JazzPermissionManger.class.getSimpleName();
     private static final String KEY_PREV_PERMISSIONS = "previous_permissions";
     private static final String KEY_IGNORED_PERMISSIONS = "ignored_permissions";
     private static Context context;
@@ -49,7 +49,7 @@ public class Nammu {
 
     public static void init(Context context) {
         sharedPreferences = context.getSharedPreferences("pl.tajchert.runtimepermissionhelper", Context.MODE_PRIVATE);
-        Nammu.context = context;
+        JazzPermissionManger.context = context;
     }
 
     /**
@@ -130,7 +130,7 @@ public class Nammu {
     //Permission monitoring part below
 
     /**
-     * Get list of currently granted permissions, without saving it inside Nammu
+     * Get list of currently granted permissions, without saving it inside JazzPermissionManger
      *
      * @return currently granted permissions
      */
@@ -249,7 +249,7 @@ public class Nammu {
      */
     public static void permissionCompare(PermissionListener permissionListener) {
         if (context == null) {
-            throw new RuntimeException("Before comparing permissions you need to call Nammu.init(context)");
+            throw new RuntimeException("Before comparing permissions you need to call JazzPermissionManger.init(context)");
 
         }
         ArrayList<String> previouslyGranted = getPreviousPermissions();
@@ -297,7 +297,7 @@ public class Nammu {
      */
     public static boolean checkPermission(String permissionName) {
         if (context == null) {
-            throw new RuntimeException("Before comparing permissions you need to call Nammu.init(context)");
+            throw new RuntimeException("Before comparing permissions you need to call JazzPermissionManger.init(context)");
         }
         return PackageManager.PERMISSION_GRANTED == context.checkSelfPermission(permissionName);
     }

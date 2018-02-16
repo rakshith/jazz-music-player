@@ -126,12 +126,10 @@
         <item name="cardBackgroundColor">@color/window_background_black</item>
     </style>
 
-    <style name="Toolbar">
+    <style name="JazzToolbar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?actionBarSize</item>
-        <item name="android:layout_gravity">top</item>
-        <item name="android:background">@drawable/bg_transparent</item>
-        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="android:theme">@style/Theme.AppCompat.Light</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
@@ -196,5 +194,7 @@
     </style>
 
     <!-- ends -->
+
+
 
 </resources>

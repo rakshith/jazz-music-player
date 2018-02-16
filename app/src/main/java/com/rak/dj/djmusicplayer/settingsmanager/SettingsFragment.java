@@ -7,6 +7,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.afollestad.appthemeengine.ATE;
@@ -43,7 +44,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         invalidateSettings();
-        ATE.apply(view, mAteKey);
+        //ATE.postApply(view, mAteKey);
     }
 
 

@@ -73,9 +73,9 @@ public class VideoListFragment extends BaseMusicLibraryFragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("dark_theme", false)) {
-            ATE.apply(this, "dark_theme");
+            ATE.apply(getActivity(), "dark_theme");
         } else {
-            ATE.apply(this, "light_theme");
+            ATE.apply(getActivity(), "light_theme");
         }
 
         new loadVideos().execute("");
