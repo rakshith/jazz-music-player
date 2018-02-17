@@ -27,12 +27,11 @@ import android.widget.TextView;
 
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
 import com.rak.dj.djmusicplayer.models.Song;
 
 import java.util.List;
 
-public class AlbumSongsAdapter extends BaseSongAdapter<AlbumSongsAdapter.ItemHolder> {
+public class AlbumSongsAdapter extends AbsSongsAdapter<Song, AlbumSongsAdapter.ItemHolder> {
 
     private List<Song> arraylist;
     private AppCompatActivity mContext;
@@ -41,6 +40,7 @@ public class AlbumSongsAdapter extends BaseSongAdapter<AlbumSongsAdapter.ItemHol
     private int itemPosition;
 
     public AlbumSongsAdapter(AppCompatActivity context, List<Song> arraylist, long albumID) {
+        super(context, arraylist);
         this.arraylist = arraylist;
         this.mContext = context;
         this.songIDs = getSongIds();
@@ -49,16 +49,13 @@ public class AlbumSongsAdapter extends BaseSongAdapter<AlbumSongsAdapter.ItemHol
 
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_album_song, null);
         ItemHolder ml = new ItemHolder(v);
         return ml;
-
-
     }
 
     @Override
-    public void onBindViewHolder(ItemHolder itemHolder, int position) {
+    public void genericBindViewHolder(ItemHolder itemHolder, int position) {
         this.itemPosition = position;
         Song localItem = arraylist.get(position);
 
@@ -70,8 +67,6 @@ public class AlbumSongsAdapter extends BaseSongAdapter<AlbumSongsAdapter.ItemHol
         } else itemHolder.trackNumber.setText(String.valueOf(tracknumber));
 
         setOnPopupMenuListener(itemHolder, position);
-
-
     }
 
     private void setOnPopupMenuListener(ItemHolder itemHolder, final int position) {
@@ -154,7 +149,7 @@ public class AlbumSongsAdapter extends BaseSongAdapter<AlbumSongsAdapter.ItemHol
         arraylist.remove(i);
     }
 
-    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ItemHolder extends BaseViewHolder implements View.OnClickListener {
         protected TextView title, duration, trackNumber;
         protected ImageView menu;
 

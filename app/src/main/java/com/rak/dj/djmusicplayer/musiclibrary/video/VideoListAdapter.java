@@ -20,7 +20,7 @@ import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.models.Video;
-import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 
 import java.io.File;
@@ -30,7 +30,7 @@ import java.util.List;
  * Created by sraksh on 2/11/2018.
  */
 
-public class VideoListAdapter extends BaseSongAdapter<VideoListAdapter.ItemHolder> implements BubbleTextGetter {
+public class VideoListAdapter extends BaseAdapter<VideoListAdapter.ItemHolder> implements BubbleTextGetter {
 
     private List<Video> arraylist;
     private AppCompatActivity mContext;

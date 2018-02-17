@@ -31,14 +31,13 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
 import com.rak.dj.djmusicplayer.dataloaders.ArtistAlbumLoader;
 import com.rak.dj.djmusicplayer.models.Song;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHolder> {
+public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.ItemHolder> {
 
     private List<Song> arraylist;
     private AppCompatActivity mContext;
@@ -46,6 +45,7 @@ public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHol
     private long[] songIDs;
 
     public ArtistSongAdapter(AppCompatActivity context, List<Song> arraylist, long artistID) {
+        super(context, arraylist);
         this.arraylist = arraylist;
         this.mContext = context;
         this.artistID = artistID;
@@ -66,7 +66,7 @@ public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHol
     }
 
     @Override
-    public void onBindViewHolder(ItemHolder itemHolder, int i) {
+    public void genericBindViewHolder(ItemHolder itemHolder, int i) {
 
         if (getItemViewType(i) == 0) {
             //nothing
@@ -104,7 +104,7 @@ public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHol
             final PopupMenu menu = new PopupMenu(mContext, v);
             menu.setOnMenuItemClickListener(item -> {
 
-                menuFunctionalityForSong(mContext, item, arraylist.get(position), -1, songIDs);
+                menuFunctionalityForSong(mContext, item, arraylist.get(position+1), -1, songIDs);
 
                /* switch (item.getItemId()) {
                     case R.id.popup_song_play:
@@ -205,7 +205,7 @@ public class ArtistSongAdapter extends BaseSongAdapter<ArtistSongAdapter.ItemHol
         return viewType;
     }
 
-    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ItemHolder extends BaseViewHolder implements View.OnClickListener {
         protected TextView title, album;
         protected ImageView albumArt, menu;
         protected RecyclerView albumsRecyclerView;

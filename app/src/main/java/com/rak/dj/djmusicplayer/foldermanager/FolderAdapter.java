@@ -24,7 +24,7 @@ import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
 import com.rak.dj.djmusicplayer.models.Song;
-import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 
 import java.io.File;
@@ -35,7 +35,7 @@ import java.util.List;
  * Created by nv95 on 10.11.16.
  */
 
-public class FolderAdapter extends BaseSongAdapter<FolderAdapter.ItemHolder> implements BubbleTextGetter {
+public class FolderAdapter extends BaseAdapter<FolderAdapter.ItemHolder> implements BubbleTextGetter {
 
     @NonNull
     private List<File> mFileSet;

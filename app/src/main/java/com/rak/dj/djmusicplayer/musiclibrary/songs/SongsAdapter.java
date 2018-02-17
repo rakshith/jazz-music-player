@@ -3,7 +3,6 @@ package com.rak.dj.djmusicplayer.musiclibrary.songs;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,13 @@ import android.widget.TextView;
 import com.afollestad.appthemeengine.Config;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsSongsAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.BaseViewHolder;
+import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 import com.rak.dj.djmusicplayer.widgets.MusicVisualizer;
 
@@ -30,7 +31,7 @@ import java.util.List;
  * Created by sraksh on 1/12/2018.
  */
 
-public class SongsAdapter extends BaseSongAdapter<SongsAdapter.ItemHolder> implements BubbleTextGetter {
+public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder> implements BubbleTextGetter {
 
     public int currentlyPlayingPosition, itemPosition;
     private List<Song> arraylist;
@@ -43,6 +44,7 @@ public class SongsAdapter extends BaseSongAdapter<SongsAdapter.ItemHolder> imple
     private long playlistId;
 
     public SongsAdapter(AppCompatActivity context, List<Song> arraylist, boolean isPlaylistSong, boolean animate) {
+        super(context, arraylist);
         this.arraylist = arraylist;
         this.mContext = context;
         this.isPlaylist = isPlaylistSong;
@@ -65,7 +67,7 @@ public class SongsAdapter extends BaseSongAdapter<SongsAdapter.ItemHolder> imple
     }
 
     @Override
-    public void onBindViewHolder(ItemHolder itemHolder, int position) {
+    public void genericBindViewHolder(ItemHolder itemHolder, int position) {
         itemPosition = position;
         Song localItem = arraylist.get(position);
 
@@ -124,7 +126,10 @@ public class SongsAdapter extends BaseSongAdapter<SongsAdapter.ItemHolder> imple
         });
     }
 
-
+    @Override
+    public int getItemPosition() {
+        return itemPosition;
+    }
 
     private void setAnimation(View viewToAnimate, int position) {
         // If the bound view wasn't previously displayed on screen, it's animated
@@ -154,11 +159,6 @@ public class SongsAdapter extends BaseSongAdapter<SongsAdapter.ItemHolder> imple
     public void updateDataSet(List<Song> arraylist) {
         this.arraylist = arraylist;
         this.songIDs = getSongIds();
-    }
-
-    @Override
-    public int getItemPosition() {
-        return itemPosition;
     }
 
     public int getCurrentlyPlayingPosition() {
@@ -192,7 +192,7 @@ public class SongsAdapter extends BaseSongAdapter<SongsAdapter.ItemHolder> imple
             return Character.toString(ch);
     }
 
-    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ItemHolder extends BaseViewHolder implements View.OnClickListener {
         protected TextView title, artist;
         protected ImageView albumArt, popupMenu;
         private MusicVisualizer visualizer;

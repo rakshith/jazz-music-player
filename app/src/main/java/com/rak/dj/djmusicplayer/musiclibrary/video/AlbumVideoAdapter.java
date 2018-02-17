@@ -20,7 +20,7 @@ import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
 import com.rak.dj.djmusicplayer.models.AlbumVideo;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
-import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.List;
  * Created by sraksh on 2/11/2018.
  */
 
-public class AlbumVideoAdapter extends BaseSongAdapter<AlbumVideoAdapter.ItemHolder> implements BubbleTextGetter {
+public class AlbumVideoAdapter extends BaseAdapter<AlbumVideoAdapter.ItemHolder> implements BubbleTextGetter {
 
     private List<AlbumVideo> arraylist;
     private AppCompatActivity mContext;

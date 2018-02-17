@@ -1,4 +1,4 @@
-package com.rak.dj.djmusicplayer.musiclibrary.songs;
+package com.rak.dj.djmusicplayer.musiclibrary;
 
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +22,7 @@ import java.util.List;
  * Created by naman on 7/12/17.
  */
 
-public abstract class BaseSongAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> {
+public abstract class BaseAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> {
 
 
     @Override
@@ -106,7 +106,7 @@ public abstract class BaseSongAdapter<V extends RecyclerView.ViewHolder> extends
                 break;
             case R.id.popup_song_delete:
                 long[] deleteIds = {song.id};
-                JazzUtils.showDeleteDialog(mContext,song.title, deleteIds, BaseSongAdapter.this, position);
+                JazzUtils.showDeleteDialog(mContext,song.title, deleteIds, BaseAdapter.this, position);
                 break;
         }
     }

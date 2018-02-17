@@ -20,7 +20,7 @@ import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.models.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
-import com.rak.dj.djmusicplayer.musiclibrary.songs.BaseSongAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 import com.rak.dj.djmusicplayer.widgets.PopupImageView;
 
@@ -30,7 +30,7 @@ import java.util.List;
  * Created by sraksh on 2/12/2018.
  */
 
-public class MiniTracksAdapter extends BaseSongAdapter<MiniTracksAdapter.ItemHolder> implements BubbleTextGetter {
+public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder> implements BubbleTextGetter {
 
     public int currentlyPlayingPosition;
     private List<Song> arraylist;
