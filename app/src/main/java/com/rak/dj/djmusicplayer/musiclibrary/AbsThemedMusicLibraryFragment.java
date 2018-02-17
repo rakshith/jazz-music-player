@@ -16,7 +16,7 @@ import com.rak.dj.djmusicplayer.helpers.Helpers;
  * Created by sraksh on 2/14/2018.
  */
 
-public abstract class AbsMusicLibraryFragment extends Fragment {
+public abstract class AbsThemedMusicLibraryFragment extends Fragment {
 
     protected Toolbar toolbar;
 

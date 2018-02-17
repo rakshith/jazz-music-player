@@ -43,6 +43,7 @@ import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.Config;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.rak.dj.djmusicplayer.BaseThemedActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.AlbumLoader;
 import com.rak.dj.djmusicplayer.dataloaders.AlbumSongLoader;
@@ -63,7 +64,7 @@ import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 
 import java.util.List;
 
-public class AlbumDetailFragment extends AbsMusicLibraryFragment {
+public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
 
     private long albumID = -1;
 
@@ -73,8 +74,6 @@ public class AlbumDetailFragment extends AbsMusicLibraryFragment {
 
     private RecyclerView recyclerView;
     private AlbumSongsAdapter mAdapter;
-
-    private Toolbar toolbar;
 
     private Album album;
 
@@ -290,8 +289,8 @@ public class AlbumDetailFragment extends AbsMusicLibraryFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.album_detail, menu);
-        if (getActivity() != null)
-            ATE.applyMenu(getActivity(), "dark_theme", menu);
+        //if (getActivity() != null)
+        //ATE.applyMenu(this, getATEKey(), menu);
     }
 
     @Override

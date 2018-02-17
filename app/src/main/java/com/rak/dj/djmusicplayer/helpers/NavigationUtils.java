@@ -167,6 +167,7 @@ public class NavigationUtils {
     }
 
     public static void navigateToMainApp(Activity context){
+        context.finish();
         final Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
     }

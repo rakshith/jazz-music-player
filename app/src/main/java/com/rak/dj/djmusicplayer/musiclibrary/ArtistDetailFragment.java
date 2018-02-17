@@ -15,15 +15,12 @@
 package com.rak.dj.djmusicplayer.musiclibrary;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -36,32 +33,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.afollestad.appthemeengine.ATE;
-
-import com.afollestad.appthemeengine.Config;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.rak.dj.djmusicplayer.helpers.ATEUtils;
+import com.rak.dj.djmusicplayer.helpers.Helpers;
+import com.rak.dj.djmusicplayer.lastfmapi.LastFmClient;
+import com.rak.dj.djmusicplayer.lastfmapi.callbacks.ArtistInfoListener;
+import com.rak.dj.djmusicplayer.lastfmapi.models.ArtistQuery;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.ArtistLoader;
 import com.rak.dj.djmusicplayer.dataloaders.ArtistSongLoader;
-import com.rak.dj.djmusicplayer.helpers.ATEUtils;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.ImageUtils;
 import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.lastfmapi.LastFmClient;
-import com.rak.dj.djmusicplayer.lastfmapi.callbacks.ArtistInfoListener;
-import com.rak.dj.djmusicplayer.lastfmapi.models.ArtistQuery;
 import com.rak.dj.djmusicplayer.lastfmapi.models.LastfmArtist;
 import com.rak.dj.djmusicplayer.models.Artist;
 import com.rak.dj.djmusicplayer.models.Song;
 
 import java.util.List;
 
-public class ArtistDetailFragment extends AbsMusicLibraryFragment {
+public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
 
     private long artistID = -1;
     private ImageView artistArt;
@@ -132,7 +126,7 @@ public class ArtistDetailFragment extends AbsMusicLibraryFragment {
 
         collapsingToolbarLayout.setTitle(artist.name);
 
-        /*LastFmClient.getInstance(getActivity()).getArtistInfo(new ArtistQuery(artist.name), new ArtistInfoListener() {
+        LastFmClient.getInstance(getActivity()).getArtistInfo(new ArtistQuery(artist.name), new ArtistInfoListener() {
             @Override
             public void artistInfoSucess(final LastfmArtist artist) {
                 if (artist != null) {
@@ -179,7 +173,7 @@ public class ArtistDetailFragment extends AbsMusicLibraryFragment {
             public void artistInfoFailed() {
 
             }
-        });*/
+        });
 
     }
 

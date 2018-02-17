@@ -16,7 +16,6 @@ package com.rak.dj.djmusicplayer.musiclibrary;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import android.view.ViewGroup;
 import com.rak.dj.djmusicplayer.R;
 
 
-public class ArtistTagFragment extends AbsMusicLibraryFragment {
+public class ArtistTagFragment extends AbsThemedMusicLibraryFragment {
 
     private static final String ARG_PAGE_NUMBER = "pageNumber";
 
