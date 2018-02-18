@@ -6,11 +6,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.afollestad.appthemeengine.Config;
@@ -20,8 +18,8 @@ import com.afollestad.appthemeengine.customizers.ATEToolbarCustomizer;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 
 public class NowPlayingActivity extends BaseMainActivity implements ATEActivityThemeCustomizer, ATEToolbarCustomizer, ATEStatusBarCustomizer {
 
@@ -33,7 +31,7 @@ public class NowPlayingActivity extends BaseMainActivity implements ATEActivityT
         SharedPreferences prefs = getSharedPreferences(Constants.FRAGMENT_ID, Context.MODE_PRIVATE);
         String fragmentID = prefs.getString(Constants.NOWPLAYING_FRAGMENT_ID, Constants.TIMBER5);
 
-        Fragment fragment = NavigationUtils.getFragmentForNowplayingID(fragmentID);
+        Fragment fragment = NavigationUtil.getFragmentForNowplayingID(fragmentID);
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.beginTransaction()
@@ -58,8 +56,8 @@ public class NowPlayingActivity extends BaseMainActivity implements ATEActivityT
     @Override
     public void onResume() {
         super.onResume();
-        if (PreferencesUtility.getInstance(this).didNowplayingThemeChanged()) {
-            PreferencesUtility.getInstance(this).setNowPlayingThemeChanged(false);
+        if (PreferencesUtils.getInstance(this).didNowplayingThemeChanged()) {
+            PreferencesUtils.getInstance(this).setNowPlayingThemeChanged(false);
             recreate();
         }
     }

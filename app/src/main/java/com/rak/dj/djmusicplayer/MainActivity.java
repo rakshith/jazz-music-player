@@ -25,8 +25,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.appintro.AppIntroActivity;
 import com.rak.dj.djmusicplayer.foldermanager.FoldersFragment;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 import com.rak.dj.djmusicplayer.lyricsmanager.LyricsFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.AlbumDetailFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.ArtistDetailFragment;
@@ -154,7 +154,7 @@ public class MainActivity extends BaseMainActivity implements ATEActivityThemeCu
             e.apply();
         }else{
             runOnUiThread(() -> {
-                if (JazzUtils.isMarshmallow()) {
+                if (JazzUtil.isMarshmallow()) {
                     checkExternalStoragePermissionAndThenLoad();
                 } else {
                     loadOnPermissionGranted();
@@ -208,7 +208,7 @@ public class MainActivity extends BaseMainActivity implements ATEActivityThemeCu
     };
 
     private Runnable navigateAlbum = () -> {
-        long albumID = getIntent().getExtras().getLong(Constants.ALBUM_ID);
+        int albumID = getIntent().getExtras().getInt(Constants.ALBUM_ID);
         Fragment fragment = AlbumDetailFragment.newInstance(albumID, false, null);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -216,7 +216,7 @@ public class MainActivity extends BaseMainActivity implements ATEActivityThemeCu
     };
 
     private Runnable navigateArtist = () -> {
-        long artistID = getIntent().getExtras().getLong(Constants.ARTIST_ID);
+        int artistID = getIntent().getExtras().getInt(Constants.ARTIST_ID);
         Fragment fragment = ArtistDetailFragment.newInstance(artistID, false, null);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -301,7 +301,7 @@ public class MainActivity extends BaseMainActivity implements ATEActivityThemeCu
             songtitle.setText(name);
             songartist.setText(artist);
         }
-        ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(MusicPlayer.getCurrentAlbumId()).toString(), albumart,
+        ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(MusicPlayer.getCurrentAlbumId()).toString(), albumart,
                 new DisplayImageOptions.Builder().cacheInMemory(true)
                         .showImageOnFail(R.drawable.ic_empty_music2)
                         .resetViewBeforeLoading(true)
@@ -339,15 +339,15 @@ public class MainActivity extends BaseMainActivity implements ATEActivityThemeCu
                 break;
 
             case R.id.nav_music_tools:
-                NavigationUtils.navigateToMusicTools(MainActivity.this, false);
+                NavigationUtil.navigateToMusicTools(MainActivity.this, false);
                 break;
 
             case R.id.nav_nowplaying:
-                NavigationUtils.navigateToNowplaying(MainActivity.this, false);
+                NavigationUtil.navigateToNowplaying(MainActivity.this, false);
                 break;
 
             case R.id.nav_settings:
-                NavigationUtils.navigateToSettings(MainActivity.this);
+                NavigationUtil.navigateToSettings(MainActivity.this);
                 break;
 
             case R.id.nav_about:

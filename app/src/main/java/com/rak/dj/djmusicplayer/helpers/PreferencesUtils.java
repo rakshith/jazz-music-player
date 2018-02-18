@@ -27,7 +27,7 @@ import android.preference.PreferenceManager;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 
-public final class PreferencesUtility {
+public final class PreferencesUtils {
 
     public static final String ARTIST_SORT_ORDER = "artist_sort_order";
     public static final String ARTIST_SONG_SORT_ORDER = "artist_song_sort_order";
@@ -62,24 +62,42 @@ public final class PreferencesUtility {
     private static final String ARTIST_ALBUM_IMAGE_MOBILE = "artist_album_image_mobile";
     private static final String ALWAYS_LOAD_ALBUM_IMAGES_LASTFM = "always_load_album_images_lastfm";
 
-    private static PreferencesUtility sInstance;
+    public static final String ALBUM_COLORED_FOOTERS = "album_colored_footers";
+    public static final String SONG_COLORED_FOOTERS = "song_colored_footers";
+    public static final String ARTIST_COLORED_FOOTERS = "artist_colored_footers";
+    public static final String ALBUM_ARTIST_COLORED_FOOTERS = "album_artist_colored_footers";
+
+    public static final String IGNORE_MEDIA_STORE_ARTWORK = "ignore_media_store_artwork";
+
+    private static PreferencesUtils sInstance;
 
     private static SharedPreferences mPreferences;
     private static Context context;
     private ConnectivityManager connManager = null;
 
-    public PreferencesUtility(final Context context) {
+    public PreferencesUtils(final Context context) {
         this.context = context;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public static final PreferencesUtility getInstance(final Context context) {
+    public static final PreferencesUtils getInstance(final Context context) {
         if (sInstance == null) {
-            sInstance = new PreferencesUtility(context.getApplicationContext());
+            sInstance = new PreferencesUtils(context.getApplicationContext());
         }
         return sInstance;
     }
 
+    public final boolean artistColoredFooters() {
+        return mPreferences.getBoolean(ARTIST_COLORED_FOOTERS, true);
+    }
+
+    public final boolean ignoreMediaStoreArtwork() {
+        return mPreferences.getBoolean(IGNORE_MEDIA_STORE_ARTWORK, false);
+    }
+
+    public final boolean albumColoredFooters() {
+        return mPreferences.getBoolean(ALBUM_COLORED_FOOTERS, true);
+    }
 
     public void setOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener listener) {
         mPreferences.registerOnSharedPreferenceChangeListener(listener);

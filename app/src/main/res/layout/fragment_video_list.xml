@@ -30,17 +30,6 @@
         android:fadeScrollbars="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <com.rak.dj.djmusicplayer.widgets.FastScroller
-        android:id="@+id/fastscroller"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@id/recyclerview"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/recyclerview"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="4dp"
-        android:visibility="invisible" />
 
     <ProgressBar
         android:id="@+id/progressBar"

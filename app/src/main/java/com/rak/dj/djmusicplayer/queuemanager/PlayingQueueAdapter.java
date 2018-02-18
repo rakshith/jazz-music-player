@@ -16,7 +16,6 @@ package com.rak.dj.djmusicplayer.queuemanager;
 
 import android.app.Activity;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,11 +32,10 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
-import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 import com.rak.dj.djmusicplayer.widgets.MusicVisualizer;
 
 import java.util.List;
@@ -83,7 +81,7 @@ public class PlayingQueueAdapter extends RecyclerView.Adapter<PlayingQueueAdapte
             itemHolder.title.setTextColor(Config.textColorPrimary(mContext, ateKey));
             itemHolder.visualizer.setVisibility(View.GONE);
         }
-        ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(localItem.albumId).toString(),
+        ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(localItem.albumId).toString(),
                 itemHolder.albumArt, new DisplayImageOptions.Builder().cacheInMemory(true)
                         .showImageOnLoading(R.drawable.ic_empty_music2).resetViewBeforeLoading(true).build());
         setOnPopupMenuListener(itemHolder, i);
@@ -107,16 +105,16 @@ public class PlayingQueueAdapter extends RecyclerView.Adapter<PlayingQueueAdapte
                                 notifyItemRemoved(position);
                                 break;
                             case R.id.popup_song_play:
-                                MusicPlayer.playAll(mContext, getSongIds(), position, -1, JazzUtils.IdType.NA, false);
+                                MusicPlayer.playAll(mContext, getSongIds(), position, -1, JazzUtil.IdType.NA, false);
                                 break;
                             case R.id.popup_song_goto_album:
-                                NavigationUtils.goToAlbum(mContext, arraylist.get(position).albumId);
+                                NavigationUtil.goToAlbum(mContext, arraylist.get(position).albumId);
                                 break;
                             case R.id.popup_song_goto_artist:
-                                NavigationUtils.goToArtist(mContext, arraylist.get(position).artistId);
+                                NavigationUtil.goToArtist(mContext, arraylist.get(position).artistId);
                                 break;
                             case R.id.popup_song_addto_playlist:
-                                AddPlaylistDialog.newInstance(arraylist.get(position)).show(((AppCompatActivity) mContext).getSupportFragmentManager(), "ADD_PLAYLIST");
+                                //AddPlaylistDialog.newInstance(arraylist.get(position)).show(((AppCompatActivity) mContext).getSupportFragmentManager(), "ADD_PLAYLIST");
                                 break;
                         }
                         return false;

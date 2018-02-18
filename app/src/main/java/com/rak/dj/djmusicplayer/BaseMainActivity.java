@@ -22,8 +22,8 @@ import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.afollestad.appthemeengine.ATE;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
@@ -122,7 +122,7 @@ public abstract class BaseMainActivity extends AbsPermissionsActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        if (!JazzUtils.hasEffectsPanel(BaseMainActivity.this)) {
+        if (!JazzUtil.hasEffectsPanel(BaseMainActivity.this)) {
             menu.removeItem(R.id.action_equalizer);
         }
         ATE.applyMenu(this, getATEKey(), menu);
@@ -136,17 +136,17 @@ public abstract class BaseMainActivity extends AbsPermissionsActivity implements
                 super.onBackPressed();
                 return true;
             case R.id.action_settings:
-                //NavigationUtils.navigateToSettings(this);
+                //NavigationUtil.navigateToSettings(this);
                 return true;
             case R.id.action_shuffle:
                 Handler handler = new Handler();
                 handler.postDelayed(() -> MusicPlayer.shuffleAll(BaseMainActivity.this), 80);
                 return true;
             case R.id.action_search:
-                NavigationUtils.navigateToSearch(this);
+                NavigationUtil.navigateToSearch(this);
                 return true;
             case R.id.action_equalizer:
-                NavigationUtils.navigateToEqualizer(this);
+                NavigationUtil.navigateToEqualizer(this);
                 return true;
 
         }

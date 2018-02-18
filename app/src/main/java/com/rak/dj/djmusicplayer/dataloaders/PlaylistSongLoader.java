@@ -25,7 +25,7 @@ import android.provider.MediaStore.Audio.AudioColumns;
 import android.provider.MediaStore.Audio.Playlists;
 
 
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ public class PlaylistSongLoader {
         if (mCursor != null && mCursor.moveToFirst()) {
             do {
 
-                final long id = mCursor.getLong(mCursor
+                final int id = mCursor.getInt(mCursor
                         .getColumnIndexOrThrow(Playlists.Members.AUDIO_ID));
 
                 final String songName = mCursor.getString(mCursor
@@ -91,10 +91,10 @@ public class PlaylistSongLoader {
                 final String artist = mCursor.getString(mCursor
                         .getColumnIndexOrThrow(AudioColumns.ARTIST));
 
-                final long albumId = mCursor.getLong(mCursor
+                final int albumId = mCursor.getInt(mCursor
                         .getColumnIndexOrThrow(AudioColumns.ALBUM_ID));
 
-                final long artistId = mCursor.getLong(mCursor
+                final int artistId = mCursor.getInt(mCursor
                         .getColumnIndexOrThrow(AudioColumns.ARTIST_ID));
 
                 final String album = mCursor.getString(mCursor
@@ -110,7 +110,7 @@ public class PlaylistSongLoader {
 
                 final String data = mCursor.getString(mCursor.getColumnIndexOrThrow(AudioColumns.DATA));
 
-                final Song song = new Song(id, albumId, artistId, songName, artist, album, durationInSecs, tracknumber, data);
+                final Song song = new Song(id, songName, tracknumber, -1, duration, data, -1, albumId, album, artistId, artist);
 
                 mSongList.add(song);
             } while (mCursor.moveToNext());
@@ -196,6 +196,7 @@ public class PlaylistSongLoader {
                         AudioColumns.ALBUM,
                         AudioColumns.DURATION,
                         AudioColumns.TRACK,
+                        AudioColumns.DATA,
                         Playlists.Members.PLAY_ORDER,
                 }, mSelection.toString(), null,
                 Playlists.Members.DEFAULT_SORT_ORDER);

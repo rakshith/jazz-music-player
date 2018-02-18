@@ -14,16 +14,11 @@
 
 package com.rak.dj.djmusicplayer.musiclibrary;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,42 +28,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.rak.dj.djmusicplayer.helpers.ATEUtils;
-import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.lastfmapi.LastFmClient;
-import com.rak.dj.djmusicplayer.lastfmapi.callbacks.ArtistInfoListener;
-import com.rak.dj.djmusicplayer.lastfmapi.models.ArtistQuery;
+import com.bumptech.glide.Glide;
+import com.rak.dj.djmusicplayer.glide.ArtistGlideRequest;
+import com.rak.dj.djmusicplayer.glide.JazzColoredTarget;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.lastfmapi.upgradedapi.rest.LastFMRestClient;
+import com.rak.dj.djmusicplayer.models.upgraded.Artist;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.ArtistLoader;
-import com.rak.dj.djmusicplayer.dataloaders.ArtistSongLoader;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.ArtistLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.helpers.ImageUtils;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.lastfmapi.models.LastfmArtist;
-import com.rak.dj.djmusicplayer.models.Artist;
-import com.rak.dj.djmusicplayer.models.Song;
 
 import java.util.List;
 
 public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
 
-    private long artistID = -1;
+    private int artistID = -1;
     private ImageView artistArt;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
     private boolean largeImageLoaded = false;
     private int primaryColor = -1;
     private ArtistSongAdapter mAdapter;
-
-    public static ArtistDetailFragment newInstance(long id, boolean useTransition, String transitionName) {
+    private Artist artist;
+    private boolean forceDownload;
+    private LastFMRestClient lastFMRestClient;
+    public static ArtistDetailFragment newInstance(int id, boolean useTransition, String transitionName) {
         ArtistDetailFragment fragment = new ArtistDetailFragment();
         Bundle args = new Bundle();
-        args.putLong(Constants.ARTIST_ID, id);
+        args.putInt(Constants.ARTIST_ID, id);
         args.putBoolean("transition", useTransition);
         if (useTransition)
             args.putString("transition_name", transitionName);
@@ -80,7 +70,7 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            artistID = getArguments().getLong(Constants.ARTIST_ID);
+            artistID = getArguments().getInt(Constants.ARTIST_ID);
         }
     }
 
@@ -101,6 +91,7 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
 
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         setupToolbar();
+
         setUpArtistDetails();
 
         getChildFragmentManager().beginTransaction().replace(R.id.container, ArtistMusicFragment.newInstance(artistID)).commit();
@@ -118,15 +109,52 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setUpArtistDetails() {
+    private void setColors(int color) {
+        //toolbarColor = color;
+        //artistName.setBackgroundColor(color);
+       // artistName.setTextColor(MaterialValueHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)));
+        //setNavigationbarColor(color);
+        //setTaskDescriptionColor(color);
+    }
 
-        final Artist artist = ArtistLoader.getArtist(getActivity(), artistID);
-        List<Song> songList = ArtistSongLoader.getSongsForArtist(getActivity(), artistID);
+
+    private Artist getArtist() {
+        if (artist == null) artist = new Artist();
+        return artist;
+    }
+
+    private void loadArtistImage() {
+        ArtistGlideRequest.Builder.from(Glide.with(this), artist)
+                .forceDownload(forceDownload)
+                .generatePalette(getActivity()).build()
+                .dontAnimate()
+                .into(new JazzColoredTarget(artistArt) {
+                    @Override
+                    public void onColorReady(int color) {
+                        setColors(color);
+                    }
+                });
+        forceDownload = false;
+    }
+
+    private void setUpArtistDetails() {
+        artist = ArtistLoader.getArtist(getActivity(), artistID);
+        List<Song> songList = artist.getSongs();
         mAdapter = new ArtistSongAdapter((AppCompatActivity) getActivity(), songList, artistID);
 
-        collapsingToolbarLayout.setTitle(artist.name);
+        collapsingToolbarLayout.setTitle(artist.getName());
 
-        LastFmClient.getInstance(getActivity()).getArtistInfo(new ArtistQuery(artist.name), new ArtistInfoListener() {
+        loadArtistImage();
+
+        /*if (Util.isAllowedToDownloadMetadata(this)) {
+            loadBiography();
+        }*/
+
+        //artistName.setText(artist.getName());
+        //songAdapter.swapDataSet(artist.getSongs());
+        //albumAdapter.swapDataSet(artist.albums);
+
+       /* LastFmClient.getInstance(getActivity()).getArtistInfo(new ArtistQuery(artist.name), new ArtistInfoListener() {
             @Override
             public void artistInfoSucess(final LastfmArtist artist) {
                 if (artist != null) {
@@ -173,11 +201,11 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
             public void artistInfoFailed() {
 
             }
-        });
+        });*/
 
     }
 
-    private void setBlurredPlaceholder(LastfmArtist artist) {
+    /*private void setBlurredPlaceholder(LastfmArtist artist) {
         ImageLoader.getInstance().loadImage(artist.mArtwork.get(1).mUrl, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
@@ -186,7 +214,7 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
 
             }
         });
-    }
+    }*/
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
@@ -205,7 +233,7 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.popup_song_addto_queue:
-                MusicPlayer.addToQueue(getContext(), mAdapter.getSongIds(), -1, JazzUtils.IdType.NA);
+                MusicPlayer.addToQueue(getContext(), mAdapter.getSongIds(), -1, JazzUtil.IdType.NA);
                 break;
             case R.id.popup_song_addto_playlist:
                 AddPlaylistDialog.newInstance(mAdapter.getSongIds()).show(getActivity().getSupportFragmentManager(), "ADD_PLAYLIST");
@@ -220,13 +248,13 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
 
     }
 
-    private class setBlurredAlbumArt extends AsyncTask<Bitmap, Void, Drawable> {
+    /*private class setBlurredAlbumArt extends AsyncTask<Bitmap, Void, Drawable> {
 
         @Override
         protected Drawable doInBackground(Bitmap... loadedImage) {
             Drawable drawable = null;
             try {
-                drawable = ImageUtils.createBlurredImageFromBitmap(loadedImage[0], getActivity(), 3);
+                drawable = ImageUtil.createBlurredImageFromBitmap(loadedImage[0], getActivity(), 3);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -243,7 +271,7 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
         @Override
         protected void onPreExecute() {
         }
-    }
+    }*/
 
     @Override
     public void onPause() {

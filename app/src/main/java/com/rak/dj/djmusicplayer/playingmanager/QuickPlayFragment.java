@@ -20,11 +20,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
 import com.rak.dj.djmusicplayer.widgets.PlayPauseButton;
 
 /**
@@ -80,7 +80,7 @@ public class QuickPlayFragment extends Fragment implements MusicStateListener  {
         tvSongName.setText(MusicPlayer.getTrackName());
         tvAlbum.setText(MusicPlayer.getArtistName());
         if (!duetoplaypause) {
-            ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(MusicPlayer.getCurrentAlbumId()).toString(), ivSongIcon,
+            ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(MusicPlayer.getCurrentAlbumId()).toString(), ivSongIcon,
                     new DisplayImageOptions.Builder().cacheInMemory(true)
                             .showImageOnFail(R.drawable.ic_empty_music2)
                             .resetViewBeforeLoading(true)

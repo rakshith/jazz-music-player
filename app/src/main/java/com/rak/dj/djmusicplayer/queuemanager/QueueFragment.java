@@ -31,7 +31,7 @@ import com.afollestad.appthemeengine.ATE;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.QueueLoader;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.widgets.BaseRecyclerView;

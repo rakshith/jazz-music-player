@@ -15,10 +15,9 @@
 package com.rak.dj.djmusicplayer.musiclibrary;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
-import android.support.v7.graphics.Palette;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -27,37 +26,33 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.appthemeengine.Config;
-
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.bumptech.glide.Glide;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
-import com.rak.dj.djmusicplayer.lastfmapi.LastFmClient;
-import com.rak.dj.djmusicplayer.lastfmapi.callbacks.ArtistInfoListener;
-import com.rak.dj.djmusicplayer.lastfmapi.models.ArtistQuery;
-import com.rak.dj.djmusicplayer.lastfmapi.models.LastfmArtist;
-import com.rak.dj.djmusicplayer.models.Artist;
+import com.rak.dj.djmusicplayer.glide.ArtistGlideRequest;
+import com.rak.dj.djmusicplayer.glide.JazzColoredTarget;
+import com.rak.dj.djmusicplayer.helpers.ColorUtil;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.MaterialValueHelper;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.models.upgraded.Artist;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
-public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder> implements BubbleTextGetter {
+public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
     private List<Artist> arraylist;
     private Activity mContext;
     private boolean isGrid;
+    protected boolean usePalette = false;
 
-    public ArtistAdapter(Activity context, List<Artist> arraylist) {
+    public ArtistAdapter(Activity context, List<Artist> arraylist, boolean usePalette) {
         this.arraylist = arraylist;
         this.mContext = context;
-        this.isGrid = PreferencesUtility.getInstance(mContext).isArtistsInGrid();
+        this.usePalette = usePalette;
+        this.isGrid = PreferencesUtils.getInstance(mContext).isArtistsInGrid();
     }
 
     public static int getOpaqueColor(@ColorInt int paramInt) {
@@ -81,11 +76,12 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder
     public void onBindViewHolder(final ItemHolder itemHolder, int i) {
         final Artist localItem = arraylist.get(i);
 
-        itemHolder.name.setText(localItem.name);
-        String albumNmber = JazzUtils.makeLabel(mContext, R.plurals.Nalbums, localItem.albumCount);
-        String songCount = JazzUtils.makeLabel(mContext, R.plurals.Nsongs, localItem.songCount);
-        itemHolder.albums.setText(JazzUtils.makeCombinedString(mContext, albumNmber, songCount));
+        itemHolder.name.setText(localItem.getName());
+        String albumNumber = JazzUtil.makeLabel(mContext, R.plurals.Nalbums, localItem.getAlbumCount());
+        String songCount = JazzUtil.makeLabel(mContext, R.plurals.Nsongs, localItem.getSongCount());
+        itemHolder.albums.setText(JazzUtil.makeCombinedString(mContext, albumNumber, songCount));
 
+        loadArtistImage(localItem, itemHolder);
 
         /*LastFmClient.getInstance(mContext).getArtistInfo(new ArtistQuery(localItem.name), new ArtistInfoListener() {
             @Override
@@ -148,14 +144,60 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder
             }
         });*/
 
-        if (JazzUtils.isLollipop())
+        if (JazzUtil.isLollipop())
             itemHolder.artistImage.setTransitionName("transition_artist_art" + i);
 
     }
 
+    @NonNull
+    @Override
+    public String getSectionName(int position) {
+        if (arraylist == null || arraylist.size() == 0)
+            return "";
+        return Character.toString(arraylist.get(position).getName().charAt(0));
+    }
+
+    private void setColors(int color, ItemHolder holder) {
+        if (holder.footer != null) {
+            holder.footer.setBackgroundColor(color);
+            if (holder.name != null) {
+                holder.name.setTextColor(MaterialValueHelper.getPrimaryTextColor(mContext, ColorUtil.isColorLight(color)));
+            }
+            if (holder.name != null) {
+                holder.name.setTextColor(MaterialValueHelper.getSecondaryTextColor(mContext, ColorUtil.isColorLight(color)));
+            }
+        }
+    }
+
+    protected void loadArtistImage(Artist artist, final ItemHolder holder) {
+        if (holder.artistImage == null) return;
+        ArtistGlideRequest.Builder.from(Glide.with(mContext), artist)
+                .generatePalette(mContext).build()
+                .into(new JazzColoredTarget(holder.artistImage) {
+                    @Override
+                    public void onLoadCleared(Drawable placeholder) {
+                        super.onLoadCleared(placeholder);
+                        setColors(getDefaultFooterColor(), holder);
+                    }
+
+                    @Override
+                    public void onColorReady(int color) {
+                        if (usePalette)
+                            setColors(color, holder);
+                        else
+                            setColors(getDefaultFooterColor(), holder);
+                    }
+                });
+    }
+
+    public void usePalette(boolean usePalette) {
+        this.usePalette = usePalette;
+        notifyDataSetChanged();
+    }
+
     @Override
     public long getItemId(int position) {
-        return arraylist.get(position).id;
+        return arraylist.get(position).getId();
     }
 
     @Override
@@ -163,12 +205,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder
         return (null != arraylist ? arraylist.size() : 0);
     }
 
-    @Override
-    public String getTextToShowInBubble(final int pos) {
-        if (arraylist == null || arraylist.size() == 0)
-            return "";
-        return Character.toString(arraylist.get(pos).name.charAt(0));
-    }
+
 
     public void updateDataSet(List<Artist> arrayList) {
         this.arraylist = arrayList;
@@ -190,7 +227,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder
 
         @Override
         public void onClick(View v) {
-            NavigationUtils.navigateToArtist(mContext, arraylist.get(getAdapterPosition()).id,
+            NavigationUtil.navigateToArtist(mContext, arraylist.get(getAdapterPosition()).getId(),
                     new Pair<View, String>(artistImage, "transition_artist_art" + getAdapterPosition()));
         }
 

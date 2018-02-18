@@ -19,12 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.afollestad.appthemeengine.Config;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.QueueLoader;
-import com.rak.dj.djmusicplayer.helpers.ATEUtils;
-import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.ImageUtils;
+import com.rak.dj.djmusicplayer.helpers.ImageUtil;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 
@@ -155,7 +152,7 @@ public class QuickPlayExpandedFragment extends BaseNowPlayingFragment implements
         protected Drawable doInBackground(Bitmap... loadedImage) {
             Drawable drawable = null;
             try {
-                drawable = ImageUtils.createBlurredImageFromBitmap(loadedImage[0], getActivity().getBaseContext(), 12);
+                drawable = ImageUtil.createBlurredImageFromBitmap(loadedImage[0], getActivity().getBaseContext(), 12);
             } catch (Exception e) {
                 e.printStackTrace();
             }

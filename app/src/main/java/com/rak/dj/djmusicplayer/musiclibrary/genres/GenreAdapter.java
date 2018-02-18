@@ -1,6 +1,7 @@
 package com.rak.dj.djmusicplayer.musiclibrary.genres;
 
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,11 +17,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.models.Genre;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ import java.util.List;
  * Created by sraksh on 2/11/2018.
  */
 
-public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implements BubbleTextGetter {
+public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
     private List<Genre> arraylist;
     private AppCompatActivity mContext;
@@ -60,7 +62,7 @@ public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implement
         itemHolder.title.setText(localItem.name);
         itemHolder.songCount.setText(localItem.songCount+" Songs");
 
-        ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(localItem.id).toString(),
+        ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(localItem.id).toString(),
                 itemHolder.albumArt, new DisplayImageOptions.Builder().cacheInMemory(true)
                         .showImageOnLoading(R.drawable.ic_empty_music2)
                         .resetViewBeforeLoading(true).build());
@@ -73,7 +75,7 @@ public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implement
 
 
         if (animate) {
-            if (JazzUtils.isLollipop())
+            if (JazzUtil.isLollipop())
                 setAnimation(itemHolder.itemView, position);
             else {
                 if (position > 10)
@@ -110,11 +112,12 @@ public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implement
         return itemPosition;
     }
 
+    @NonNull
     @Override
-    public String getTextToShowInBubble(final int pos) {
+    public String getSectionName(int position) {
         if (arraylist == null || arraylist.size() == 0)
             return "";
-        Character ch = arraylist.get(pos).name.charAt(0);
+        Character ch = arraylist.get(position).name.charAt(0);
         if (Character.isDigit(ch)) {
             return "#";
         } else

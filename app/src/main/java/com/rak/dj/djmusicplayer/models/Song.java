@@ -25,6 +25,7 @@ public class Song {
     public final String title;
     public final int trackNumber;
     public final String data;
+    public long datemodified;
 
     public Song() {
         this.id = -1;
@@ -50,6 +51,13 @@ public class Song {
         this.data = _data;
     }
 
+    public long getDateModified() {
+        return datemodified;
+    }
+
+    public void setDateModified(long datemodified) {
+        this.datemodified = datemodified;
+    }
 
     @Override
     public boolean equals(Object o) {

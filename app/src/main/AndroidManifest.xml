@@ -71,6 +71,20 @@
             </intent-filter>
         </activity>
 
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1" />
+        <meta-data
+            android:name="com.lge.support.SPLIT_WINDOW"
+            android:value="true" />
+
+        <meta-data
+            android:name="com.rak.dj.djmusicplayer.glide.JazzGlideModule"
+            android:value="GlideModule" />
+        <meta-data
+            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+            android:value="GlideModule" />
+
         <!-- Music service -->
         <service
             android:name=".musicplayerutils.MusicService"

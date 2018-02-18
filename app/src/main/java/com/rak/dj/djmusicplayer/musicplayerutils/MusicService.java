@@ -48,14 +48,14 @@ import android.util.Log;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.IAppService;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.permissions.JazzPermissionManger;
 import com.rak.dj.djmusicplayer.providers.MusicPlaybackState;
 import com.rak.dj.djmusicplayer.providers.RecentStore;
 import com.rak.dj.djmusicplayer.providers.SongPlayCount;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
 import com.rak.dj.djmusicplayer.helpers.MediaButtonIntentReceiver;
 import com.rak.dj.djmusicplayer.helpers.MusicPlaybackTrack;
 
@@ -352,7 +352,7 @@ public class MusicService extends Service {
         if (LastfmUserSession.getSession(this) != null) {
             LastFmClient.getInstance(this).Scrobble(null);
         }*/
-        PreferencesUtility pref = PreferencesUtility.getInstance(this);
+        PreferencesUtils pref = PreferencesUtils.getInstance(this);
         mShowAlbumArtOnLockscreen = pref.getSetAlbumartLockscreen();
         mActivateXTrackSelector = pref.getXPosedTrackselectorEnabled();
     }
@@ -440,7 +440,7 @@ public class MusicService extends Service {
 
         mPlayerHandler.removeCallbacksAndMessages(null);
 
-        if (JazzUtils.isJellyBeanMR2())
+        if (JazzUtil.isJellyBeanMR2())
             mHandlerThread.quitSafely();
         else mHandlerThread.quit();
 
@@ -587,7 +587,7 @@ public class MusicService extends Service {
         int notificationId = hashCode();
         if (mNotifyMode != newNotifyMode) {
             if (mNotifyMode == NOTIFY_MODE_FOREGROUND) {
-                if (JazzUtils.isLollipop())
+                if (JazzUtil.isLollipop())
                     stopForeground(newNotifyMode == NOTIFY_MODE_NONE);
                 else
                     stopForeground(newNotifyMode == NOTIFY_MODE_NONE || newNotifyMode == NOTIFY_MODE_BACKGROUND);
@@ -614,7 +614,7 @@ public class MusicService extends Service {
     }
 
     private int getCardId() {
-        if (JazzUtils.isMarshmallow()) {
+        if (JazzUtil.isMarshmallow()) {
             if (JazzPermissionManger.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 return getmCardId();
             } else return 0;
@@ -703,7 +703,7 @@ public class MusicService extends Service {
         if (goToIdle) {
             setIsSupposedToBePlaying(false, false);
         } else {
-            if (JazzUtils.isLollipop())
+            if (JazzUtil.isLollipop())
                 stopForeground(false);
             else stopForeground(true);
         }
@@ -772,7 +772,7 @@ public class MusicService extends Service {
         }
     }
 
-    private void addToPlayList(final long[] list, int position, long sourceId, JazzUtils.IdType sourceType) {
+    private void addToPlayList(final long[] list, int position, long sourceId, JazzUtil.IdType sourceType) {
         final int addlen = list.length;
         if (position < 0) {
             mPlaylist.clear();
@@ -1057,7 +1057,7 @@ public class MusicService extends Service {
             if (mHistory.size() > MAX_HISTORY_SIZE) {
                 mHistory.remove(0);
             }
-            mPlaylist.add(new MusicPlaybackTrack(mAutoShuffleList[idx], -1, JazzUtils.IdType.NA, -1));
+            mPlaylist.add(new MusicPlaybackTrack(mAutoShuffleList[idx], -1, JazzUtil.IdType.NA, -1));
             notify = true;
         }
         if (notify) {
@@ -1147,7 +1147,7 @@ public class MusicService extends Service {
             if (what.equals(META_CHANGED) || what.equals(QUEUE_CHANGED)) {
                 Bitmap albumArt = null;
                 if (mShowAlbumArtOnLockscreen) {
-                    albumArt = ImageLoader.getInstance().loadImageSync(JazzUtils.getAlbumArtUri(getAlbumId()).toString());
+                    albumArt = ImageLoader.getInstance().loadImageSync(JazzUtil.getAlbumArtUri(getAlbumId()).toString());
                     if (albumArt != null) {
 
                         Bitmap.Config config = albumArt.getConfig();
@@ -1188,7 +1188,7 @@ public class MusicService extends Service {
         } else if (what.equals(META_CHANGED) || what.equals(QUEUE_CHANGED)) {
             Bitmap albumArt = null;
             if (mShowAlbumArtOnLockscreen) {
-                albumArt = ImageLoader.getInstance().loadImageSync(JazzUtils.getAlbumArtUri(getAlbumId()).toString());
+                albumArt = ImageLoader.getInstance().loadImageSync(JazzUtil.getAlbumArtUri(getAlbumId()).toString());
                 if (albumArt != null) {
 
                     Bitmap.Config config = albumArt.getConfig();
@@ -1221,7 +1221,7 @@ public class MusicService extends Service {
     }
 
     private void createNotificationChannel() {
-        if (JazzUtils.isOreo()) {
+        if (JazzUtil.isOreo()) {
             CharSequence name = "Timber";
             int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1240,10 +1240,10 @@ public class MusicService extends Service {
         int playButtonResId = isPlaying
                 ? R.drawable.ic_pause_white_36dp : R.drawable.ic_play_white_36dp;
 
-        Intent nowPlayingIntent = NavigationUtils.getNowPlayingIntent(this);
+        Intent nowPlayingIntent = NavigationUtil.getNowPlayingIntent(this);
         PendingIntent clickIntent = PendingIntent.getActivity(this, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Bitmap artwork;
-        artwork = ImageLoader.getInstance().loadImageSync(JazzUtils.getAlbumArtUri(getAlbumId()).toString());
+        artwork = ImageLoader.getInstance().loadImageSync(JazzUtil.getAlbumArtUri(getAlbumId()).toString());
 
         if (artwork == null) {
             artwork = ImageLoader.getInstance().loadImageSync("drawable://" + R.drawable.ic_empty_music2);
@@ -1269,22 +1269,22 @@ public class MusicService extends Service {
                         "",
                         retrievePlaybackAction(NEXT_ACTION));
 
-        if (JazzUtils.isJellyBeanMR1()) {
+        if (JazzUtil.isJellyBeanMR1()) {
             builder.setShowWhen(false);
         }
 
-        if (JazzUtils.isLollipop()) {
+        if (JazzUtil.isLollipop()) {
             builder.setVisibility(Notification.VISIBILITY_PUBLIC);
             android.support.v4.media.app.NotificationCompat.MediaStyle style = new android.support.v4.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mSession.getSessionToken())
                     .setShowActionsInCompactView(0, 1, 2, 3);
             builder.setStyle(style);
         }
-        if (artwork != null && JazzUtils.isLollipop()) {
+        if (artwork != null && JazzUtil.isLollipop()) {
             builder.setColor(Palette.from(artwork).generate().getVibrantColor(Color.parseColor("#403f4d")));
         }
 
-        if (JazzUtils.isOreo()) {
+        if (JazzUtil.isOreo()) {
             builder.setColorized(true);
         }
 
@@ -1312,10 +1312,10 @@ public class MusicService extends Service {
                 ArrayList<Bundle> list = new ArrayList<>();
                 do {
                     TrackItem t = new TrackItem()
-                            .setArt(JazzUtils.getAlbumArtUri(c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID))))
+                            .setArt(JazzUtil.getAlbumArtUri(c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID))))
                             .setTitle(c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)))
                             .setArtist(c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)))
-                            .setDuration(JazzUtils.makeShortTimeString(this, c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)) / 1000));
+                            .setDuration(JazzUtil.makeShortTimeString(this, c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)) / 1000));
                     list.add(t.get());
                 } while (c.moveToNext());
                 try {
@@ -1357,7 +1357,7 @@ public class MusicService extends Service {
     }
 
     private void reloadQueueAfterPermissionCheck() {
-        if (JazzUtils.isMarshmallow()) {
+        if (JazzUtil.isMarshmallow()) {
             if (JazzPermissionManger.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 reloadQueue();
             }
@@ -1477,7 +1477,7 @@ public class MusicService extends Service {
                     if (mCursor != null && shouldAddToPlaylist) {
                         mPlaylist.clear();
                         mPlaylist.add(new MusicPlaybackTrack(
-                                mCursor.getLong(IDCOLIDX), -1, JazzUtils.IdType.NA, -1));
+                                mCursor.getLong(IDCOLIDX), -1, JazzUtil.IdType.NA, -1));
                         notifyChange(QUEUE_CHANGED);
                         mPlayPos = 0;
                         mHistory.clear();
@@ -1909,7 +1909,7 @@ public class MusicService extends Service {
         return isPlaying() || System.currentTimeMillis() - mLastPlayedTime < IDLE_DELAY;
     }
 
-    public void open(final long[] list, final int position, long sourceId, JazzUtils.IdType sourceType) {
+    public void open(final long[] list, final int position, long sourceId, JazzUtil.IdType sourceType) {
         synchronized (this) {
             if (mShuffleMode == SHUFFLE_AUTO) {
                 mShuffleMode = SHUFFLE_NORMAL;
@@ -2166,7 +2166,7 @@ public class MusicService extends Service {
         }
     }
 
-    public void enqueue(final long[] list, final int action, long sourceId, JazzUtils.IdType sourceType) {
+    public void enqueue(final long[] list, final int action, long sourceId, JazzUtil.IdType sourceType) {
         synchronized (this) {
             if (action == NEXT && mPlayPos + 1 < mPlaylist.size()) {
                 addToPlayList(list, mPlayPos + 1, sourceId, sourceType);
@@ -2594,7 +2594,7 @@ public class MusicService extends Service {
         @Override
         public void open(final long[] list, final int position, long sourceId, int sourceType)
                 throws RemoteException {
-            mService.get().open(list, position, sourceId, JazzUtils.IdType.getTypeById(sourceType));
+            mService.get().open(list, position, sourceId, JazzUtil.IdType.getTypeById(sourceType));
         }
 
         @Override
@@ -2626,7 +2626,7 @@ public class MusicService extends Service {
         @Override
         public void enqueue(final long[] list, final int action, long sourceId, int sourceType)
                 throws RemoteException {
-            mService.get().enqueue(list, action, sourceId, JazzUtils.IdType.getTypeById(sourceType));
+            mService.get().enqueue(list, action, sourceId, JazzUtil.IdType.getTypeById(sourceType));
         }
 
         @Override

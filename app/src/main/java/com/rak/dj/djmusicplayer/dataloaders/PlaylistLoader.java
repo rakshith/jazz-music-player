@@ -22,7 +22,7 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.PlaylistsColumns;
 
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.models.Playlist;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class PlaylistLoader {
 
                 final String name = mCursor.getString(1);
 
-                final int songCount = JazzUtils.getSongCountForPlaylist(context, id);
+                final int songCount = JazzUtil.getSongCountForPlaylist(context, id);
 
                 final Playlist playlist = new Playlist(id, name, songCount);
 
@@ -68,18 +68,18 @@ public class PlaylistLoader {
         final Resources resources = context.getResources();
 
         /* Last added list */
-        final Playlist lastAdded = new Playlist(JazzUtils.PlaylistType.LastAdded.mId,
-                resources.getString(JazzUtils.PlaylistType.LastAdded.mTitleId), -1);
+        final Playlist lastAdded = new Playlist(JazzUtil.PlaylistType.LastAdded.mId,
+                resources.getString(JazzUtil.PlaylistType.LastAdded.mTitleId), -1);
         mPlaylistList.add(lastAdded);
 
         /* Recently Played */
-        final Playlist recentlyPlayed = new Playlist(JazzUtils.PlaylistType.RecentlyPlayed.mId,
-                resources.getString(JazzUtils.PlaylistType.RecentlyPlayed.mTitleId), -1);
+        final Playlist recentlyPlayed = new Playlist(JazzUtil.PlaylistType.RecentlyPlayed.mId,
+                resources.getString(JazzUtil.PlaylistType.RecentlyPlayed.mTitleId), -1);
         mPlaylistList.add(recentlyPlayed);
 
         /* Top Tracks */
-        final Playlist topTracks = new Playlist(JazzUtils.PlaylistType.TopTracks.mId,
-                resources.getString(JazzUtils.PlaylistType.TopTracks.mTitleId), -1);
+        final Playlist topTracks = new Playlist(JazzUtil.PlaylistType.TopTracks.mId,
+                resources.getString(JazzUtil.PlaylistType.TopTracks.mTitleId), -1);
         mPlaylistList.add(topTracks);
     }
 

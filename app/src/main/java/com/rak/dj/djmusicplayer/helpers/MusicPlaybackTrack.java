@@ -39,10 +39,10 @@ public class MusicPlaybackTrack implements Parcelable {
     };
     public long mId;
     public long mSourceId;
-    public JazzUtils.IdType mSourceType;
+    public JazzUtil.IdType mSourceType;
     public int mSourcePosition;
 
-    public MusicPlaybackTrack(long id, long sourceId, JazzUtils.IdType type, int sourcePosition) {
+    public MusicPlaybackTrack(long id, long sourceId, JazzUtil.IdType type, int sourcePosition) {
         mId = id;
         mSourceId = sourceId;
         mSourceType = type;
@@ -52,7 +52,7 @@ public class MusicPlaybackTrack implements Parcelable {
     public MusicPlaybackTrack(Parcel in) {
         mId = in.readLong();
         mSourceId = in.readLong();
-        mSourceType = JazzUtils.IdType.getTypeById(in.readInt());
+        mSourceType = JazzUtil.IdType.getTypeById(in.readInt());
         mSourcePosition = in.readInt();
     }
 

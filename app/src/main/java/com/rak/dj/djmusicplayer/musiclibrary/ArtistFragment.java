@@ -29,20 +29,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.ArtistLoader;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.ArtistLoader;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.helpers.SortOrder;
-import com.rak.dj.djmusicplayer.models.Artist;
+import com.rak.dj.djmusicplayer.models.upgraded.Artist;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class ArtistFragment extends BaseMusicLibraryFragment {
+public class ArtistFragment extends AbsRecyclerViewFragment {
 
     private ArtistAdapter mAdapter;
     private GridLayoutManager layoutManager;
     private RecyclerView.ItemDecoration itemDecoration;
-    private PreferencesUtility mPreferences;
+    private PreferencesUtils mPreferences;
     private boolean isGrid;
 
     @Override
@@ -53,7 +53,7 @@ public class ArtistFragment extends BaseMusicLibraryFragment {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferences = PreferencesUtility.getInstance(getActivity());
+        mPreferences = PreferencesUtils.getInstance(getActivity());
         isGrid = mPreferences.isArtistsInGrid();
     }
 
@@ -61,8 +61,6 @@ public class ArtistFragment extends BaseMusicLibraryFragment {
     public void onViewCreated(@NonNull View rootView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(rootView, savedInstanceState);
         recyclerView =  rootView.findViewById(R.id.recyclerView);
-        fastScroller = rootView.findViewById(R.id.fastscroller);
-        fastScroller.setRecyclerView(recyclerView);
         recyclerView.setEmptyView(getActivity(), rootView.findViewById(R.id.list_empty), "No media found");
 
         setLayoutManager();
@@ -74,11 +72,8 @@ public class ArtistFragment extends BaseMusicLibraryFragment {
     private void setLayoutManager() {
         if (isGrid) {
             layoutManager = new GridLayoutManager(getActivity(), 2);
-            fastScroller.setVisibility(View.GONE);
         } else {
             layoutManager = new GridLayoutManager(getActivity(), 1);
-            fastScroller.setVisibility(View.VISIBLE);
-            fastScroller.setRecyclerView(recyclerView);
         }
         recyclerView.setLayoutManager(layoutManager);
     }
@@ -95,7 +90,7 @@ public class ArtistFragment extends BaseMusicLibraryFragment {
 
     private void updateLayoutManager(int column) {
         recyclerView.removeItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new ArtistAdapter(getActivity(), ArtistLoader.getAllArtists(getActivity())));
+        recyclerView.setAdapter(new ArtistAdapter(getActivity(), ArtistLoader.getAllArtists(getActivity()), loadUsePalette()));
         layoutManager.setSpanCount(column);
         layoutManager.requestLayout();
         setItemDecoration();
@@ -105,7 +100,7 @@ public class ArtistFragment extends BaseMusicLibraryFragment {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(final Void... unused) {
-                List<Artist> artistList = ArtistLoader.getAllArtists(getActivity());
+                ArrayList<Artist> artistList = ArtistLoader.getAllArtists(getActivity());
                 mAdapter.updateDataSet(artistList);
                 return null;
             }
@@ -164,12 +159,16 @@ public class ArtistFragment extends BaseMusicLibraryFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    public boolean loadUsePalette() {
+        return PreferencesUtils.getInstance(getActivity()).artistColoredFooters();
+    }
+
     private class loadArtists extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
             if (getActivity() != null)
-                mAdapter = new ArtistAdapter(getActivity(), ArtistLoader.getAllArtists(getActivity()));
+                mAdapter = new ArtistAdapter(getActivity(), ArtistLoader.getAllArtists(getActivity()), loadUsePalette());
             return "Executed";
         }
 

@@ -17,26 +17,32 @@ package com.rak.dj.djmusicplayer.searchmanager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import com.rak.dj.djmusicplayer.BaseMainActivity;
+import com.rak.dj.djmusicplayer.BaseThemedActivity;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.AlbumLoader;
-import com.rak.dj.djmusicplayer.dataloaders.ArtistLoader;
-import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
-import com.rak.dj.djmusicplayer.models.Album;
-import com.rak.dj.djmusicplayer.models.Artist;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.AlbumLoader;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.ArtistLoader;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.SongLoader;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.ThemeStore;
+import com.rak.dj.djmusicplayer.helpers.misc.WrappedAsyncTaskLoader;
 import com.rak.dj.djmusicplayer.providers.SearchHistory;
 
 import java.util.ArrayList;
@@ -45,61 +51,91 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class SearchActivity extends BaseMainActivity implements SearchView.OnQueryTextListener, View.OnTouchListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    private final Executor mSearchExecutor = Executors.newSingleThreadExecutor();
-    @Nullable
-    private AsyncTask mSearchTask = null;
+public class SearchActivity extends BaseThemedActivity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<List<Object>> {
+    public static final String TAG = SearchActivity.class.getSimpleName();
+    public static final String QUERY = "query";
+    private static final int LOADER_ID = LoaderIds.SEARCH_ACTIVITY;
 
-    private SearchView mSearchView;
-    private InputMethodManager mImm;
-    private String queryString;
+    @BindView(R.id.recyclerview)
+    RecyclerView recyclerView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(android.R.id.empty)
+    TextView empty;
+
+    SearchView searchView;
 
     private SearchAdapter adapter;
-    private RecyclerView recyclerView;
-
-    private List<Object> searchResults = Collections.emptyList();
+    private String query;
 
     @Override
-    public View createContentView() {
-        View nowPlayingView = getLayoutInflater().inflate(R.layout.activity_search, null);
-        return nowPlayingView;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_search);
+        //setDrawUnderStatusbar(true);
+        ButterKnife.bind(this);
 
-        mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //setStatusbarColorAuto();
+        //setNavigationbarColorAuto();
+        //setTaskDescriptionColorAuto();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new SearchAdapter(this);
+        adapter = new SearchAdapter(this, Collections.emptyList());
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                empty.setVisibility(adapter.getItemCount() < 1 ? View.VISIBLE : View.GONE);
+            }
+        });
         recyclerView.setAdapter(adapter);
+
+        recyclerView.setOnTouchListener((v, event) -> {
+            hideSoftKeyboard();
+            return false;
+        });
+
+        setUpToolBar();
+
+        if (savedInstanceState != null) {
+            query = savedInstanceState.getString(QUERY);
+        }
+
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
-
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(QUERY, query);
+    }
 
     @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
+    private void setUpToolBar() {
+        toolbar.setBackgroundColor(ThemeStore.primaryColor(this));
+        setSupportActionBar(toolbar);
+        //noinspection ConstantConditions
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
 
-        mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_search));
+        final MenuItem searchItem = menu.findItem(R.id.menu_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getString(R.string.search_library));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
 
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setQueryHint(getString(R.string.search_library));
-
-        mSearchView.setIconifiedByDefault(false);
-        mSearchView.setIconified(false);
-
-        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.menu_search), new MenuItemCompat.OnActionExpandListener() {
+        MenuItemCompat.expandActionView(searchItem);
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 return true;
@@ -107,132 +143,95 @@ public class SearchActivity extends BaseMainActivity implements SearchView.OnQue
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                finish();
+                onBackPressed();
                 return false;
             }
         });
 
-        menu.findItem(R.id.menu_search).expandActionView();
+        searchView.setQuery(query, false);
+        searchView.post(() -> searchView.setOnQueryTextListener(SearchActivity.this));
 
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem item = menu.findItem(R.id.action_search);
-        item.setVisible(false);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                break;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onQueryTextSubmit(final String query) {
-        onQueryTextChange(query);
-        hideInputManager();
-
-        return true;
+    private void search(@NonNull String query) {
+        this.query = query;
+        getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
-    public boolean onQueryTextChange(final String newText) {
-
-        if (newText.equals(queryString)) {
-            return true;
-        }
-        if (mSearchTask != null) {
-            mSearchTask.cancel(false);
-            mSearchTask = null;
-        }
-        queryString = newText;
-        if (queryString.trim().equals("")) {
-            searchResults.clear();
-            adapter.updateSearchResults(searchResults);
-            adapter.notifyDataSetChanged();
-        } else {
-            mSearchTask = new SearchTask().executeOnExecutor(mSearchExecutor, queryString);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        hideInputManager();
+    public boolean onQueryTextSubmit(String query) {
+        hideSoftKeyboard();
         return false;
     }
 
     @Override
-    protected void onDestroy() {
-        if (mSearchTask != null && mSearchTask.getStatus() != AsyncTask.Status.FINISHED) {
-            mSearchTask.cancel(false);
-        }
-        super.onDestroy();
+    public boolean onQueryTextChange(String newText) {
+        search(newText);
+        return false;
     }
 
-    public void hideInputManager() {
-        if (mSearchView != null) {
-            if (mImm != null) {
-                mImm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
-            }
-            mSearchView.clearFocus();
-
-            SearchHistory.getInstance(this).addSearchString(queryString);
+    private void hideSoftKeyboard() {
+        JazzUtil.hideSoftKeyboard(SearchActivity.this);
+        if (searchView != null) {
+            searchView.clearFocus();
         }
     }
 
-    private class SearchTask extends AsyncTask<String,Void,ArrayList<Object>> {
+    @Override
+    public Loader<List<Object>> onCreateLoader(int id, Bundle args) {
+        return new AsyncSearchResultLoader(this, query);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Object>> loader, List<Object> data) {
+        adapter.swapDataSet(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Object>> loader) {
+        adapter.swapDataSet(Collections.emptyList());
+    }
+
+    private static class AsyncSearchResultLoader extends WrappedAsyncTaskLoader<List<Object>> {
+        private final String query;
+
+        public AsyncSearchResultLoader(Context context, String query) {
+            super(context);
+            this.query = query;
+        }
 
         @Override
-        protected ArrayList<Object> doInBackground(String... params) {
-            ArrayList<Object> results = new ArrayList<>(27);
-            List<Song> songList = SongLoader.searchSongs(SearchActivity.this, params[0], 10);
-            if (!songList.isEmpty()) {
-                results.add(getString(R.string.songs));
-                results.addAll(songList);
-            }
+        public List<Object> loadInBackground() {
+            List<Object> results = new ArrayList<>();
+            if (!TextUtils.isEmpty(query)) {
+                List songs = SongLoader.getSongs(getContext(), query);
+                if (!songs.isEmpty()) {
+                    results.add(getContext().getResources().getString(R.string.songs));
+                    results.addAll(songs);
+                }
 
-            if (isCancelled()) {
-                return null;
-            }
-            List<Album> albumList = AlbumLoader.getAlbums(SearchActivity.this, params[0], 7);
-            if (!albumList.isEmpty()) {
-                results.add(getString(R.string.albums));
-                results.addAll(albumList);
-            }
+                List artists = ArtistLoader.getArtists(getContext(), query);
+                if (!artists.isEmpty()) {
+                    results.add(getContext().getResources().getString(R.string.artists));
+                    results.addAll(artists);
+                }
 
-            if (isCancelled()) {
-                return null;
-            }
-            List<Artist> artistList = ArtistLoader.getArtists(SearchActivity.this, params[0], 7);
-            if (!artistList.isEmpty()) {
-                results.add(getString(R.string.artists));
-                results.addAll(artistList);
-            }
-            if (results.size() == 0) {
-                results.add(getString(R.string.nothing_found));
+                List albums = AlbumLoader.getAlbums(getContext(), query);
+                if (!albums.isEmpty()) {
+                    results.add(getContext().getResources().getString(R.string.albums));
+                    results.addAll(albums);
+                }
             }
             return results;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Object> objects) {
-            super.onPostExecute(objects);
-            mSearchTask = null;
-            if (objects != null) {
-                adapter.updateSearchResults(objects);
-                adapter.notifyDataSetChanged();
-            }
         }
     }
 }

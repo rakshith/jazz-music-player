@@ -17,8 +17,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
@@ -63,9 +63,9 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
 
         itemHolder.title.setText(localItem.title);
         itemHolder.songArtist.setText(localItem.artistName);
-        itemHolder.songDuration.setText(JazzUtils.getReadableDurationString(localItem.duration));
+        itemHolder.songDuration.setText(JazzUtil.getReadableDurationString(localItem.duration));
 
-        ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(localItem.id).toString(),
+        ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(localItem.id).toString(),
                 itemHolder.albumArt, new DisplayImageOptions.Builder().cacheInMemory(true)
                         .showImageOnLoading(R.drawable.ic_empty_music2)
                         .resetViewBeforeLoading(true).build());
@@ -78,7 +78,7 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
 
 
         if (animate) {
-            if (JazzUtils.isLollipop())
+            if (JazzUtil.isLollipop())
                 setAnimation(itemHolder.itemView, position);
             else {
                 if (position > 10)
@@ -166,7 +166,7 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
                 public void run() {
                     currentlyPlayingPosition = getAdapterPosition();
                     playAll(mContext, songIDs, getAdapterPosition(), -1,
-                            JazzUtils.IdType.NA, false,
+                            JazzUtil.IdType.NA, false,
                             arraylist.get(getAdapterPosition()), false);
                     Handler handler1 = new Handler();
                     handler1.postDelayed(new Runnable() {

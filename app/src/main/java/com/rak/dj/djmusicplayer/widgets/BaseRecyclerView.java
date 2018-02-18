@@ -8,11 +8,12 @@ import android.widget.TextView;
 
 import com.afollestad.appthemeengine.Config;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 
 import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 
-public class BaseRecyclerView extends RecyclerView {
+public class BaseRecyclerView extends FastScrollRecyclerView {
 
     private View emptyView;
 

@@ -21,9 +21,11 @@ import android.widget.ProgressBar;
 
 import com.afollestad.appthemeengine.ATE;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.helpers.ThemeStore;
+import com.rak.dj.djmusicplayer.helpers.ViewUtil;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
-import com.rak.dj.djmusicplayer.widgets.FastScroller;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 
 import java.io.File;
@@ -36,7 +38,6 @@ public class FoldersFragment extends Fragment implements StorageSelectDialog.OnD
 
     private FolderAdapter mAdapter;
     private RecyclerView recyclerView;
-    private FastScroller fastScroller;
     private ProgressBar mProgressBar;
 
     @Override
@@ -52,11 +53,10 @@ public class FoldersFragment extends Fragment implements StorageSelectDialog.OnD
         ab.setTitle(R.string.folders);
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
-        fastScroller = (FastScroller) rootView.findViewById(R.id.fastscroller);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        ViewUtil.setUpFastScrollRecyclerViewColor(getActivity(), ((FastScrollRecyclerView) recyclerView), ThemeStore.accentColor(getActivity()));
         if (getActivity() != null)
             new loadFolders().execute("");
         return rootView;
@@ -122,7 +122,7 @@ public class FoldersFragment extends Fragment implements StorageSelectDialog.OnD
         protected String doInBackground(String... params) {
             Activity activity = getActivity();
             if (activity != null) {
-                mAdapter = new FolderAdapter(activity, new File(PreferencesUtility.getInstance(activity).getLastFolder()));
+                mAdapter = new FolderAdapter(activity, new File(PreferencesUtils.getInstance(activity).getLastFolder()));
                 updateTheme();
             }
             return "Executed";
@@ -137,8 +137,6 @@ public class FoldersFragment extends Fragment implements StorageSelectDialog.OnD
             }
             mAdapter.notifyDataSetChanged();
             mProgressBar.setVisibility(View.GONE);
-            fastScroller.setVisibility(View.VISIBLE);
-            fastScroller.setRecyclerView(recyclerView);
         }
 
         @Override

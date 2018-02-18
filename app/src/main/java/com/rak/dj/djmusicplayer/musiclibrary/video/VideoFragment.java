@@ -14,16 +14,14 @@ import android.view.ViewGroup;
 
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.VideoLoader;
-import com.rak.dj.djmusicplayer.musiclibrary.BaseMusicLibraryFragment;
-import com.rak.dj.djmusicplayer.musiclibrary.genres.GenresFragment;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
-import com.rak.dj.djmusicplayer.widgets.FastScroller;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoFragment extends BaseMusicLibraryFragment {
+public class VideoFragment extends AbsRecyclerViewFragment {
 
     AlbumVideoAdapter albumVideoAdapter;
 
@@ -34,11 +32,8 @@ public class VideoFragment extends BaseMusicLibraryFragment {
     @Override
     public View setBaseListView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recylerview, container, false);
-        fastScroller = rootView.findViewById(R.id.fastscroller);
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        FastScroller fastScroller =  rootView.findViewById(R.id.fastscroller);
-        fastScroller.setRecyclerView(recyclerView);
         return rootView;
     }
 

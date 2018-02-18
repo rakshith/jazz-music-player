@@ -14,263 +14,166 @@
 
 package com.rak.dj.djmusicplayer.searchmanager;
 
-import android.app.Activity;
-import android.os.Handler;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.bumptech.glide.Glide;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
-import com.rak.dj.djmusicplayer.lastfmapi.LastFmClient;
-import com.rak.dj.djmusicplayer.lastfmapi.callbacks.ArtistInfoListener;
-import com.rak.dj.djmusicplayer.lastfmapi.models.ArtistQuery;
-import com.rak.dj.djmusicplayer.lastfmapi.models.LastfmArtist;
-import com.rak.dj.djmusicplayer.models.Album;
-import com.rak.dj.djmusicplayer.models.Artist;
-import com.rak.dj.djmusicplayer.models.Song;
-import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
-import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
-import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
+import com.rak.dj.djmusicplayer.glide.ArtistGlideRequest;
+import com.rak.dj.djmusicplayer.glide.SongGlideRequest;
+import com.rak.dj.djmusicplayer.helpers.ATEUtils;
+import com.rak.dj.djmusicplayer.helpers.MusicUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.models.upgraded.Album;
+import com.rak.dj.djmusicplayer.models.upgraded.Artist;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
+import com.rak.dj.djmusicplayer.musiclibrary.MediaEntryViewHolder;
+import com.rak.dj.djmusicplayer.musiclibrary.songs.SongMenuHelper;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-public class SearchAdapter extends BaseAdapter<SearchAdapter.ItemHolder> {
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
-    private Activity mContext;
-    private List searchResults = Collections.emptyList();
+    private static final int HEADER = 0;
+    private static final int ALBUM = 1;
+    private static final int ARTIST = 2;
+    private static final int SONG = 3;
 
-    public SearchAdapter(Activity context) {
-        this.mContext = context;
+    private final AppCompatActivity activity;
+    private List<Object> dataSet;
 
+    public SearchAdapter(@NonNull AppCompatActivity activity, @NonNull List<Object> dataSet) {
+        this.activity = activity;
+        this.dataSet = dataSet;
     }
 
-    @Override
-    public ItemHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        switch (viewType) {
-            case 0:
-                View v0 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_song, null);
-                ItemHolder ml0 = new ItemHolder(v0);
-                return ml0;
-            case 1:
-                View v1 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_album_search, null);
-                ItemHolder ml1 = new ItemHolder(v1);
-                return ml1;
-            case 2:
-                View v2 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_artist, null);
-                ItemHolder ml2 = new ItemHolder(v2);
-                return ml2;
-            case 10:
-                View v10 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.search_section_header, null);
-                ItemHolder ml10 = new ItemHolder(v10);
-                return ml10;
-            default:
-                View v3 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_song, null);
-                ItemHolder ml3 = new ItemHolder(v3);
-                return ml3;
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(final ItemHolder itemHolder, int i) {
-        switch (getItemViewType(i)) {
-            case 0:
-                Song song = (Song) searchResults.get(i);
-                itemHolder.title.setText(song.title);
-                itemHolder.songartist.setText(song.albumName);
-                ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(song.albumId).toString(), itemHolder.albumArt,
-                        new DisplayImageOptions.Builder().cacheInMemory(true)
-                                .cacheOnDisk(true)
-                                .showImageOnFail(R.drawable.ic_empty_music2)
-                                .resetViewBeforeLoading(true)
-                                .displayer(new FadeInBitmapDisplayer(400))
-                                .build());
-                setOnPopupMenuListener(itemHolder, i);
-                break;
-            case 1:
-                Album album = (Album) searchResults.get(i);
-                itemHolder.albumtitle.setText(album.title);
-                itemHolder.albumartist.setText(album.artistName);
-                ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(album.id).toString(), itemHolder.albumArt,
-                        new DisplayImageOptions.Builder().cacheInMemory(true)
-                                .cacheOnDisk(true)
-                                .showImageOnFail(R.drawable.ic_empty_music2)
-                                .resetViewBeforeLoading(true)
-                                .displayer(new FadeInBitmapDisplayer(400))
-                                .build());
-                break;
-            case 2:
-                Artist artist = (Artist) searchResults.get(i);
-                itemHolder.artisttitle.setText(artist.name);
-                String albumNmber = JazzUtils.makeLabel(mContext, R.plurals.Nalbums, artist.albumCount);
-                String songCount = JazzUtils.makeLabel(mContext, R.plurals.Nsongs, artist.songCount);
-                itemHolder.albumsongcount.setText(JazzUtils.makeCombinedString(mContext, albumNmber, songCount));
-                LastFmClient.getInstance(mContext).getArtistInfo(new ArtistQuery(artist.name), new ArtistInfoListener() {
-                    @Override
-                    public void artistInfoSucess(LastfmArtist artist) {
-                        if (artist != null && itemHolder.artistImage != null) {
-                            ImageLoader.getInstance().displayImage(artist.mArtwork.get(1).mUrl, itemHolder.artistImage,
-                                    new DisplayImageOptions.Builder().cacheInMemory(true)
-                                            .cacheOnDisk(true)
-                                            .showImageOnFail(R.drawable.ic_empty_music2)
-                                            .resetViewBeforeLoading(true)
-                                            .displayer(new FadeInBitmapDisplayer(400))
-                                            .build());
-                        }
-                    }
-
-                    @Override
-                    public void artistInfoFailed() {
-
-                    }
-                });
-                break;
-            case 10:
-                itemHolder.sectionHeader.setText((String) searchResults.get(i));
-            case 3:
-                break;
-        }
-    }
-
-    @Override
-    public void onViewRecycled(ItemHolder itemHolder) {
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return searchResults.size();
-    }
-
-    private void setOnPopupMenuListener(ItemHolder itemHolder, final int position) {
-
-        itemHolder.menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                final PopupMenu menu = new PopupMenu(mContext, v);
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        long[] song = new long[1];
-                        song[0] = ((Song) searchResults.get(position)).id;
-                        switch (item.getItemId()) {
-                            case R.id.popup_song_play:
-                                MusicPlayer.playAll(mContext, song, 0, -1, JazzUtils.IdType.NA, false);
-                                break;
-                            case R.id.popup_song_play_next:
-                                MusicPlayer.playNext(mContext, song, -1, JazzUtils.IdType.NA);
-                                break;
-                            case R.id.popup_song_goto_album:
-                                NavigationUtils.navigateToAlbum(mContext, ((Song) searchResults.get(position)).albumId, null);
-                                break;
-                            case R.id.popup_song_goto_artist:
-                                NavigationUtils.navigateToArtist(mContext, ((Song) searchResults.get(position)).artistId, null);
-                                break;
-                            case R.id.popup_song_addto_queue:
-                                MusicPlayer.addToQueue(mContext, song, -1, JazzUtils.IdType.NA);
-                                break;
-                            case R.id.popup_song_addto_playlist:
-                                AddPlaylistDialog.newInstance(((Song) searchResults.get(position))).show(((AppCompatActivity) mContext).getSupportFragmentManager(), "ADD_PLAYLIST");
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                menu.inflate(R.menu.popup_song);
-                //Hide these because they aren't implemented
-                menu.getMenu().findItem(R.id.popup_song_delete).setVisible(false);
-                menu.getMenu().findItem(R.id.popup_song_share).setVisible(false);
-                menu.show();
-            }
-        });
+    public void swapDataSet(@NonNull List<Object> dataSet) {
+        this.dataSet = dataSet;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (searchResults.get(position) instanceof Song)
-            return 0;
-        if (searchResults.get(position) instanceof Album)
-            return 1;
-        if (searchResults.get(position) instanceof Artist)
-            return 2;
-        if (searchResults.get(position) instanceof String)
-            return 10;
-        return 3;
+        if (dataSet.get(position) instanceof Album) return ALBUM;
+        if (dataSet.get(position) instanceof Artist) return ARTIST;
+        if (dataSet.get(position) instanceof Song) return SONG;
+        return HEADER;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == HEADER)
+            return new ViewHolder(LayoutInflater.from(activity).inflate(R.layout.sub_header, parent, false), viewType);
+        return new ViewHolder(LayoutInflater.from(activity).inflate(R.layout.item_list, parent, false), viewType);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case ALBUM:
+                final Album album = (Album) dataSet.get(position);
+                holder.title.setText(album.getTitle());
+                holder.text.setText(album.getArtistName());
+                SongGlideRequest.Builder.from(Glide.with(activity), album.safeGetFirstSong())
+                        .checkIgnoreMediaStore(activity).build()
+                        .into(holder.image);
+                break;
+            case ARTIST:
+                final Artist artist = (Artist) dataSet.get(position);
+                holder.title.setText(artist.getName());
+                holder.text.setText(MusicUtil.getArtistInfoString(activity, artist));
+                ArtistGlideRequest.Builder.from(Glide.with(activity), artist)
+                        .build().into(holder.image);
+                break;
+            case SONG:
+                final Song song = (Song) dataSet.get(position);
+                holder.title.setText(song.title);
+                holder.text.setText(song.albumName);
+                break;
+            default:
+                holder.title.setText(dataSet.get(position).toString());
+                break;
+        }
     }
 
     @Override
-    public int getItemPosition() {
-        return 0;
+    public int getItemCount() {
+        return dataSet.size();
     }
 
-    public void updateSearchResults(List searchResults) {
-        this.searchResults = searchResults;
-    }
+    public class ViewHolder extends MediaEntryViewHolder {
+        public ViewHolder(@NonNull View itemView, int itemViewType) {
+            super(itemView);
+            itemView.setOnLongClickListener(null);
 
-    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        protected TextView title, songartist, albumtitle, artisttitle, albumartist, albumsongcount, sectionHeader;
-        protected ImageView albumArt, artistImage, menu;
+            if (itemViewType != HEADER) {
+                itemView.setBackgroundColor(ATEUtils.resolveColor(activity, R.attr.cardBackgroundColor));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    itemView.setElevation(activity.getResources().getDimensionPixelSize(R.dimen.card_elevation));
+                }
+                if (shortSeparator != null) {
+                    shortSeparator.setVisibility(View.GONE);
+                }
+            }
 
-        public ItemHolder(View view) {
-            super(view);
-
-            this.title = (TextView) view.findViewById(R.id.song_title);
-            this.songartist = (TextView) view.findViewById(R.id.song_artist);
-            this.albumsongcount = (TextView) view.findViewById(R.id.album_song_count);
-            this.artisttitle = (TextView) view.findViewById(R.id.artist_name);
-            this.albumtitle = (TextView) view.findViewById(R.id.album_title);
-            this.albumartist = (TextView) view.findViewById(R.id.album_artist);
-            this.albumArt = (ImageView) view.findViewById(R.id.albumArt);
-            this.artistImage = (ImageView) view.findViewById(R.id.artistImage);
-            this.menu = (ImageView) view.findViewById(R.id.popup_menu);
-
-            this.sectionHeader = (TextView) view.findViewById(R.id.section_header);
-
-
-            view.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            switch (getItemViewType()) {
-                case 0:
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
+            if (menu != null) {
+                if (itemViewType == SONG) {
+                    menu.setVisibility(View.VISIBLE);
+                    menu.setOnClickListener(new SongMenuHelper.OnClickSongMenu(activity) {
                         @Override
-                        public void run() {
-                            long[] ret = new long[1];
-                            ret[0] = ((Song) searchResults.get(getAdapterPosition())).id;
-                            playAll(mContext, ret, 0, -1, JazzUtils.IdType.NA,
-                                    false, (Song) searchResults.get(getAdapterPosition()), false);
+                        public Song getSong() {
+                            return (Song) dataSet.get(getAdapterPosition());
                         }
-                    }, 100);
+                    });
+                } else {
+                    menu.setVisibility(View.GONE);
+                }
+            }
 
+            switch (itemViewType) {
+                case ALBUM:
+                    setImageTransitionName(activity.getString(R.string.transition_album_art));
                     break;
-                case 1:
-                    NavigationUtils.goToAlbum(mContext, ((Album) searchResults.get(getAdapterPosition())).id);
+                case ARTIST:
+                    setImageTransitionName(activity.getString(R.string.transition_artist_image));
                     break;
-                case 2:
-                    NavigationUtils.goToArtist(mContext, ((Artist) searchResults.get(getAdapterPosition())).id);
-                    break;
-                case 3:
-                    break;
-                case 10:
+                default:
+                    View container = itemView.findViewById(R.id.image_container);
+                    if (container != null) {
+                        container.setVisibility(View.GONE);
+                    }
                     break;
             }
         }
 
+        @Override
+        public void onClick(View view) {
+            Object item = dataSet.get(getAdapterPosition());
+            switch (getItemViewType()) {
+                case ALBUM:
+                    NavigationUtil.goToAlbum(activity,
+                            ((Album) item).getId());
+                    break;
+                case ARTIST:
+                    NavigationUtil.goToArtist(activity,
+                            ((Artist) item).getId());
+                    break;
+                case SONG:
+                    ArrayList<Song> playList = new ArrayList<>();
+                    playList.add((Song) item);
+
+                    //MusicPlayerRemote.openQueue(playList, 0, true);
+                    break;
+            }
+        }
     }
 }
 

@@ -7,7 +7,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.L;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.permissions.JazzPermissionManger;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class JazzMusicPlayerApp extends MultiDexApplication{
         Fabric.with(this, crashlyticsKit);*/
 
         ImageLoaderConfiguration localImageLoaderConfiguration = new ImageLoaderConfiguration.Builder(this).imageDownloader(new BaseImageDownloader(this) {
-            PreferencesUtility prefs = PreferencesUtility.getInstance(JazzMusicPlayerApp.this);
+            PreferencesUtils prefs = PreferencesUtils.getInstance(JazzMusicPlayerApp.this);
 
             @Override
             protected InputStream getStreamFromNetwork(String imageUri, Object extra) throws IOException {

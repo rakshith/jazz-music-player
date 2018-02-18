@@ -7,7 +7,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.afollestad.appthemeengine.ATE;
@@ -16,7 +15,7 @@ import com.afollestad.appthemeengine.prefs.ATECheckBoxPreference;
 import com.afollestad.appthemeengine.prefs.ATEColorPreference;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 
 /**
  * Created by sraksh on 2/15/2018.
@@ -25,7 +24,7 @@ import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     private ListPreference themePreference;
-    private PreferencesUtility mPreferences;
+    private PreferencesUtils mPreferences;
     private String mAteKey;
 
     @Override

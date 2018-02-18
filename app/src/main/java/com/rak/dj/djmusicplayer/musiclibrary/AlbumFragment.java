@@ -17,27 +17,23 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.AlbumLoader;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.helpers.SortOrder;
-import com.rak.dj.djmusicplayer.models.Album;
-import com.rak.dj.djmusicplayer.widgets.BaseRecyclerView;
-import com.rak.dj.djmusicplayer.widgets.FastScroller;
+import com.rak.dj.djmusicplayer.models.upgraded.Album;
 
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AlbumFragment extends BaseMusicLibraryFragment {
+public class AlbumFragment extends AbsRecyclerViewFragment {
 
     private AlbumAdapter mAdapter;
     private GridLayoutManager layoutManager;
     private RecyclerView.ItemDecoration itemDecoration;
-    private PreferencesUtility mPreferences;
+    private PreferencesUtils mPreferences;
     private boolean isGrid;
 
     public AlbumFragment() {
@@ -53,7 +49,7 @@ public class AlbumFragment extends BaseMusicLibraryFragment {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferences = PreferencesUtility.getInstance(getActivity());
+        mPreferences = PreferencesUtils.getInstance(getActivity());
         isGrid = mPreferences.isAlbumsInGrid();
     }
 
@@ -62,7 +58,6 @@ public class AlbumFragment extends BaseMusicLibraryFragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.recyclerView);
-        fastScroller = view.findViewById(R.id.fastscroller);
         setLayoutManager();
 
         if (getActivity() != null)
@@ -72,11 +67,8 @@ public class AlbumFragment extends BaseMusicLibraryFragment {
     private void setLayoutManager(){
         if (isGrid) {
             layoutManager = new GridLayoutManager(getActivity(), 2);
-            fastScroller.setVisibility(View.GONE);
         } else {
             layoutManager = new GridLayoutManager(getActivity(), 1);
-            fastScroller.setVisibility(View.VISIBLE);
-            fastScroller.setRecyclerView(recyclerView);
         }
         recyclerView.setLayoutManager(layoutManager);
     }
@@ -162,7 +154,7 @@ public class AlbumFragment extends BaseMusicLibraryFragment {
 
     private void updateLayoutManager(int column) {
         recyclerView.removeItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new AlbumAdapter((AppCompatActivity) getActivity(), AlbumLoader.getAllAlbums(getActivity())));
+        recyclerView.setAdapter(new AlbumAdapter((AppCompatActivity) getActivity(), com.rak.dj.djmusicplayer.dataloaders.upgraded.AlbumLoader.getAllAlbums(getActivity())));
         layoutManager.setSpanCount(column);
         layoutManager.requestLayout();
         setItemDecoration();
@@ -172,7 +164,7 @@ public class AlbumFragment extends BaseMusicLibraryFragment {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(final Void... unused) {
-                List<Album> albumList = AlbumLoader.getAllAlbums(getActivity());
+                List<Album> albumList = com.rak.dj.djmusicplayer.dataloaders.upgraded.AlbumLoader.getAllAlbums(getActivity());
                 mAdapter.updateDataSet(albumList);
                 return null;
             }
@@ -189,8 +181,9 @@ public class AlbumFragment extends BaseMusicLibraryFragment {
 
         @Override
         protected String doInBackground(String... params) {
+
             if (getActivity() != null)
-                mAdapter = new AlbumAdapter((AppCompatActivity) getActivity(), AlbumLoader.getAllAlbums(getActivity()));
+                mAdapter = new AlbumAdapter((AppCompatActivity) getActivity(), com.rak.dj.djmusicplayer.dataloaders.upgraded.AlbumLoader.getAllAlbums(getActivity()));
             return "Executed";
         }
 

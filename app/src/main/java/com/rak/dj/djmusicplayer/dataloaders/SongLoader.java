@@ -24,16 +24,12 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 
 
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.models.Song;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
-import com.rak.dj.djmusicplayer.musiclibrary.BaseMusicLibraryFragment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SongLoader extends BaseLoader{
@@ -53,7 +49,10 @@ public class SongLoader extends BaseLoader{
                 long artistId = cursor.getInt(6);
                 long albumId = cursor.getLong(7);
                 String data = cursor.getString(8);
-                arrayList.add(new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data));
+                long dateModified = cursor.getLong(9);
+                Song song = new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data);
+                song.setDateModified(dateModified);
+                arrayList.add(song);
             }
             while (cursor.moveToNext());
         if (cursor != null)
@@ -73,7 +72,9 @@ public class SongLoader extends BaseLoader{
             long artistId = cursor.getInt(6);
             long albumId = cursor.getLong(7);
             String data = cursor.getString(8);
+            long dateModified = cursor.getLong(9);
             song = new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data);
+            song.setDateModified(dateModified);
         }
 
         if (cursor != null)
@@ -118,7 +119,8 @@ public class SongLoader extends BaseLoader{
                 MediaStore.Audio.AudioColumns.TRACK,
                 MediaStore.Audio.AudioColumns.ARTIST_ID,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
-                MediaStore.Audio.AudioColumns.DATA};
+                MediaStore.Audio.AudioColumns.DATA,
+                MediaStore.Audio.AudioColumns.DATE_MODIFIED};
         String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
 
         Cursor cursor = cr.query(uri, projection, selection + "=?", selectionArgs, sortOrder);
@@ -171,7 +173,10 @@ public class SongLoader extends BaseLoader{
                 long artistId = cursor.getInt(6);
                 long albumId = cursor.getLong(7);
                 String data = cursor.getString(8);
-                arrayList.add(new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data));
+                long dateModified = cursor.getLong(9);
+                Song song = new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data);
+                song.setDateModified(dateModified);
+                arrayList.add(song);
             }
             while (cursor.moveToNext());
         if (cursor != null)
@@ -180,7 +185,7 @@ public class SongLoader extends BaseLoader{
     }
 
     public static Cursor makeMiniSongCursor(Context context, String selection, String[] paramArrayOfString) {
-        final String songSortOrder = PreferencesUtility.getInstance(context).getSongSortOrder();
+        final String songSortOrder = PreferencesUtils.getInstance(context).getSongSortOrder();
         return makeMiniSongCursor(context, selection, paramArrayOfString, songSortOrder);
     }
 
@@ -198,12 +203,13 @@ public class SongLoader extends BaseLoader{
                 MediaStore.Audio.AudioColumns.TRACK,
                 MediaStore.Audio.AudioColumns.ARTIST_ID,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
-                MediaStore.Audio.AudioColumns.DATA}, selectionStatement, paramArrayOfString, sortOrder);
+                MediaStore.Audio.AudioColumns.DATA,
+                MediaStore.Audio.AudioColumns.DATE_MODIFIED}, selectionStatement, paramArrayOfString, sortOrder);
 
     }
 
     public static Cursor makeSongCursor(Context context, String selection, String[] paramArrayOfString) {
-        final String songSortOrder = PreferencesUtility.getInstance(context).getSongSortOrder();
+        final String songSortOrder = PreferencesUtils.getInstance(context).getSongSortOrder();
         return makeSongCursor(context, selection, paramArrayOfString, songSortOrder);
     }
 
@@ -221,7 +227,8 @@ public class SongLoader extends BaseLoader{
                 MediaStore.Audio.AudioColumns.TRACK,
                 MediaStore.Audio.AudioColumns.ARTIST_ID,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
-                MediaStore.Audio.AudioColumns.DATA}, selectionStatement, paramArrayOfString, sortOrder);
+                MediaStore.Audio.AudioColumns.DATA,
+                MediaStore.Audio.AudioColumns.DATE_MODIFIED}, selectionStatement, paramArrayOfString, sortOrder);
 
     }
 

@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="160dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="2.0dip"
     android:elevation="3dp"
     android:background="?attr/selectableItemBackground">
@@ -17,13 +18,29 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <com.rak.dj.djmusicplayer.widgets.SquareImageView
+
+            <com.rak.dj.djmusicplayer.widgets.WidthFitSquareLayout
+                android:id="@+id/image_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/artistImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    tools:ignore="ContentDescription"
+                    android:transitionName="transition_artist_image"/>
+
+            </com.rak.dj.djmusicplayer.widgets.WidthFitSquareLayout>
+
+            <!--<com.rak.dj.djmusicplayer.widgets.SquareImageView
                 android:id="@+id/artistImage"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_empty_music2"
-                android:transitionName="transition_artist_image" />
+                android:transitionName="transition_artist_image" />-->
 
             <LinearLayout
                 android:id="@+id/footer"

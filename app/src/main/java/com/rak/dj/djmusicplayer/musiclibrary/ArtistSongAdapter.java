@@ -29,10 +29,10 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.ArtistLoader;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.ArtistAlbumLoader;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +41,10 @@ public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.I
 
     private List<Song> arraylist;
     private AppCompatActivity mContext;
-    private long artistID;
+    private int artistID;
     private long[] songIDs;
 
-    public ArtistSongAdapter(AppCompatActivity context, List<Song> arraylist, long artistID) {
+    public ArtistSongAdapter(AppCompatActivity context, List<Song> arraylist, int artistID) {
         super(context, arraylist);
         this.arraylist = arraylist;
         this.mContext = context;
@@ -76,7 +76,7 @@ public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.I
             itemHolder.title.setText(localItem.title);
             itemHolder.album.setText(localItem.albumName);
 
-            ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(localItem.albumId).toString(),
+            ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(localItem.albumId).toString(),
                     itemHolder.albumArt, new DisplayImageOptions.Builder()
                             .cacheInMemory(true).showImageOnLoading(R.drawable.ic_empty_music2).resetViewBeforeLoading(true).build());
             setOnPopupMenuListener(itemHolder, i - 1);
@@ -108,36 +108,36 @@ public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.I
 
                /* switch (item.getItemId()) {
                     case R.id.popup_song_play:
-                        MusicPlayer.playAll(mContext, songIDs, position, -1, JazzUtils.IdType.NA, false);
+                        MusicPlayer.playAll(mContext, songIDs, position, -1, JazzUtil.IdType.NA, false);
                         break;
                     case R.id.popup_song_play_next:
                         long[] ids = new long[1];
                         ids[0] = arraylist.get(position + 1).id;
-                        MusicPlayer.playNext(mContext, ids, -1, JazzUtils.IdType.NA);
+                        MusicPlayer.playNext(mContext, ids, -1, JazzUtil.IdType.NA);
                         break;
                     case R.id.popup_song_goto_album:
-                        NavigationUtils.goToAlbum(mContext, arraylist.get(position + 1).albumId);
+                        NavigationUtil.goToAlbum(mContext, arraylist.get(position + 1).albumId);
                         break;
                     case R.id.popup_song_goto_artist:
-                        NavigationUtils.goToArtist(mContext, arraylist.get(position + 1).artistId);
+                        NavigationUtil.goToArtist(mContext, arraylist.get(position + 1).artistId);
                         break;
                     case R.id.popup_song_addto_queue:
                         long[] id = new long[1];
                         id[0] = arraylist.get(position + 1).id;
-                        MusicPlayer.addToQueue(mContext, id, -1, JazzUtils.IdType.NA);
+                        MusicPlayer.addToQueue(mContext, id, -1, JazzUtil.IdType.NA);
                         break;
                     case R.id.popup_song_addto_playlist:
                         AddPlaylistDialog.newInstance(arraylist.get(position + 1)).show(((AppCompatActivity) mContext).getSupportFragmentManager(), "ADD_PLAYLIST");
                         break;
                     case R.id.popup_song_share:
-                        JazzUtils.shareTrack(mContext, arraylist.get(position).id);
+                        JazzUtil.shareTrack(mContext, arraylist.get(position).id);
                         break;
                     case R.id.popup_tag_editor:
-                        NavigationUtils.navigateToSongTagEditor(mContext, arraylist.get(position).id);
+                        NavigationUtil.navigateToSongTagEditor(mContext, arraylist.get(position).id);
                         break;
                     case R.id.popup_song_delete:
                         long[] deleteIds = {arraylist.get(position + 1).id};
-                        JazzUtils.showDeleteDialog(mContext,arraylist.get(position + 1).title, deleteIds, ArtistSongAdapter.this, position + 1);
+                        JazzUtil.showDeleteDialog(mContext,arraylist.get(position + 1).title, deleteIds, ArtistSongAdapter.this, position + 1);
                         break;
                 }*/
                 return false;
@@ -158,7 +158,7 @@ public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.I
         albumsRecyclerview.setNestedScrollingEnabled(false);
 
 
-        ArtistAlbumAdapter mAlbumAdapter = new ArtistAlbumAdapter(mContext, ArtistAlbumLoader.getAlbumsForArtist(mContext, artistID));
+        ArtistAlbumAdapter mAlbumAdapter = new ArtistAlbumAdapter(mContext, ArtistLoader.getArtist(mContext, artistID).albums);
         albumsRecyclerview.setAdapter(mAlbumAdapter);
     }
 
@@ -231,7 +231,7 @@ public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.I
                 @Override
                 public void run() {
                     playAll(mContext, songIDs, getAdapterPosition() - 1, artistID,
-                            JazzUtils.IdType.Artist, false,
+                            JazzUtil.IdType.Artist, false,
                             arraylist.get(getAdapterPosition()), true);
                 }
             }, 100);

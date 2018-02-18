@@ -29,8 +29,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class SlidingQueueAdapter extends RecyclerView.Adapter<SlidingQueueAdapte
 //        setAnimation(itemHolder.itemView, i);
         Song localItem = arraylist.get(i);
 
-        ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(localItem.albumId).toString(),
+        ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(localItem.albumId).toString(),
                 itemHolder.albumArt, new DisplayImageOptions.Builder().cacheInMemory(true)
                         .showImageOnLoading(R.drawable.ic_empty_music2).resetViewBeforeLoading(true).build());
 

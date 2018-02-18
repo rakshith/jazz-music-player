@@ -8,8 +8,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.models.upgraded.Artist;
 import com.rak.dj.djmusicplayer.musiceditmanager.RingDroidActivity;
 
 import java.io.File;
@@ -19,7 +23,7 @@ import java.io.IOException;
  * Created by sraksh on 2/13/2018.
  */
 
-public class MusicUtils {
+public class MusicUtil {
 
     @NonNull
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -34,6 +38,21 @@ public class MusicUtils {
             }
         }
         return albumArtDir;
+    }
+
+    @NonNull
+    public static String getArtistInfoString(@NonNull final Context context, @NonNull final Artist artist) {
+        int albumCount = artist.getAlbumCount();
+        int songCount = artist.getSongCount();
+        String albumString = albumCount == 1 ? context.getResources().getString(R.string.album) : context.getResources().getString(R.string.albums);
+        String songString = songCount == 1 ? context.getResources().getString(R.string.song) : context.getResources().getString(R.string.songs);
+        return albumCount + " " + albumString + " • " + songCount + " " + songString;
+    }
+
+    public static boolean isArtistNameUnknown(@Nullable String artistName) {
+        if (TextUtils.isEmpty(artistName)) return false;
+        artistName = artistName.trim().toLowerCase();
+        return artistName.equals("unknown") || artistName.equals("<unknown>");
     }
 
     @NonNull

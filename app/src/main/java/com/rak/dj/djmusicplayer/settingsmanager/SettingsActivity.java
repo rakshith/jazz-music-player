@@ -12,7 +12,7 @@ import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 
 public class SettingsActivity extends BaseSettingsThemedActivity implements ColorChooserDialog.ColorCallback, ATEActivityThemeCustomizer {
 
@@ -20,9 +20,9 @@ public class SettingsActivity extends BaseSettingsThemedActivity implements Colo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (PreferencesUtility.getInstance(this).getTheme().equals("dark"))
+        if (PreferencesUtils.getInstance(this).getTheme().equals("dark"))
             setTheme(R.style.AppThemeNormalDark);
-        else if (PreferencesUtility.getInstance(this).getTheme().equals("black"))
+        else if (PreferencesUtils.getInstance(this).getTheme().equals("black"))
             setTheme(R.style.AppThemeNormalBlack);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);

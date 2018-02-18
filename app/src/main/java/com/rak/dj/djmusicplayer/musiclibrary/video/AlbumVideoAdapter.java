@@ -2,6 +2,7 @@ package com.rak.dj.djmusicplayer.musiclibrary.video;
 
 import android.os.Handler;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
@@ -16,12 +17,13 @@ import android.widget.TextView;
 import com.afollestad.appthemeengine.Config;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 import com.rak.dj.djmusicplayer.models.AlbumVideo;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ import java.util.List;
  * Created by sraksh on 2/11/2018.
  */
 
-public class AlbumVideoAdapter extends BaseAdapter<AlbumVideoAdapter.ItemHolder> implements BubbleTextGetter {
+public class AlbumVideoAdapter extends BaseAdapter<AlbumVideoAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
     private List<AlbumVideo> arraylist;
     private AppCompatActivity mContext;
@@ -67,7 +69,7 @@ public class AlbumVideoAdapter extends BaseAdapter<AlbumVideoAdapter.ItemHolder>
         }
 
         if (animate) {
-            if (JazzUtils.isLollipop())
+            if (JazzUtil.isLollipop())
                 setAnimation(itemHolder.itemView, position);
             else {
                 if (position > 10)
@@ -95,11 +97,12 @@ public class AlbumVideoAdapter extends BaseAdapter<AlbumVideoAdapter.ItemHolder>
         return itemPosition;
     }
 
+    @NonNull
     @Override
-    public String getTextToShowInBubble(final int pos) {
+    public String getSectionName(int position) {
         if (arraylist == null || arraylist.size() == 0)
             return "";
-        return Character.toString(arraylist.get(pos).albumName.charAt(0));
+        return Character.toString(arraylist.get(position).albumName.charAt(0));
     }
 
     public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -120,7 +123,7 @@ public class AlbumVideoAdapter extends BaseAdapter<AlbumVideoAdapter.ItemHolder>
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    NavigationUtils.navigateToVideoList(mContext, arraylist.get(getAdapterPosition()).albumName,
+                    NavigationUtil.navigateToVideoList(mContext, arraylist.get(getAdapterPosition()).albumName,
                             new Pair<View, String>(folderIcon, "transition_album_art" + getAdapterPosition()));
                 }
             }, 100);

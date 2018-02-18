@@ -3,7 +3,8 @@ package com.rak.dj.djmusicplayer.musiclibrary.songs;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,46 +17,44 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rak.dj.djmusicplayer.BaseMainActivity;
-import com.rak.dj.djmusicplayer.musiclibrary.songs.SongsAdapter;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.SongLoader;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+
 import com.rak.dj.djmusicplayer.helpers.SortOrder;
-import com.rak.dj.djmusicplayer.models.Song;
-import com.rak.dj.djmusicplayer.widgets.FastScroller;
 
 import java.util.List;
 
 
-public class SongsFragment extends Fragment implements MusicStateListener {
+public class SongsFragment extends AbsRecyclerViewFragment implements MusicStateListener {
 
     private SongsAdapter songsAdapter;
     private RecyclerView recyclerView;
-    private PreferencesUtility mPreferences;
+    private PreferencesUtils mPreferences;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferences = PreferencesUtility.getInstance(getActivity());
+        mPreferences = PreferencesUtils.getInstance(getActivity());
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
+    public View setBaseListView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(
                 R.layout.fragment_recylerview, container, false);
         recyclerView =  rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        FastScroller fastScroller =  rootView.findViewById(R.id.fastscroller);
-        fastScroller.setRecyclerView(recyclerView);
-
-        new loadSongs().execute("");
-        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
-
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+        new loadSongs().execute("");
     }
 
     @Override

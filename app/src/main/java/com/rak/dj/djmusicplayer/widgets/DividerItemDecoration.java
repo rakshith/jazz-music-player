@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 
 
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {
@@ -27,7 +27,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     public DividerItemDecoration(Context context, int orientation) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
-        if (PreferencesUtility.getInstance(context).getTheme().equals("light"))
+        if (PreferencesUtils.getInstance(context).getTheme().equals("light"))
             mDivider = ContextCompat.getDrawable(context, R.drawable.item_divider_black);
         else mDivider = ContextCompat.getDrawable(context, R.drawable.item_divider_white);
 //        mDivider = a.getDrawable(0);

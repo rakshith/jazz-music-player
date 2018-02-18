@@ -3,10 +3,13 @@ package com.rak.dj.djmusicplayer.helpers;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +25,19 @@ import com.afollestad.appthemeengine.util.Util;
  * Created by naman on 02/01/16.
  */
 public class ATEUtils {
+
+    public static int resolveColor(Context context, @AttrRes int attr) {
+        return resolveColor(context, attr, 0);
+    }
+
+    public static int resolveColor(Context context, @AttrRes int attr, int fallback) {
+        TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
+        try {
+            return a.getColor(0, fallback);
+        } finally {
+            a.recycle();
+        }
+    }
 
     public static void setStatusBarColor(Activity activity, String key, int color) {
         try {

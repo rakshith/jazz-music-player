@@ -2,8 +2,7 @@ package com.rak.dj.djmusicplayer.lyricsmanager;
 
 import android.content.Context;
 
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.OkHttpClient;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,17 +10,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.concurrent.TimeUnit;
 
-import retrofit.Callback;
-import retrofit.RequestInterceptor;
-import retrofit.RestAdapter;
-import retrofit.client.OkClient;
-import retrofit.converter.ConversionException;
-import retrofit.converter.Converter;
-import retrofit.http.GET;
-import retrofit.http.Headers;
-import retrofit.http.Query;
-import retrofit.mime.TypedInput;
-import retrofit.mime.TypedOutput;
+
 
 /**
  * Created by Christoph Walcher on 03.12.16.
@@ -31,8 +20,8 @@ public class LyricsLoader {
     private static LyricsLoader instance = null;
     private static final String BASE_API_URL = "https://makeitpersonal.co";
     private static final long CACHE_SIZE = 1024 * 1024;
-    private LyricsRestService service;
-
+    //private LyricsRestService service;
+/*
     public static LyricsLoader getInstance(Context con) {
         if(instance==null)instance = new LyricsLoader(con);
         return instance;
@@ -100,6 +89,6 @@ public class LyricsLoader {
         @Headers("Cache-Control: public")
         @GET("/lyrics")
         void getLyrics(@Query("artist") String artist, @Query("title") String title, Callback<String> callback);
-    }
+    }*/
 
 }

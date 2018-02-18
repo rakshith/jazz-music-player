@@ -15,7 +15,6 @@ package com.rak.dj.djmusicplayer.musiclibrary;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,11 +24,9 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,34 +36,32 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.Config;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.rak.dj.djmusicplayer.BaseThemedActivity;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.AlbumLoader;
-import com.rak.dj.djmusicplayer.dataloaders.AlbumSongLoader;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.AlbumLoader;
+import com.rak.dj.djmusicplayer.glide.JazzColoredTarget;
+import com.rak.dj.djmusicplayer.glide.SongGlideRequest;
+import com.rak.dj.djmusicplayer.glide.palette.BitmapPaletteWrapper;
 import com.rak.dj.djmusicplayer.helpers.ATEUtils;
 import com.rak.dj.djmusicplayer.helpers.Constants;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.ImageUtils;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.helpers.SortOrder;
-import com.rak.dj.djmusicplayer.models.Album;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.models.upgraded.Album;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
-
-import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 
 import java.util.List;
 
 public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
 
-    private long albumID = -1;
+    private int albumID = -1;
 
     private ImageView albumArt, artistArt;
     private TextView albumTitle, albumDetails;
@@ -83,14 +78,14 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
 
     private boolean loadFailed = false;
 
-    private PreferencesUtility mPreferences;
+    private PreferencesUtils mPreferences;
     private Context context;
     private int primaryColor = -1;
 
-    public static AlbumDetailFragment newInstance(long id, boolean useTransition, String transitionName) {
+    public static AlbumDetailFragment newInstance(int id, boolean useTransition, String transitionName) {
         AlbumDetailFragment fragment = new AlbumDetailFragment();
         Bundle args = new Bundle();
-        args.putLong(Constants.ALBUM_ID, id);
+        args.putInt(Constants.ALBUM_ID, id);
         args.putBoolean("transition", useTransition);
         if (useTransition)
             args.putString("transition_name", transitionName);
@@ -102,11 +97,11 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            albumID = getArguments().getLong(Constants.ALBUM_ID);
+            albumID = getArguments().getInt(Constants.ALBUM_ID);
         }
         context = getActivity();
         mContext = (AppCompatActivity) context;
-        mPreferences = PreferencesUtility.getInstance(context);
+        mPreferences = PreferencesUtils.getInstance(context);
     }
 
 
@@ -136,34 +131,70 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
 
         album = AlbumLoader.getAlbum(getActivity(), albumID);
 
-        setAlbumart();
-
         setUpEverything();
 
         fab.setOnClickListener( v ->{
             Handler handler = new Handler();
             handler.postDelayed(() -> {
                 AlbumSongsAdapter adapter = (AlbumSongsAdapter) recyclerView.getAdapter();
-                MusicPlayer.playAll(getActivity(), adapter.getSongIds(), 0, albumID, JazzUtils.IdType.Album, true);
-                NavigationUtils.navigateToNowplaying(getActivity(), false);
+                MusicPlayer.playAll(getActivity(), adapter.getSongIds(), 0, albumID, JazzUtil.IdType.Album, true);
+                NavigationUtil.navigateToNowplaying(getActivity(), false);
             }, 150);
         });
 
         return rootView;
     }
 
+    private Album getAlbum() {
+        if (album == null) album = new Album();
+        return album;
+    }
 
     private void setupToolbar() {
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         final ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-        collapsingToolbarLayout.setTitle(album.title);
-
+        collapsingToolbarLayout.setTitle(album.getTitle());
     }
 
-    private void setAlbumart() {
-        ImageUtils.loadAlbumArtIntoView(album.id, albumArt, new ImageLoadingListener() {
+    private void loadAlbumCover() {
+        SongGlideRequest.Builder.from(Glide.with(this), getAlbum().safeGetFirstSong())
+                .checkIgnoreMediaStore(getActivity())
+                .generatePalette(getActivity()).build()
+                .dontAnimate()
+                .listener(new RequestListener<Object, BitmapPaletteWrapper>() {
+                    @Override
+                    public boolean onException(Exception e, Object model, Target<BitmapPaletteWrapper> target, boolean isFirstResource) {
+                        getActivity().supportStartPostponedEnterTransition();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(BitmapPaletteWrapper resource, Object model, Target<BitmapPaletteWrapper> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        getActivity().supportStartPostponedEnterTransition();
+                        return false;
+                    }
+                })
+                .into(new JazzColoredTarget(albumArt) {
+                    @Override
+                    public void onColorReady(int color) {
+                        setColors(color);
+                    }
+                });
+    }
+
+    private void setColors(int color) {
+        //toolbarColor = color;
+        //albumTitleView.setBackgroundColor(color);
+        //albumTitleView.setTextColor(MaterialValueHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)));
+
+        //setNavigationbarColor(color);
+        //setTaskDescriptionColor(color);
+    }
+
+    /*private void setAlbumart() {
+        ImageUtils.loadAlbumArtIntoView(album.getId(), albumArt, new ImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
                     }
@@ -173,7 +204,7 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
                         loadFailed = true;
                         MaterialDrawableBuilder builder = MaterialDrawableBuilder.with(context)
                                 .setIcon(MaterialDrawableBuilder.IconValue.SHUFFLE)
-                                .setColor(JazzUtils.getBlackWhiteColor(Config.accentColor(context, Helpers.getATEKey(context))));
+                                .setColor(JazzUtil.getBlackWhiteColor(Config.accentColor(context, Helpers.getATEKey(context))));
                         ATEUtils.setFabBackgroundTint(fab, Config.accentColor(context, Helpers.getATEKey(context)));
                         fab.setImageDrawable(builder.build());
                     }
@@ -205,13 +236,13 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
                                                                                           .setIcon(MaterialDrawableBuilder.IconValue.SHUFFLE)
                                                                                           .setSizeDp(30);
                                                                                   if (primaryColor != -1) {
-                                                                                      builder.setColor(JazzUtils.getBlackWhiteColor(primaryColor));
+                                                                                      builder.setColor(JazzUtil.getBlackWhiteColor(primaryColor));
                                                                                       ATEUtils.setFabBackgroundTint(fab, primaryColor);
                                                                                       fab.setImageDrawable(builder.build());
                                                                                   } else {
                                                                                       if (context != null) {
                                                                                           ATEUtils.setFabBackgroundTint(fab, Config.accentColor(context, Helpers.getATEKey(context)));
-                                                                                          builder.setColor(JazzUtils.getBlackWhiteColor(Config.accentColor(context, Helpers.getATEKey(context))));
+                                                                                          builder.setColor(JazzUtil.getBlackWhiteColor(Config.accentColor(context, Helpers.getATEKey(context))));
                                                                                           fab.setImageDrawable(builder.build());
                                                                                       }
                                                                                   }
@@ -236,38 +267,37 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
                 }
 
         );
-    }
+    }*/
 
     private void setAlbumDetails() {
 
-        String songCount = JazzUtils.makeLabel(getActivity(), R.plurals.Nsongs, album.songCount);
+        String songCount = JazzUtil.makeLabel(getActivity(), R.plurals.Nsongs, album.getSongCount());
 
-        String year = (album.year != 0) ? (" - " + String.valueOf(album.year)) : "";
+        String year = (album.getYear() != 0) ? (" - " + String.valueOf(album.getYear())) : "";
 
-        albumTitle.setText(album.title);
-        albumDetails.setText(album.artistName + " - " + songCount + year);
+        albumTitle.setText(album.getTitle());
+        albumDetails.setText(album.getArtistName() + " - " + songCount + year);
     }
 
     private void setUpAlbumSongs() {
-
-        List<Song> songList = AlbumSongLoader.getSongsForAlbum(getActivity(), albumID);
-        mAdapter = new AlbumSongsAdapter((AppCompatActivity) getActivity(), songList, albumID);
+        Album album = AlbumLoader.getAlbum(getActivity(), albumID);
+        mAdapter = new AlbumSongsAdapter((AppCompatActivity) getActivity(), album.songs, albumID);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(mAdapter);
-
     }
 
     private void setUpEverything() {
         setupToolbar();
         setAlbumDetails();
         setUpAlbumSongs();
+        loadAlbumCover();
     }
 
     private void reloadAdapter() {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(final Void... unused) {
-                List<Song> songList = AlbumSongLoader.getSongsForAlbum(getActivity(), albumID);
+                List<Song> songList = AlbumLoader.getAlbum(getActivity(), albumID).songs;
                 mAdapter.updateDataSet(songList);
                 return null;
             }
@@ -298,10 +328,10 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
         switch (item.getItemId()) {
 
             case R.id.menu_go_to_artist:
-                NavigationUtils.goToArtist(getContext(), album.artistId);
+                NavigationUtil.goToArtist(getContext(), album.getId());
                 break;
             case R.id.popup_song_addto_queue:
-                MusicPlayer.addToQueue(context, mAdapter.getSongIds(), -1, JazzUtils.IdType.NA);
+                MusicPlayer.addToQueue(context, mAdapter.getSongIds(), -1, JazzUtil.IdType.NA);
                 break;
             case R.id.popup_song_addto_playlist:
                 AddPlaylistDialog.newInstance(mAdapter.getSongIds()).show(mContext.getSupportFragmentManager(), "ADD_PLAYLIST");

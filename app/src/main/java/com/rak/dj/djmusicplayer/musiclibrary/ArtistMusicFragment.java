@@ -25,9 +25,9 @@ import android.view.ViewGroup;
 
 
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.ArtistSongLoader;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.ArtistLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
 
 import java.util.ArrayList;
@@ -35,13 +35,13 @@ import java.util.ArrayList;
 public class ArtistMusicFragment extends Fragment {
 
     public static RecyclerView songsRecyclerview;
-    private long artistID = -1;
+    private int artistID = -1;
     private ArtistSongAdapter mSongAdapter;
 
-    public static ArtistMusicFragment newInstance(long id) {
+    public static ArtistMusicFragment newInstance(int id) {
         ArtistMusicFragment fragment = new ArtistMusicFragment();
         Bundle args = new Bundle();
-        args.putLong(Constants.ARTIST_ID, id);
+        args.putInt(Constants.ARTIST_ID, id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,7 +50,7 @@ public class ArtistMusicFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            artistID = getArguments().getLong(Constants.ARTIST_ID);
+            artistID = getArguments().getInt(Constants.ARTIST_ID);
         }
     }
 
@@ -72,11 +72,11 @@ public class ArtistMusicFragment extends Fragment {
         songsRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         ArrayList<Song> songList;
-        songList = ArtistSongLoader.getSongsForArtist(getActivity(), artistID);
+        songList = ArtistLoader.getArtist(getActivity(), artistID).getSongs();
 
         // adding one dummy song to top of arraylist
         //there will be albums header at this position in recyclerview
-        songList.add(0, new Song(-1, -1, -1, "dummy", "dummy", "dummy", -1, -1, "dummy"));
+        songList.add(0, new Song(-1, "dummy", -1, -1, -1, "dummy", -1, -1, "dummy", -1, "dummy"));
 
         mSongAdapter = new ArtistSongAdapter((AppCompatActivity) getActivity(), songList, artistID);
         songsRecyclerview.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));

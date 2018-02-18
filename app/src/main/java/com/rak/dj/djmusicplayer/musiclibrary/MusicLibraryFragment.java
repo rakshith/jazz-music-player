@@ -23,7 +23,7 @@ import com.rak.dj.djmusicplayer.musiclibrary.genres.GenresFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.minitracks.MiniTracksFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.video.VideoFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.songs.SongsFragment;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class MusicLibraryFragment extends Fragment {
 
     public static final String TAG = MusicLibraryFragment.class.getSimpleName();
 
-    private PreferencesUtility mPreferences;
+    private PreferencesUtils mPreferences;
     private ViewPager viewPager;
 
     public MusicLibraryFragment() {
@@ -45,7 +45,7 @@ public class MusicLibraryFragment extends Fragment {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferences = PreferencesUtility.getInstance(getActivity());
+        mPreferences = PreferencesUtils.getInstance(getActivity());
     }
 
     @Override

@@ -20,7 +20,7 @@ import com.afollestad.appthemeengine.ATE;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.PlaylistLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.models.Playlist;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class PlaylistFragment extends Fragment {
     private int playlistcount;
     private List<Playlist> playlists = new ArrayList<>();
 
-    private PreferencesUtility mPreferences;
+    private PreferencesUtils mPreferences;
     private boolean isGrid;
     private boolean isDefault;
     private boolean showAuto;
@@ -52,7 +52,7 @@ public class PlaylistFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferences = PreferencesUtility.getInstance(getActivity());
+        mPreferences = PreferencesUtils.getInstance(getActivity());
         isGrid = mPreferences.getPlaylistView() == Constants.PLAYLIST_VIEW_GRID;
         isDefault = mPreferences.getPlaylistView() == Constants.PLAYLIST_VIEW_DEFAULT;
         showAuto = mPreferences.showAutoPlaylist();

@@ -23,7 +23,7 @@ import com.rak.dj.djmusicplayer.playingmanager.BaseNowPlayingFragment;
 import com.rak.dj.djmusicplayer.playingmanager.SlidingQueueAdapter;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.QueueLoader;
-import com.rak.dj.djmusicplayer.helpers.ImageUtils;
+import com.rak.dj.djmusicplayer.helpers.ImageUtil;
 
 import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 
@@ -146,7 +146,7 @@ public class JazzTheme5 extends BaseNowPlayingFragment {
         protected Drawable doInBackground(Bitmap... loadedImage) {
             Drawable drawable = null;
             try {
-                drawable = ImageUtils.createBlurredImageFromBitmap(loadedImage[0], getActivity().getBaseContext(), 12);
+                drawable = ImageUtil.createBlurredImageFromBitmap(loadedImage[0], getActivity().getBaseContext(), 12);
             } catch (Exception e) {
                 e.printStackTrace();
             }

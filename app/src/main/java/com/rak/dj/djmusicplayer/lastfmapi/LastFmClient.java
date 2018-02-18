@@ -15,35 +15,13 @@
 package com.rak.dj.djmusicplayer.lastfmapi;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
 
 
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
-import com.rak.dj.djmusicplayer.lastfmapi.callbacks.AlbumInfoListener;
-import com.rak.dj.djmusicplayer.lastfmapi.callbacks.ArtistInfoListener;
-import com.rak.dj.djmusicplayer.lastfmapi.callbacks.UserListener;
-import com.rak.dj.djmusicplayer.lastfmapi.models.AlbumInfo;
-import com.rak.dj.djmusicplayer.lastfmapi.models.AlbumQuery;
-import com.rak.dj.djmusicplayer.lastfmapi.models.ArtistInfo;
-import com.rak.dj.djmusicplayer.lastfmapi.models.ArtistQuery;
 import com.rak.dj.djmusicplayer.lastfmapi.models.LastfmUserSession;
-import com.rak.dj.djmusicplayer.lastfmapi.models.ScrobbleInfo;
-import com.rak.dj.djmusicplayer.lastfmapi.models.ScrobbleQuery;
-import com.rak.dj.djmusicplayer.lastfmapi.models.UserLoginInfo;
-import com.rak.dj.djmusicplayer.lastfmapi.models.UserLoginQuery;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.HashSet;
-import java.util.Map;
-import java.util.TreeMap;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class LastFmClient {
 
@@ -70,7 +48,7 @@ public class LastFmClient {
 
     private LastfmUserSession mUserSession;
     private static final Object sLock = new Object();
-
+/*
     public static LastFmClient getInstance(Context context) {
         synchronized (sLock) {
             if (sInstance == null) {
@@ -138,7 +116,7 @@ public class LastFmClient {
                 Bundle extras = new Bundle();
                 extras.putString("lf_token",userLoginInfo.mSession.mToken);
                 extras.putString("lf_user",userLoginInfo.mSession.mUsername);
-                PreferencesUtility.getInstance(context).updateService(extras);
+                PreferencesUtils.getInstance(context).updateService(extras);
                 mUserSession = userLoginInfo.mSession;
                 mUserSession.update(context);
                 listener.userSuccess();
@@ -276,5 +254,5 @@ public class LastFmClient {
     public String getUsername() {
         if (mUserSession != null) return mUserSession.mUsername;
         return null;
-    }
+    }*/
 }

@@ -20,12 +20,13 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.SongLoader;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import java.util.List;
  * Created by nv95 on 10.11.16.
  */
 
-public class FolderAdapter extends BaseAdapter<FolderAdapter.ItemHolder> implements BubbleTextGetter {
+public class FolderAdapter extends BaseAdapter<FolderAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
     @NonNull
     private List<File> mFileSet;
@@ -84,13 +85,15 @@ public class FolderAdapter extends BaseAdapter<FolderAdapter.ItemHolder> impleme
         if (localItem.isDirectory()) {
             itemHolder.albumArt.setImageDrawable("..".equals(localItem.getName()) ? mIcons[1] : mIcons[0]);
         } else {
-            ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(song.albumId).toString(),
+            ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(song.albumId).toString(),
                     itemHolder.albumArt,
                     new DisplayImageOptions.Builder().
                             cacheInMemory(true).showImageOnFail(mIcons[2])
                             .resetViewBeforeLoading(true).build());
         }
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -155,12 +158,13 @@ public class FolderAdapter extends BaseAdapter<FolderAdapter.ItemHolder> impleme
         return true;
     }
 
+    @NonNull
     @Override
-    public String getTextToShowInBubble(int pos) {
+    public String getSectionName(int position) {
         if (mBusy || mFileSet.size() == 0)
             return "";
         try {
-            File f = mFileSet.get(pos);
+            File f = mFileSet.get(position);
             if (f.isDirectory()) {
                 return String.valueOf(f.getName().charAt(0));
             } else {
@@ -200,7 +204,7 @@ public class FolderAdapter extends BaseAdapter<FolderAdapter.ItemHolder> impleme
             mFileSet = files;
             notifyDataSetChanged();
             mBusy = false;
-            PreferencesUtility.getInstance(mContext).storeLastFolder(mRoot.getPath());
+            PreferencesUtils.getInstance(mContext).storeLastFolder(mRoot.getPath());
         }
     }
 
@@ -250,7 +254,7 @@ public class FolderAdapter extends BaseAdapter<FolderAdapter.ItemHolder> impleme
                                 j++;
                             }
                         }
-                        playAll(mContext, ret, current, -1, JazzUtils.IdType.NA,
+                        playAll(mContext, ret, current, -1, JazzUtil.IdType.NA,
                                 false, mSongs.get(getAdapterPosition()), false);
                     }
                 }, 100);

@@ -21,8 +21,8 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.AudioColumns;
 
 
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,16 +38,16 @@ public class LastAddedLoader {
 
         if (mCursor != null && mCursor.moveToFirst()) {
             do {
-                long id = mCursor.getLong(0);
+                int id = mCursor.getInt(0);
                 String title = mCursor.getString(1);
                 String artist = mCursor.getString(2);
                 String album = mCursor.getString(3);
                 int duration = mCursor.getInt(4);
                 int trackNumber = mCursor.getInt(5);
-                long artistId = mCursor.getInt(6);
-                long albumId = mCursor.getLong(7);
+                int artistId = mCursor.getInt(6);
+                int albumId = mCursor.getInt(7);
                 String data = mCursor.getString(8);
-                final Song song = new Song(id, albumId, artistId, title, artist, album, duration, trackNumber, data);
+                final Song song = new Song(id, title, trackNumber, -1, duration, data, -1, albumId, album, artistId, artist);
 
                 mSongList.add(song);
             } while (mCursor.moveToNext());
@@ -62,7 +62,7 @@ public class LastAddedLoader {
     public static final Cursor makeLastAddedCursor(final Context context) {
         //four weeks ago
         long fourWeeksAgo = (System.currentTimeMillis() / 1000) - (4 * 3600 * 24 * 7);
-        long cutoff = PreferencesUtility.getInstance(context).getLastAddedCutoff();
+        long cutoff = PreferencesUtils.getInstance(context).getLastAddedCutoff();
         // use the most recent of the two timestamps
         if (cutoff < fourWeeksAgo) {
             cutoff = fourWeeksAgo;

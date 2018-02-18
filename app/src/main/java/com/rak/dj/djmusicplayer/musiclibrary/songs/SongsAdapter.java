@@ -2,6 +2,7 @@ package com.rak.dj.djmusicplayer.musiclibrary.songs;
 
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +18,15 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musiclibrary.AbsSongsAdapter;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseViewHolder;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 import com.rak.dj.djmusicplayer.widgets.MusicVisualizer;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
@@ -31,7 +34,7 @@ import java.util.List;
  * Created by sraksh on 1/12/2018.
  */
 
-public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder> implements BubbleTextGetter {
+public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
     public int currentlyPlayingPosition, itemPosition;
     private List<Song> arraylist;
@@ -74,7 +77,7 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
         itemHolder.title.setText(localItem.title);
         itemHolder.artist.setText(localItem.artistName);
 
-        ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(localItem.albumId).toString(),
+        ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(localItem.albumId).toString(),
                 itemHolder.albumArt, new DisplayImageOptions.Builder().cacheInMemory(true)
                         .showImageOnLoading(R.drawable.ic_empty_music2)
                         .resetViewBeforeLoading(true).build());
@@ -98,7 +101,7 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
 
 
         if (animate && isPlaylist) {
-            if (JazzUtils.isLollipop())
+            if (JazzUtil.isLollipop())
                 setAnimation(itemHolder.itemView, position);
             else {
                 if (position > 10)
@@ -181,11 +184,13 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
         this.playlistId = playlistId;
     }
 
+
+    @NonNull
     @Override
-    public String getTextToShowInBubble(final int pos) {
+    public String getSectionName(int position) {
         if (arraylist == null || arraylist.size() == 0)
             return "";
-        Character ch = arraylist.get(pos).title.charAt(0);
+        Character ch = arraylist.get(position).title.charAt(0);
         if (Character.isDigit(ch)) {
             return "#";
         } else
@@ -215,7 +220,7 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
                 public void run() {
                     currentlyPlayingPosition = getAdapterPosition();
                     playAll(mContext, songIDs, getAdapterPosition(), -1,
-                            JazzUtils.IdType.NA, false,
+                            JazzUtil.IdType.NA, false,
                             arraylist.get(getAdapterPosition()), false);
                     Handler handler1 = new Handler();
                     handler1.postDelayed(new Runnable() {

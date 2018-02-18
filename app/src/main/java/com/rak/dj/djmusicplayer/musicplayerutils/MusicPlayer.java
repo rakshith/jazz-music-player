@@ -35,7 +35,7 @@ import android.widget.Toast;
 
 import com.rak.dj.djmusicplayer.IAppService;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.helpers.MusicPlaybackTrack;
 import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
 
@@ -454,19 +454,19 @@ public class MusicPlayer {
     public static void playArtist(final Context context, final long artistId, int position, boolean shuffle) {
         final long[] artistList = getSongListForArtist(context, artistId);
         if (artistList != null) {
-            playAll(context, artistList, position, artistId, JazzUtils.IdType.Artist, shuffle);
+            playAll(context, artistList, position, artistId, JazzUtil.IdType.Artist, shuffle);
         }
     }
 
     public static void playAlbum(final Context context, final long albumId, int position, boolean shuffle) {
         final long[] albumList = getSongListForAlbum(context, albumId);
         if (albumList != null) {
-            playAll(context, albumList, position, albumId, JazzUtils.IdType.Album, shuffle);
+            playAll(context, albumList, position, albumId, JazzUtil.IdType.Album, shuffle);
         }
     }
 
     public static void playAll(final Context context, final long[] list, int position,
-                               final long sourceId, final JazzUtils.IdType sourceType,
+                               final long sourceId, final JazzUtil.IdType sourceType,
                                final boolean forceShuffle) {
         if (list == null || list.length == 0 || mService == null) {
             return;
@@ -495,7 +495,7 @@ public class MusicPlayer {
         }
     }
 
-    public static void playNext(Context context, final long[] list, final long sourceId, final JazzUtils.IdType sourceType) {
+    public static void playNext(Context context, final long[] list, final long sourceId, final JazzUtil.IdType sourceType) {
         if (mService == null) {
             return;
         }
@@ -519,7 +519,7 @@ public class MusicPlayer {
                     mService.play();
                     return;
             }
-            mService.open(trackList, -1, -1, JazzUtils.IdType.NA.mId);
+            mService.open(trackList, -1, -1, JazzUtil.IdType.NA.mId);
             mService.play();
             cursor.close();
         } catch (final RemoteException ignored) {
@@ -661,7 +661,7 @@ public class MusicPlayer {
     }
 
     public static void addToQueue(final Context context, final long[] list, long sourceId,
-                                  JazzUtils.IdType sourceType) {
+                                  JazzUtil.IdType sourceType) {
         if (mService == null) {
             return;
         }

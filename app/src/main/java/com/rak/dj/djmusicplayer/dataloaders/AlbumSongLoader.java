@@ -21,7 +21,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.models.Song;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class AlbumSongLoader {
 
     public static Cursor makeAlbumSongCursor(Context context, long albumID) {
         ContentResolver contentResolver = context.getContentResolver();
-        final String albumSongSortOrder = PreferencesUtility.getInstance(context).getAlbumSongSortOrder();
+        final String albumSongSortOrder = PreferencesUtils.getInstance(context).getAlbumSongSortOrder();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String string = "is_music=1 AND title != '' AND album_id=" + albumID;
 

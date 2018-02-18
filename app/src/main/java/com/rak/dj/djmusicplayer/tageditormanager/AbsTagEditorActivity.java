@@ -20,12 +20,11 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.afollestad.appthemeengine.util.TintHelper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.MusicUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.MusicUtil;
 import com.rak.dj.djmusicplayer.helpers.misc.DialogAsyncTask;
 import com.rak.dj.djmusicplayer.helpers.misc.SimpleObservableScrollViewCallbacks;
 import com.rak.dj.djmusicplayer.helpers.misc.UpdateToastMediaScannerCompletionListener;
@@ -144,7 +143,7 @@ public abstract class AbsTagEditorActivity extends AppCompatActivity {
     }
 
     protected void writeValuesToFiles(@NonNull final Map<FieldKey, String> fieldKeyValueMap, @Nullable final ArtworkInfo artworkInfo) {
-        JazzUtils.hideSoftKeyboard(this);
+        JazzUtil.hideSoftKeyboard(this);
 
         new WriteTagsAsyncTask(this).execute(new WriteTagsAsyncTask.LoadingInfo(getSongPaths(), fieldKeyValueMap, artworkInfo));
     }
@@ -166,7 +165,7 @@ public abstract class AbsTagEditorActivity extends AppCompatActivity {
                 File albumArtFile = null;
                 if (info.artworkInfo != null && info.artworkInfo.artwork != null) {
                     try {
-                        albumArtFile = MusicUtils.createAlbumArtFile().getCanonicalFile();
+                        albumArtFile = MusicUtil.createAlbumArtFile().getCanonicalFile();
                         info.artworkInfo.artwork.compress(Bitmap.CompressFormat.PNG, 0, new FileOutputStream(albumArtFile));
                         artwork = ArtworkFactory.createArtworkFromFile(albumArtFile);
                     } catch (IOException e) {
@@ -213,9 +212,9 @@ public abstract class AbsTagEditorActivity extends AppCompatActivity {
                 Context context = getContext();
                 if (context != null) {
                     if (wroteArtwork) {
-                        MusicUtils.insertAlbumArt(context, info.artworkInfo.albumId, albumArtFile.getPath());
+                        MusicUtil.insertAlbumArt(context, info.artworkInfo.albumId, albumArtFile.getPath());
                     } else if (deletedArtwork) {
-                        MusicUtils.deleteAlbumArt(context, info.artworkInfo.albumId);
+                        MusicUtil.deleteAlbumArt(context, info.artworkInfo.albumId);
                     }
                 }
 

@@ -59,7 +59,7 @@ public class ArtistBioFragment extends Fragment {
 
         Artist artist = ArtistLoader.getArtist(getActivity(), artistID);
 
-        LastFmClient.getInstance(getActivity()).getArtistInfo(new ArtistQuery(artist.name), new ArtistInfoListener() {
+        /*LastFmClient.getInstance(getActivity()).getArtistInfo(new ArtistQuery(artist.name), new ArtistInfoListener() {
             @Override
             public void artistInfoSucess(LastfmArtist artist) {
 
@@ -68,7 +68,7 @@ public class ArtistBioFragment extends Fragment {
             @Override
             public void artistInfoFailed() {
             }
-        });
+        });*/
 
         final ViewPager pager = (ViewPager) rootView.findViewById(R.id.tagspager);
 

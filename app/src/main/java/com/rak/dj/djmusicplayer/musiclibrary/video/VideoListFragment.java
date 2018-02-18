@@ -20,14 +20,13 @@ import com.afollestad.appthemeengine.ATE;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.VideoLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.musiclibrary.BaseMusicLibraryFragment;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
-import com.rak.dj.djmusicplayer.widgets.FastScroller;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoListFragment extends BaseMusicLibraryFragment {
+public class VideoListFragment extends AbsRecyclerViewFragment {
 
     String albumName = null;
 
@@ -59,11 +58,9 @@ public class VideoListFragment extends BaseMusicLibraryFragment {
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(albumName);
 
-        fastScroller = rootView.findViewById(R.id.fastscroller);
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        FastScroller fastScroller =  rootView.findViewById(R.id.fastscroller);
-        fastScroller.setRecyclerView(recyclerView);
+
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         return rootView;
     }
@@ -98,7 +95,6 @@ public class VideoListFragment extends BaseMusicLibraryFragment {
                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
 
             mProgressBar.setVisibility(View.GONE);
-            fastScroller.setVisibility(View.VISIBLE);
 
         }
 

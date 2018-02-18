@@ -12,10 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.MusicUtils;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.MusicUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 
@@ -213,60 +213,59 @@ public abstract  class AbsSongsAdapter<T, VH extends BaseViewHolder> extends Rec
     public abstract int getItemPosition();
 
     public void playAll(final Activity context, final long[] list, int position,
-                        final long sourceId, final JazzUtils.IdType sourceType,
+                        final long sourceId, final JazzUtil.IdType sourceType,
                         final boolean forceShuffle, final Song currentSong, boolean navigateNowPlaying) {
 
-        MusicPlayer.playAll(context, list, position, -1, JazzUtils.IdType.NA, false);
+        MusicPlayer.playAll(context, list, position, -1, JazzUtil.IdType.NA, false);
 
         if (navigateNowPlaying) {
-            NavigationUtils.navigateToNowplaying(context, true);
+            NavigationUtil.navigateToNowplaying(context, true);
         }
     }
 
     protected void menuFunctionalityForSong(AppCompatActivity mContext, MenuItem menuItem, Song song, long playlistId, long[] songIDs){
-
         int position = getItemPosition();
-
         switch (menuItem.getItemId()) {
             case R.id.popup_song_remove_playlist:
-                JazzUtils.removeFromPlaylist(mContext, song.id, playlistId);
+                JazzUtil.removeFromPlaylist(mContext, song.id, playlistId);
                 removeSongAt(position);
                 notifyItemRemoved(position);
                 break;
             case R.id.popup_song_play:
-                MusicPlayer.playAll(mContext,songIDs , position, -1, JazzUtils.IdType.NA, false);
+                MusicPlayer.playAll(mContext,songIDs , position, -1, JazzUtil.IdType.NA, false);
                 break;
             case R.id.popup_song_play_next:
                 long[] ids = new long[1];
                 ids[0] = song.id;
-                MusicPlayer.playNext(mContext, ids, -1, JazzUtils.IdType.NA);
+                MusicPlayer.playNext(mContext, ids, -1, JazzUtil.IdType.NA);
                 break;
             case R.id.popup_song_goto_album:
-                NavigationUtils.goToAlbum(mContext, song.albumId);
+                NavigationUtil.goToAlbum(mContext, song.albumId);
                 break;
             case R.id.popup_song_goto_artist:
-                NavigationUtils.goToArtist(mContext, song.artistId);
+                NavigationUtil.goToArtist(mContext, song.artistId);
                 break;
             case R.id.popup_song_addto_queue:
                 long[] id = new long[1];
                 id[0] = song.id;
-                MusicPlayer.addToQueue(mContext, id, -1, JazzUtils.IdType.NA);
+                MusicPlayer.addToQueue(mContext, id, -1, JazzUtil.IdType.NA);
                 break;
             case R.id.popup_song_addto_playlist:
                 AddPlaylistDialog.newInstance(song).show(mContext.getSupportFragmentManager(), "ADD_PLAYLIST");
                 break;
             case R.id.popup_cut:
-                MusicUtils.startRingdroidEditor(mContext.getBaseContext(), song.data);
+
+                MusicUtil.startRingdroidEditor(mContext.getBaseContext(), song.data);
                 break;
             case R.id.popup_tag_editor:
-                NavigationUtils.navigateToSongTagEditor(mContext, song.id);
+                NavigationUtil.navigateToSongTagEditor(mContext, song.id);
                 break;
             case R.id.popup_song_share:
-                JazzUtils.shareTrack(mContext, song.id);
+                JazzUtil.shareTrack(mContext, song.id);
                 break;
             case R.id.popup_song_delete:
                 long[] deleteIds = {song.id};
-                JazzUtils.showDeleteDialog(mContext,song.title, deleteIds, AbsSongsAdapter.this, position);
+                JazzUtil.showDeleteDialog(mContext,song.title, deleteIds, AbsSongsAdapter.this, position);
                 break;
         }
     }

@@ -17,10 +17,9 @@ package com.rak.dj.djmusicplayer.helpers;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.constraint.ConstraintLayout;
+import android.support.annotation.NonNull;
 import android.support.v8.renderscript.RenderScript;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,7 +37,7 @@ import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-public class ImageUtils {
+public class ImageUtil {
 
     private static final DisplayImageOptions lastfmDisplayImageOptions =
                                                 new DisplayImageOptions.Builder()
@@ -59,7 +58,7 @@ public class ImageUtils {
 
     public static void loadAlbumArtIntoView(final long albumId, final ImageView view,
                                             final ImageLoadingListener listener) {
-        if (PreferencesUtility.getInstance(view.getContext()).alwaysLoadAlbumImagesFromLastfm()) {
+        if (PreferencesUtils.getInstance(view.getContext()).alwaysLoadAlbumImagesFromLastfm()) {
             loadAlbumArtFromLastfm(albumId, view, listener);
         } else {
             loadAlbumArtFromDiskWithLastfmFallback(albumId, view, listener);
@@ -69,7 +68,7 @@ public class ImageUtils {
     private static void loadAlbumArtFromDiskWithLastfmFallback(final long albumId, ImageView view,
                                                                final ImageLoadingListener listener) {
         ImageLoader.getInstance()
-                .displayImage(JazzUtils.getAlbumArtUri(albumId).toString(),
+                .displayImage(JazzUtil.getAlbumArtUri(albumId).toString(),
                               view,
                               diskDisplayImageOptions,
                               new SimpleImageLoadingListener() {
@@ -147,5 +146,56 @@ public class ImageUtils {
                 .setToActionbarSize()// set the icon size
                 .build();// Finally call build
         return materialIcon;
+    }
+
+    public static int calculateInSampleSize(int width, int height, int reqWidth) {
+        // setting reqWidth matching to desired 1:1 ratio and screen-size
+        if (width < height) {
+            reqWidth = (height / width) * reqWidth;
+        } else {
+            reqWidth = (width / height) * reqWidth;
+        }
+
+        int inSampleSize = 1;
+
+        if (height > reqWidth || width > reqWidth) {
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqWidth
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public static Bitmap resizeBitmap(@NonNull Bitmap src, int maxForSmallerSize) {
+        int width = src.getWidth();
+        int height = src.getHeight();
+
+        final int dstWidth;
+        final int dstHeight;
+
+        if (width < height) {
+            if (maxForSmallerSize >= width) {
+                return src;
+            }
+            float ratio = (float) height / width;
+            dstWidth = maxForSmallerSize;
+            dstHeight = Math.round(maxForSmallerSize * ratio);
+        } else {
+            if (maxForSmallerSize >= height) {
+                return src;
+            }
+            float ratio = (float) width / height;
+            dstWidth = Math.round(maxForSmallerSize * ratio);
+            dstHeight = maxForSmallerSize;
+        }
+
+        return Bitmap.createScaledBitmap(src, dstWidth, dstHeight, false);
     }
 }

@@ -16,15 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
-import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 
 import java.io.File;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+
 
 /**
  * Created by christoph on 10.12.16.
@@ -71,7 +68,7 @@ public class LyricsFragment extends Fragment {
                     artist = artist.substring(0, i);
                 }
 
-                LyricsLoader.getInstance(this.getContext()).getLyrics(artist, MusicPlayer.getTrackName(), new Callback<String>() {
+                /*LyricsLoader.getInstance(this.getContext()).getLyrics(artist, MusicPlayer.getTrackName(), new Callback<String>() {
                     @Override
                     public void success(String s, Response response) {
                         lyrics = s;
@@ -87,7 +84,7 @@ public class LyricsFragment extends Fragment {
                     public void failure(RetrofitError error) {
                         lyricsTextView.setText(R.string.no_lyrics);
                     }
-                });
+                });*/
 
             } else {
                 lyricsTextView.setText(R.string.no_lyrics);

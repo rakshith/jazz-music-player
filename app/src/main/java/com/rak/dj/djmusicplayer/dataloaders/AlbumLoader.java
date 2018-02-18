@@ -18,7 +18,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.models.Album;
 
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class AlbumLoader {
 
 
     public static Cursor makeAlbumCursor(Context context, String selection, String[] paramArrayOfString) {
-        final String albumSortOrder = PreferencesUtility.getInstance(context).getAlbumSortOrder();
+        final String albumSortOrder = PreferencesUtils.getInstance(context).getAlbumSortOrder();
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, new String[]{"_id", "album", "artist", "artist_id", "numsongs", "minyear"}, selection, paramArrayOfString, albumSortOrder);
 
         return cursor;

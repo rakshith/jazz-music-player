@@ -2,13 +2,11 @@ package com.rak.dj.djmusicplayer.dataloaders;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.models.AlbumVideo;
 import com.rak.dj.djmusicplayer.models.Video;
 
@@ -56,7 +54,7 @@ public class VideoLoader {
     private static Cursor makeVideoAlbumCursor(@NonNull final Context context, String albumName) {
         try {
             return context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                    BASE_VIDEO_PROJECTION, VIDEO_SELECTION_BY_ALBUM, new String[]{"%"+ albumName +"%"}, PreferencesUtility.getInstance(context).getVideoSortOrder());
+                    BASE_VIDEO_PROJECTION, VIDEO_SELECTION_BY_ALBUM, new String[]{"%"+ albumName +"%"}, PreferencesUtils.getInstance(context).getVideoSortOrder());
         } catch (SecurityException e) {
             return null;
         }
@@ -69,7 +67,7 @@ public class VideoLoader {
 
 
     public static Cursor makeVideoCursor(Context context, String selection, String[] paramArrayOfString) {
-        final String videoSortOrder = PreferencesUtility.getInstance(context).getVideoSortOrder();
+        final String videoSortOrder = PreferencesUtils.getInstance(context).getVideoSortOrder();
         return makeVideoCursor(context, selection, paramArrayOfString, videoSortOrder);
     }
 

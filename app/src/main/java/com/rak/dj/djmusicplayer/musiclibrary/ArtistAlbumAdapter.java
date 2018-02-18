@@ -14,7 +14,7 @@
 
 package com.rak.dj.djmusicplayer.musiclibrary;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
@@ -26,19 +26,20 @@ import android.widget.TextView;
 
 
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.ImageUtils;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
-import com.rak.dj.djmusicplayer.models.Album;
+import com.rak.dj.djmusicplayer.helpers.ImageUtil;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.models.upgraded.Album;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.ItemHolder> {
 
     private List<Album> arraylist;
-    private Activity mContext;
+    private AppCompatActivity mContext;
 
-    public ArtistAlbumAdapter(Activity context, List<Album> arraylist) {
+    public ArtistAlbumAdapter(AppCompatActivity context, ArrayList<Album> arraylist) {
         this.arraylist = arraylist;
         this.mContext = context;
 
@@ -56,13 +57,13 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
 
         Album localItem = arraylist.get(i);
 
-        itemHolder.title.setText(localItem.title);
-        String songCount = JazzUtils.makeLabel(mContext, R.plurals.Nsongs, localItem.songCount);
+        itemHolder.title.setText(localItem.getTitle());
+        String songCount = JazzUtil.makeLabel(mContext, R.plurals.Nsongs, localItem.getSongCount());
         itemHolder.details.setText(songCount);
 
-        ImageUtils.loadAlbumArtIntoView(localItem.id, itemHolder.albumArt);
+        ImageUtil.loadAlbumArtIntoView(localItem.getId(), itemHolder.albumArt);
 
-        if (JazzUtils.isLollipop())
+        if (JazzUtil.isLollipop())
             itemHolder.albumArt.setTransitionName("transition_album_art" + i);
 
     }
@@ -89,7 +90,7 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
 
         @Override
         public void onClick(View v) {
-            NavigationUtils.navigateToAlbum(mContext, arraylist.get(getAdapterPosition()).id,
+            NavigationUtil.navigateToAlbum(mContext, arraylist.get(getAdapterPosition()).getId(),
                     new Pair<View, String>(albumArt, "transition_album_art" + getAdapterPosition()));
         }
 

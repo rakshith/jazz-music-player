@@ -22,14 +22,14 @@ import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.LastAddedLoader;
 import com.rak.dj.djmusicplayer.dataloaders.PlaylistLoader;
 import com.rak.dj.djmusicplayer.dataloaders.PlaylistSongLoader;
-import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.SongLoader;
 import com.rak.dj.djmusicplayer.dataloaders.TopTracksLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.models.Playlist;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public class PlaylistPagerFragment extends Fragment implements DragLayout.GotoDe
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        showAuto = PreferencesUtility.getInstance(getActivity()).showAutoPlaylist();
+        showAuto = PreferencesUtils.getInstance(getActivity()).showAutoPlaylist();
 
         final List<Playlist> playlists = PlaylistLoader.getPlaylists(getActivity(), showAuto);
 
@@ -163,11 +163,11 @@ public class PlaylistPagerFragment extends Fragment implements DragLayout.GotoDe
                             }
                             if (songCountInt != 0) {
                                 firstAlbumID = lastAddedSongs.get(0).albumId;
-                                return JazzUtils.getAlbumArtUri(firstAlbumID).toString();
+                                return JazzUtil.getAlbumArtUri(firstAlbumID).toString();
                             } else return "nosongs";
                         case 1:
                             TopTracksLoader recentloader = new TopTracksLoader(getActivity(), TopTracksLoader.QueryType.RecentSongs);
-                            List<Song> recentsongs = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
+                            List<Song> recentsongs = SongLoader.getSongs(TopTracksLoader.getCursor());
                             songCountInt = recentsongs.size();
                             for(Song song : recentsongs){
                                 totalRuntime += song.duration / 1000;
@@ -175,18 +175,18 @@ public class PlaylistPagerFragment extends Fragment implements DragLayout.GotoDe
 
                             if (songCountInt != 0) {
                                 firstAlbumID = recentsongs.get(0).albumId;
-                                return JazzUtils.getAlbumArtUri(firstAlbumID).toString();
+                                return JazzUtil.getAlbumArtUri(firstAlbumID).toString();
                             } else return "nosongs";
                         case 2:
                             TopTracksLoader topTracksLoader = new TopTracksLoader(getActivity(), TopTracksLoader.QueryType.TopTracks);
-                            List<Song> topsongs = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
+                            List<Song> topsongs = SongLoader.getSongs(TopTracksLoader.getCursor());
                             songCountInt = topsongs.size();
                             for(Song song : topsongs){
                                 totalRuntime += song.duration / 1000;
                             }
                             if (songCountInt != 0) {
                                 firstAlbumID = topsongs.get(0).albumId;
-                                return JazzUtils.getAlbumArtUri(firstAlbumID).toString();
+                                return JazzUtil.getAlbumArtUri(firstAlbumID).toString();
                             } else return "nosongs";
                         default:
                             List<Song> playlistsongs = PlaylistSongLoader.getSongsInPlaylist(getActivity(), playlist.id);
@@ -196,7 +196,7 @@ public class PlaylistPagerFragment extends Fragment implements DragLayout.GotoDe
                             }
                             if (songCountInt != 0) {
                                 firstAlbumID = playlistsongs.get(0).albumId;
-                                return JazzUtils.getAlbumArtUri(firstAlbumID).toString();
+                                return JazzUtil.getAlbumArtUri(firstAlbumID).toString();
                             } else return "nosongs";
 
                     }
@@ -208,7 +208,7 @@ public class PlaylistPagerFragment extends Fragment implements DragLayout.GotoDe
                     }
                     if (songCountInt != 0) {
                         firstAlbumID = playlistsongs.get(0).albumId;
-                        return JazzUtils.getAlbumArtUri(firstAlbumID).toString();
+                        return JazzUtil.getAlbumArtUri(firstAlbumID).toString();
                     } else return "nosongs";
                 }
             } else return "context is null";
@@ -227,7 +227,7 @@ public class PlaylistPagerFragment extends Fragment implements DragLayout.GotoDe
                         }
                     });
             songcount.setText(" " + String.valueOf(songCountInt) + " " + mContext.getString(R.string.songs));
-            runtime.setText(" " + JazzUtils.makeShortTimeString(mContext, totalRuntime));
+            runtime.setText(" " + JazzUtil.makeShortTimeString(mContext, totalRuntime));
         }
 
         @Override
@@ -259,7 +259,7 @@ public class PlaylistPagerFragment extends Fragment implements DragLayout.GotoDe
         tranitionViews.add(0, Pair.create((View) playlistame, "transition_playlist_name"));
         tranitionViews.add(1, Pair.create((View) playlistImage, "transition_album_art"));
         tranitionViews.add(2, Pair.create(foreground, "transition_foreground"));
-        NavigationUtils.navigateToPlaylistDetail(getActivity(), getPlaylistType(), firstAlbumID, String.valueOf(playlistame.getText()), foregroundColor, playlist.id, tranitionViews);
+        NavigationUtil.navigateToPlaylistDetail(getActivity(), getPlaylistType(), firstAlbumID, String.valueOf(playlistame.getText()), foregroundColor, playlist.id, tranitionViews);
     }
 
     public void bindData(String imageUrl) {

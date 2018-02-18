@@ -22,7 +22,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.helpers.MusicPlaybackTrack;
 
 import java.util.ArrayList;
@@ -162,7 +162,7 @@ public class MusicPlaybackState {
 
                 do {
                     results.add(new MusicPlaybackTrack(cursor.getLong(0), cursor.getLong(1),
-                            JazzUtils.IdType.getTypeById(cursor.getInt(2)), cursor.getInt(3)));
+                            JazzUtil.IdType.getTypeById(cursor.getInt(2)), cursor.getInt(3)));
                 } while (cursor.moveToNext());
             }
 

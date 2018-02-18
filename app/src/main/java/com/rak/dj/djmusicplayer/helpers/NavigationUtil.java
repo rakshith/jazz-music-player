@@ -33,11 +33,11 @@ import java.util.ArrayList;
  * Created by sraksh on 1/16/2018.
  */
 
-public class NavigationUtils {
+public class NavigationUtil {
 
 
     @TargetApi(21)
-    public static void navigateToAlbum(Activity context, long albumID, Pair<View, String> transitionViews) {
+    public static void navigateToAlbum(Activity context, int albumID, Pair<View, String> transitionViews) {
 
         FragmentTransaction transaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
         Fragment fragment;
@@ -110,7 +110,7 @@ public class NavigationUtils {
     }
 
     @TargetApi(21)
-    public static void navigateToArtist(Activity context, long artistID, Pair<View, String> transitionViews) {
+    public static void navigateToArtist(Activity context, int artistID, Pair<View, String> transitionViews) {
 
         FragmentTransaction transaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
         Fragment fragment;
@@ -128,21 +128,22 @@ public class NavigationUtils {
     public static void goToArtist(Context context, long artistId) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setAction(Constants.NAVIGATE_ARTIST);
-        intent.putExtra(Constants.ARTIST_ID, artistId);
+        intent.putExtra(Constants.ARTIST_ID, (int)artistId);
         context.startActivity(intent);
     }
+
 
     public static void goToAlbum(Context context, long albumId) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setAction(Constants.NAVIGATE_ALBUM);
-        intent.putExtra(Constants.ALBUM_ID, albumId);
+        intent.putExtra(Constants.ALBUM_ID, (int)albumId);
         context.startActivity(intent);
     }
 
     public static void navigateToEqualizer(Activity context) {
         try {
             // The google MusicFX apps need to be started using startActivityForResult
-            context.startActivityForResult(JazzUtils.createEffectsIntent(), 666);
+            context.startActivityForResult(JazzUtil.createEffectsIntent(), 666);
         } catch (final ActivityNotFoundException notFound) {
             Toast.makeText(context, "Equalizer not found", Toast.LENGTH_SHORT).show();
         }
@@ -158,7 +159,7 @@ public class NavigationUtils {
         intent.putExtra(Constants.PLAYLIST_NAME, playlistName);
         intent.putExtra(Constants.ACTIVITY_TRANSITION, transitionViews != null);
 
-        if (transitionViews != null && JazzUtils.isLollipop()) {
+        if (transitionViews != null && JazzUtil.isLollipop()) {
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context, transitionViews.get(0), transitionViews.get(1), transitionViews.get(2));
             context.startActivityForResult(intent, Constants.ACTION_DELETE_PLAYLIST, options.toBundle());
         } else {

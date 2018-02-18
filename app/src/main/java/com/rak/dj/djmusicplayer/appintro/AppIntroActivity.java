@@ -8,7 +8,7 @@ import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.github.paolorotolo.appintro.model.SliderPage;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 
 public class AppIntroActivity extends AppIntro {
 
@@ -36,7 +36,7 @@ public class AppIntroActivity extends AppIntro {
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
         // Do something when users tap on Done button.
-        NavigationUtils.navigateToMainApp(this);
+        NavigationUtil.navigateToMainApp(this);
 
     }
 

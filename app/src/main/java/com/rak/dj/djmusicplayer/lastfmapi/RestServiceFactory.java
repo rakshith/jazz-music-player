@@ -14,23 +14,11 @@
 
 package com.rak.dj.djmusicplayer.lastfmapi;
 
-import android.content.Context;
-
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.OkHttpClient;
-
-import java.util.concurrent.TimeUnit;
-
-import retrofit.RequestInterceptor;
-import retrofit.RestAdapter;
-import retrofit.client.OkClient;
-
 public class RestServiceFactory {
     private static final String TAG_OK_HTTP = "OkHttp";
     private static final long CACHE_SIZE = 1024 * 1024;
 
-    public static <T> T createStatic(final Context context, String baseUrl, Class<T> clazz) {
+   /* public static <T> T createStatic(final Context context, String baseUrl, Class<T> clazz) {
         final OkHttpClient okHttpClient = new OkHttpClient();
 
         okHttpClient.setCache(new Cache(context.getApplicationContext().getCacheDir(),
@@ -38,7 +26,7 @@ public class RestServiceFactory {
         okHttpClient.setConnectTimeout(40, TimeUnit.SECONDS);
 
         RequestInterceptor interceptor = new RequestInterceptor() {
-            PreferencesUtility prefs = PreferencesUtility.getInstance(context);
+            PreferencesUtils prefs = PreferencesUtils.getInstance(context);
 
             @Override
             public void intercept(RequestFacade request) {
@@ -72,6 +60,6 @@ public class RestServiceFactory {
                 .create(clazz);
 
     }
-
+*/
 
 }

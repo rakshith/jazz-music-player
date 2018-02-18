@@ -12,4 +12,6 @@ public class Helpers {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("dark_theme", false) ?
                 "dark_theme" : "light_theme";
     }
+
+
 }

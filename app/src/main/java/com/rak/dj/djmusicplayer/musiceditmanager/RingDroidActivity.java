@@ -33,7 +33,7 @@ import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.rak.dj.djmusicplayer.AbsPermissionsActivity;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.musiceditmanager.soundfile.SoundFile;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.MarkerView;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.SamplePlayer;
@@ -375,7 +375,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
                 super.onBackPressed();
                 return true;
             case R.id.action_save:
-                if (JazzUtils.isMarshmallow()) {
+                if (JazzUtil.isMarshmallow()) {
                     checkWriteSettingsPermissionAndThenLoad(getBaseContext());
                 } else {
                     loadOnPermissionGranted();

@@ -27,14 +27,14 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.NavigationUtils;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
 import com.rak.dj.djmusicplayer.helpers.SlideTrackSwitcher;
 import com.rak.dj.djmusicplayer.widgets.PlayPauseButton;
 import com.rak.dj.djmusicplayer.widgets.PlayPauseDrawable;
@@ -74,7 +74,7 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
             if (mProgress != null) {
                 mProgress.setProgress((int) position);
                 if (songElapsedTime != null && getActivity() != null)
-                    songElapsedTime.setText(JazzUtils.makeShortTimeString(getActivity(), position / 1000));
+                    songElapsedTime.setText(JazzUtil.makeShortTimeString(getActivity(), position / 1000));
             }
             overflowcounter--;
             if (MusicPlayer.isPlaying()) {
@@ -113,7 +113,7 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
     }
 
     protected void initGestures(View v) {
-        if (PreferencesUtility.getInstance(v.getContext()).isGesturesEnabled()) {
+        if (PreferencesUtils.getInstance(v.getContext()).isGesturesEnabled()) {
             new SlideTrackSwitcher() {
                 @Override
                 public void onSwipeBottom() {
@@ -151,7 +151,7 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
 
         /*playPauseFloating = (FloatingActionButton)view.findViewById(R.id.playpause);
         if (playPauseFloating != null) {
-            playPauseDrawable.setColorFilter(JazzUtils.getBlackWhiteColor(accentColor), PorterDuff.Mode.MULTIPLY);
+            playPauseDrawable.setColorFilter(JazzUtil.getBlackWhiteColor(accentColor), PorterDuff.Mode.MULTIPLY);
             playPauseFloating.setImageDrawable(playPauseDrawable);
             if (MusicPlayer.isPlaying())
                 playPauseDrawable.transformToPause(false);
@@ -182,7 +182,7 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
 
         if (!duetoplaypause) {
             if (albumart != null) {
-                ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(MusicPlayer.getCurrentAlbumId()).toString(), albumart,
+                ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(MusicPlayer.getCurrentAlbumId()).toString(), albumart,
                         new DisplayImageOptions.Builder().cacheInMemory(true)
                                 .showImageOnFail(R.drawable.ic_empty_music2)
                                 .build(), new SimpleImageLoadingListener() {
@@ -202,7 +202,7 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
             }
 
             if(ivSongIcon != null){
-                ImageLoader.getInstance().displayImage(JazzUtils.getAlbumArtUri(MusicPlayer.getCurrentAlbumId()).toString(), ivSongIcon,
+                ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(MusicPlayer.getCurrentAlbumId()).toString(), ivSongIcon,
                         new DisplayImageOptions.Builder().cacheInMemory(true)
                                 .showImageOnFail(R.drawable.ic_empty_music2)
                                 .resetViewBeforeLoading(true)
@@ -278,11 +278,11 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
 
         if (songartist != null) {
             songartist.setText(MusicPlayer.getArtistName());
-            songartist.setOnClickListener(v -> NavigationUtils.goToArtist(getContext(), MusicPlayer.getCurrentArtistId()));
+            songartist.setOnClickListener(v -> NavigationUtil.goToArtist(getContext(), MusicPlayer.getCurrentArtistId()));
         }
 
         if (songDuration != null && getActivity() != null)
-            songDuration.setText(JazzUtils.makeShortTimeString(getActivity(), MusicPlayer.duration() / 1000));
+            songDuration.setText(JazzUtil.makeShortTimeString(getActivity(), MusicPlayer.duration() / 1000));
 
         if (playPauseWrapper != null)
             playPauseWrapper.setOnClickListener(mButtonListener);
@@ -319,16 +319,16 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_go_to_album:
-                NavigationUtils.goToAlbum(getContext(), MusicPlayer.getCurrentAlbumId());
+                NavigationUtil.goToAlbum(getContext(), MusicPlayer.getCurrentAlbumId());
                 break;
             case R.id.menu_go_to_artist:
-                NavigationUtils.goToArtist(getContext(), MusicPlayer.getCurrentArtistId());
+                NavigationUtil.goToArtist(getContext(), MusicPlayer.getCurrentArtistId());
                 break;
             case R.id.menu_set_ringtone:
-                JazzUtils.setRingtone(getContext(), (int)MusicPlayer.getCurrentAudioId());
+                JazzUtil.setRingtone(getContext(), (int)MusicPlayer.getCurrentAudioId());
                 break;
             case R.id.action_lyrics:
-                NavigationUtils.goToLyrics(getContext());
+                NavigationUtil.goToLyrics(getContext());
                 break;
         }
         return super.onOptionsItemSelected(item);

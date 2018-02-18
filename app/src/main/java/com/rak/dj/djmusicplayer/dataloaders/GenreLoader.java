@@ -6,7 +6,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtility;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.models.Genre;
 import com.rak.dj.djmusicplayer.models.Song;
 
@@ -65,7 +65,7 @@ public class GenreLoader extends BaseLoader{
         try {
             return context.getContentResolver().query(
                     MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
-                    BASE_AUDIO_PROJECTION, BASE_AUDIO_SELECTION, null, PreferencesUtility.getInstance(context).getSongSortOrder());
+                    BASE_AUDIO_PROJECTION, BASE_AUDIO_SELECTION, null, PreferencesUtils.getInstance(context).getSongSortOrder());
         } catch (SecurityException e) {
             return null;
         }
@@ -81,7 +81,7 @@ public class GenreLoader extends BaseLoader{
         try {
             return context.getContentResolver().query(
                     MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
-                    projection, null, null, PreferencesUtility.getInstance(context).getGenreSortOrder());
+                    projection, null, null, PreferencesUtils.getInstance(context).getGenreSortOrder());
         } catch (SecurityException e) {
             return null;
         }

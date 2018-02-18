@@ -15,16 +15,15 @@ import android.view.ViewGroup;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.GenreLoader;
-import com.rak.dj.djmusicplayer.musiclibrary.BaseMusicLibraryFragment;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
-import com.rak.dj.djmusicplayer.widgets.FastScroller;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GenresFragment extends BaseMusicLibraryFragment implements MusicStateListener {
+public class GenresFragment extends AbsRecyclerViewFragment implements MusicStateListener {
 
 
     private GenreAdapter genreAdapter;
@@ -37,11 +36,9 @@ public class GenresFragment extends BaseMusicLibraryFragment implements MusicSta
     public View setBaseListView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
         View rootView = inflater.inflate(R.layout.fragment_recylerview, container, false);
-        fastScroller = rootView.findViewById(R.id.fastscroller);
+
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        FastScroller fastScroller =  rootView.findViewById(R.id.fastscroller);
-        fastScroller.setRecyclerView(recyclerView);
         return rootView;
     }
 

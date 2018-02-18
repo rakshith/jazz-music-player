@@ -8,11 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.ThumbnailUtils;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
@@ -29,7 +25,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.providers.RecentStore;
 import com.rak.dj.djmusicplayer.providers.SongPlayCount;
@@ -41,10 +36,10 @@ import java.io.File;
  * Created by sraksh on 1/16/2018.
  */
 
-public class JazzUtils {
+public class JazzUtil {
 
 
-    private JazzUtils(){
+    private JazzUtil(){
 
     }
 
@@ -104,7 +99,7 @@ public class JazzUtils {
     }
 
     public static void clearLastAdded(Context context) {
-        PreferencesUtility.getInstance(context)
+        PreferencesUtils.getInstance(context)
                 .setLastAddedCutoff(System.currentTimeMillis());
     }
 
@@ -131,6 +126,8 @@ public class JazzUtils {
             return null;
         }
     }
+
+
 
     public static final String makeShortTimeString(final Context context, long secs) {
         long hours, mins;
@@ -282,7 +279,7 @@ public class JazzUtils {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        JazzUtils.deleteTracks(context, list);
+                        JazzUtil.deleteTracks(context, list);
                         adapter.notifyItemRemoved(pos);
                     }
                 })
@@ -342,7 +339,7 @@ public class JazzUtils {
                     if (!f.delete()) {
                         // I'm not sure if we'd ever get here (deletion would
                         // have to fail, but no exception thrown)
-                        Log.e("MusicUtils", "Failed to delete file " + name);
+                        Log.e("MusicUtil", "Failed to delete file " + name);
                     }
                     c.moveToNext();
                 } catch (final SecurityException ex) {

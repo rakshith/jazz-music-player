@@ -7,10 +7,10 @@ import android.support.v4.app.DialogFragment;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.dataloaders.PlaylistLoader;
 import com.rak.dj.djmusicplayer.models.Playlist;
-import com.rak.dj.djmusicplayer.models.Song;
 
 
 import java.util.List;

@@ -30,17 +30,17 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
-import com.rak.dj.djmusicplayer.helpers.JazzUtils;
-import com.rak.dj.djmusicplayer.musicplayerutils.SimplelTransitionListener;
-import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.musiclibrary.songs.SongsAdapter;
 import com.rak.dj.djmusicplayer.dataloaders.LastAddedLoader;
 import com.rak.dj.djmusicplayer.dataloaders.PlaylistLoader;
 import com.rak.dj.djmusicplayer.dataloaders.PlaylistSongLoader;
-import com.rak.dj.djmusicplayer.dataloaders.SongLoader;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.SongLoader;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
+import com.rak.dj.djmusicplayer.musicplayerutils.SimplelTransitionListener;
+import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.musiclibrary.songs.SongsAdapter;
 import com.rak.dj.djmusicplayer.dataloaders.TopTracksLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.models.Song;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
 import com.rak.dj.djmusicplayer.widgets.DragSortRecycler;
 
@@ -50,7 +50,7 @@ import java.util.List;
 public class PlaylistDetailActivity extends BaseMainActivity implements ATEActivityThemeCustomizer, ATEToolbarCustomizer {
 
     private String action;
-    private long playlistID;
+    private int playlistID;
     private HashMap<String, Runnable> playlistsMap = new HashMap<>();
 
     private AppCompatActivity mContext = PlaylistDetailActivity.this;
@@ -101,7 +101,7 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
         setAlbumart();
 
         animate = getIntent().getBooleanExtra(Constants.ACTIVITY_TRANSITION, false);
-        if (animate && JazzUtils.isLollipop()) {
+        if (animate && JazzUtil.isLollipop()) {
             getWindow().getEnterTransition().addListener(new EnterTransitionListener());
         } else {
             setUpSongs();
@@ -112,7 +112,7 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
     private void setAlbumart() {
         playlistname.setText(getIntent().getExtras().getString(Constants.PLAYLIST_NAME));
         foreground.setBackgroundColor(getIntent().getExtras().getInt(Constants.PLAYLIST_FOREGROUND_COLOR));
-        loadBitmap(JazzUtils.getAlbumArtUri(getIntent().getExtras().getLong(Constants.ALBUM_ID)).toString());
+        loadBitmap(JazzUtil.getAlbumArtUri(getIntent().getExtras().getLong(Constants.ALBUM_ID)).toString());
     }
 
     private void setUpSongs() {
@@ -152,7 +152,7 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
 
     private void setRecyclerViewAapter() {
         recyclerView.setAdapter(mAdapter);
-        if (animate && JazzUtils.isLollipop()) {
+        if (animate && JazzUtil.isLollipop()) {
             Handler handler = new Handler();
             handler.postDelayed(() -> recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL_LIST, R.drawable.item_divider_white)), 250);
         } else
@@ -198,7 +198,7 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
         @Override
         protected String doInBackground(String... params) {
             TopTracksLoader loader = new TopTracksLoader(mContext, TopTracksLoader.QueryType.RecentSongs);
-            List<Song> recentsongs = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
+            List<Song> recentsongs = SongLoader.getSongs(TopTracksLoader.getCursor());
             mAdapter = new SongsAdapter(mContext, recentsongs, true, animate);
             mAdapter.setPlaylistId(playlistID);
             return "Executed";
@@ -220,7 +220,7 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
         @Override
         protected String doInBackground(String... params) {
             TopTracksLoader loader = new TopTracksLoader(mContext, TopTracksLoader.QueryType.TopTracks);
-            List<Song> toptracks = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
+            List<Song> toptracks = SongLoader.getSongs(TopTracksLoader.getCursor());
             mAdapter = new SongsAdapter(mContext, toptracks, true, animate);
             mAdapter.setPlaylistId(playlistID);
             return "Executed";
@@ -240,7 +240,7 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
 
         @Override
         protected String doInBackground(String... params) {
-            playlistID = getIntent().getExtras().getLong(Constants.PLAYLIST_ID);
+            playlistID = getIntent().getExtras().getInt(Constants.PLAYLIST_ID);
             List<Song> playlistsongs = PlaylistSongLoader.getSongsInPlaylist(mContext, playlistID);
             mAdapter = new SongsAdapter(mContext, playlistsongs, true, animate);
             mAdapter.setPlaylistId(playlistID);
@@ -326,13 +326,13 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
     private void clearAutoPlaylists() {
         switch (action) {
             case Constants.NAVIGATE_PLAYLIST_LASTADDED:
-                JazzUtils.clearLastAdded(this);
+                JazzUtil.clearLastAdded(this);
                 break;
             case Constants.NAVIGATE_PLAYLIST_RECENT:
-                JazzUtils.clearRecent(this);
+                JazzUtil.clearRecent(this);
                 break;
             case Constants.NAVIGATE_PLAYLIST_TOPTRACKS:
-                JazzUtils.clearTopTracks(this);
+                JazzUtil.clearTopTracks(this);
                 break;
         }
         Intent returnIntent = new Intent();

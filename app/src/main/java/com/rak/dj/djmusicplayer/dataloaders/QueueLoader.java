@@ -17,7 +17,7 @@ package com.rak.dj.djmusicplayer.dataloaders;
 import android.content.Context;
 
 
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,24 +36,24 @@ public class QueueLoader {
         if (mCursor != null && mCursor.moveToFirst()) {
             do {
 
-                final long id = mCursor.getLong(0);
+                final int id = mCursor.getInt(0);
 
-                final String songName = mCursor.getString(1);
+                final String title = mCursor.getString(1);
 
-                final String artist = mCursor.getString(2);
+                final String artistName = mCursor.getString(2);
 
-                final long albumId = mCursor.getLong(3);
+                final int albumId = mCursor.getInt(3);
 
-                final String album = mCursor.getString(4);
+                final String albumName = mCursor.getString(4);
 
-                final int duration = mCursor.getInt(5);
+                final long duration = mCursor.getLong(5);
 
-                final long artistid = mCursor.getInt(7);
+                final int artistId = mCursor.getInt(7);
 
-                final int tracknumber = mCursor.getInt(6);
+                final int trackNumber = mCursor.getInt(6);
 
                 final String data = mCursor.getString(7);
-                final Song song = new Song(id, albumId, artistid, songName, artist, album, duration, tracknumber, data);
+                final Song song = new Song(id, title, trackNumber, -1, duration, data, -1, albumId, albumName, artistId, artistName);
 
                 mSongList.add(song);
             } while (mCursor.moveToNext());
