@@ -24,7 +24,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -40,6 +39,7 @@ import com.afollestad.appthemeengine.Config;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.upgraded.AlbumLoader;
 import com.rak.dj.djmusicplayer.glide.JazzColoredTarget;
@@ -55,11 +55,14 @@ import com.rak.dj.djmusicplayer.helpers.SortOrder;
 import com.rak.dj.djmusicplayer.models.upgraded.Album;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
+import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
+import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
+public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implements MusicStateListener{
 
     private int albumID = -1;
 
@@ -110,7 +113,7 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(
                 R.layout.fragment_album_detail, container, false);
-
+        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
         albumArt = rootView.findViewById(R.id.album_art);
         artistArt = rootView.findViewById(R.id.artist_art);
         albumTitle = rootView.findViewById(R.id.album_title);
@@ -193,82 +196,6 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
         //setTaskDescriptionColor(color);
     }
 
-    /*private void setAlbumart() {
-        ImageUtils.loadAlbumArtIntoView(album.getId(), albumArt, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        loadFailed = true;
-                        MaterialDrawableBuilder builder = MaterialDrawableBuilder.with(context)
-                                .setIcon(MaterialDrawableBuilder.IconValue.SHUFFLE)
-                                .setColor(JazzUtil.getBlackWhiteColor(Config.accentColor(context, Helpers.getATEKey(context))));
-                        ATEUtils.setFabBackgroundTint(fab, Config.accentColor(context, Helpers.getATEKey(context)));
-                        fab.setImageDrawable(builder.build());
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        try {
-                            new Palette.Builder(loadedImage).generate(new Palette.PaletteAsyncListener() {
-                                                                          @Override
-                                                                          public void onGenerated(Palette palette) {
-                                                                              Palette.Swatch swatch = palette.getVibrantSwatch();
-                                                                              if (swatch != null) {
-                                                                                  primaryColor = swatch.getRgb();
-                                                                                  collapsingToolbarLayout.setContentScrimColor(primaryColor);
-                                                                                  if (getActivity() != null)
-                                                                                      ATEUtils.setStatusBarColor(getActivity(), Helpers.getATEKey(getActivity()), primaryColor);
-                                                                              } else {
-                                                                                  Palette.Swatch swatchMuted = palette.getMutedSwatch();
-                                                                                  if (swatchMuted != null) {
-                                                                                      primaryColor = swatchMuted.getRgb();
-                                                                                      collapsingToolbarLayout.setContentScrimColor(primaryColor);
-                                                                                      if (getActivity() != null)
-                                                                                          ATEUtils.setStatusBarColor(getActivity(), Helpers.getATEKey(getActivity()), primaryColor);
-                                                                                  }
-                                                                              }
-
-                                                                              if (getActivity() != null) {
-                                                                                  MaterialDrawableBuilder builder = MaterialDrawableBuilder.with(getActivity())
-                                                                                          .setIcon(MaterialDrawableBuilder.IconValue.SHUFFLE)
-                                                                                          .setSizeDp(30);
-                                                                                  if (primaryColor != -1) {
-                                                                                      builder.setColor(JazzUtil.getBlackWhiteColor(primaryColor));
-                                                                                      ATEUtils.setFabBackgroundTint(fab, primaryColor);
-                                                                                      fab.setImageDrawable(builder.build());
-                                                                                  } else {
-                                                                                      if (context != null) {
-                                                                                          ATEUtils.setFabBackgroundTint(fab, Config.accentColor(context, Helpers.getATEKey(context)));
-                                                                                          builder.setColor(JazzUtil.getBlackWhiteColor(Config.accentColor(context, Helpers.getATEKey(context))));
-                                                                                          fab.setImageDrawable(builder.build());
-                                                                                      }
-                                                                                  }
-                                                                              }
-                                                                          }
-                                                                      }
-
-                            );
-                        } catch (
-                                Exception ignored
-                                )
-
-                        {
-
-                        }
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-                    }
-
-                }
-
-        );
-    }*/
-
     private void setAlbumDetails() {
 
         String songCount = JazzUtil.makeLabel(getActivity(), R.plurals.Nsongs, album.getSongCount());
@@ -282,7 +209,7 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
     private void setUpAlbumSongs() {
         Album album = AlbumLoader.getAlbum(getActivity(), albumID);
         mAdapter = new AlbumSongsAdapter((AppCompatActivity) getActivity(), album.songs, albumID);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -297,7 +224,7 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(final Void... unused) {
-                List<Song> songList = AlbumLoader.getAlbum(getActivity(), albumID).songs;
+                ArrayList<Song> songList = AlbumLoader.getAlbum(getActivity(), albumID).songs;
                 mAdapter.updateDataSet(songList);
                 return null;
             }
@@ -371,6 +298,22 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void restartLoader() {
+
+    }
+
+    @Override
+    public void onPlaylistChanged() {
+
+    }
+
+    @Override
+    public void onMetaChanged() {
+        AlbumSongsAdapter adapter = (AlbumSongsAdapter) recyclerView.getAdapter();
+        adapter.notifyDataSetChanged();
     }
 
     /*private class EnterTransitionListener extends SimplelTransitionListener {

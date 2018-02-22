@@ -2,8 +2,10 @@ package com.rak.dj.djmusicplayer.musiclibrary.genres;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +20,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
-import com.rak.dj.djmusicplayer.models.Genre;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
+import com.rak.dj.djmusicplayer.models.upgraded.Genre;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
-import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by sraksh on 2/11/2018.
@@ -32,15 +34,15 @@ import java.util.List;
 
 public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
-    private List<Genre> arraylist;
+    private ArrayList<Genre> dataSet;
     private AppCompatActivity mContext;
     private long[] songIDs;
     private String ateKey;
     private boolean animate;
     private int lastPosition = -1, itemPosition;
 
-    public GenreAdapter(AppCompatActivity context, List<Genre> arraylist, boolean animate) {
-        this.arraylist = arraylist;
+    public GenreAdapter(AppCompatActivity context, ArrayList<Genre> arraylist, boolean animate) {
+        this.dataSet = arraylist;
         this.mContext = context;
         this.songIDs = getSongIds();
         this.ateKey = Helpers.getATEKey(context);
@@ -57,7 +59,7 @@ public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implement
     @Override
     public void onBindViewHolder(ItemHolder itemHolder, int position) {
         this.itemPosition = position;
-        Genre localItem = arraylist.get(position);
+        Genre localItem = dataSet.get(position);
 
         itemHolder.title.setText(localItem.name);
         itemHolder.songCount.setText(localItem.songCount+" Songs");
@@ -96,7 +98,7 @@ public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implement
     public long[] getSongIds() {
         long[] ret = new long[getItemCount()];
         for (int i = 0; i < getItemCount(); i++) {
-            ret[i] = arraylist.get(i).id;
+            ret[i] = dataSet.get(i).id;
         }
 
         return ret;
@@ -104,7 +106,7 @@ public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implement
 
     @Override
     public int getItemCount() {
-        return (null != arraylist ? arraylist.size() : 0);
+        return (null != dataSet ? dataSet.size() : 0);
     }
 
     @Override
@@ -112,12 +114,21 @@ public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implement
         return itemPosition;
     }
 
+    public void updateDataSet(ArrayList<Genre> data) {
+        this.dataSet = data;
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<Genre> getDataSet() {
+        return dataSet;
+    }
+
     @NonNull
     @Override
     public String getSectionName(int position) {
-        if (arraylist == null || arraylist.size() == 0)
+        if (dataSet == null || dataSet.size() == 0)
             return "";
-        Character ch = arraylist.get(position).name.charAt(0);
+        Character ch = dataSet.get(position).name.charAt(0);
         if (Character.isDigit(ch)) {
             return "#";
         } else
@@ -142,7 +153,8 @@ public class GenreAdapter extends BaseAdapter<GenreAdapter.ItemHolder> implement
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-
+                    NavigationUtil.navigateToGenre(mContext, dataSet.get(getAdapterPosition()),
+                            new Pair<View, String>(albumArt, "transition_album_art" + getAdapterPosition()));
                 }
             }, 100);
 

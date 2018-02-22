@@ -6,6 +6,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +16,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -30,15 +34,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.appthemeengine.ATE;
+import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.rak.dj.djmusicplayer.AbsPermissionsActivity;
 import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.ThemeStore;
 import com.rak.dj.djmusicplayer.musiceditmanager.soundfile.SoundFile;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.MarkerView;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.SamplePlayer;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.SongMetadataReader;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.WaveformView;
+import com.rak.dj.djmusicplayer.widgets.PlayPauseDrawable;
+
+import net.steamcrafted.materialiconlib.MaterialIconView;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -73,9 +83,10 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
     private TextView mEndText;
     private TextView mInfo;
     private String mInfoContent;
-    private ImageButton mPlayButton;
-    private ImageButton mRewindButton;
-    private ImageButton mFfwdButton;
+    private FloatingActionButton mPlayButton;
+    private PlayPauseDrawable playPauseDrawable = new PlayPauseDrawable();
+    private MaterialIconView mRewindButton;
+    private MaterialIconView mFfwdButton;
     private boolean mKeyDown;
     private String mCaption = "";
     private int mWidth;
@@ -110,6 +121,10 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
     private Thread mRecordAudioThread;
     private Thread mSaveSoundFileThread;
     private Context mContext;
+
+    public int accentColor;
+    private String ateKey;
+
     // Result codes
     private static final int REQUEST_CODE_CHOOSE_CONTACT = 1;
 
@@ -131,6 +146,9 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false);
 
         super.onCreate(savedInstanceState);
+
+        ateKey = Helpers.getATEKey(this);
+        accentColor = Config.accentColor(this, ateKey);
 
         mContext = getApplicationContext();
         mPlayer = null;
@@ -959,11 +977,18 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         mEndText = (TextView)findViewById(R.id.endtext);
         mEndText.addTextChangedListener(mTextWatcher);
 
-        mPlayButton = (ImageButton)findViewById(R.id.play);
+        mPlayButton = (FloatingActionButton)findViewById(R.id.play);
+        playPauseDrawable.setColorFilter(JazzUtil.getBlackWhiteColor(accentColor), PorterDuff.Mode.MULTIPLY);
+        mPlayButton.setImageDrawable(playPauseDrawable);
+
+        if (mIsPlaying)
+            playPauseDrawable.transformToPause(false);
+        else playPauseDrawable.transformToPlay(false);
+
         mPlayButton.setOnClickListener(mPlayListener);
-        mRewindButton = (ImageButton)findViewById(R.id.rew);
+        mRewindButton = (MaterialIconView)findViewById(R.id.rew);
         mRewindButton.setOnClickListener(mRewindListener);
-        mFfwdButton = (ImageButton)findViewById(R.id.ffwd);
+        mFfwdButton = (MaterialIconView)findViewById(R.id.ffwd);
         mFfwdButton.setOnClickListener(mFfwdListener);
 
         TextView markStartButton = (TextView) findViewById(R.id.mark_start);
@@ -1097,12 +1122,18 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
     };
 
     private void enableDisableButtons() {
-        if (mIsPlaying) {
+        /*if (mIsPlaying) {
             mPlayButton.setImageResource(R.drawable.pause);
             mPlayButton.setContentDescription(getResources().getText(R.string.stop));
         } else {
             mPlayButton.setImageResource(R.drawable.play);
             mPlayButton.setContentDescription(getResources().getText(R.string.play));
+        }*/
+
+        if (mIsPlaying) {
+            playPauseDrawable.transformToPause(false);
+        } else {
+            playPauseDrawable.transformToPlay(false);
         }
     }
 

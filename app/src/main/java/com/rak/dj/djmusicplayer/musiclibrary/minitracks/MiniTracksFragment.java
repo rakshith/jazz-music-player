@@ -3,9 +3,9 @@ package com.rak.dj.djmusicplayer.musiclibrary.minitracks;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -15,17 +15,17 @@ import android.view.ViewGroup;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.upgraded.SongLoader;
-import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MiniTracksFragment extends AbsRecyclerViewFragment implements MusicStateListener {
+public class MiniTracksFragment extends Fragment implements MusicStateListener {
 
-
+    private FastScrollRecyclerView recyclerView;
     private MiniTracksAdapter miniTracksAdapter;
 
     public MiniTracksFragment() {
@@ -33,7 +33,7 @@ public class MiniTracksFragment extends AbsRecyclerViewFragment implements Music
     }
 
     @Override
-    public View setBaseListView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
         View rootView = inflater.inflate(R.layout.fragment_mini_tracks, container, false);
 

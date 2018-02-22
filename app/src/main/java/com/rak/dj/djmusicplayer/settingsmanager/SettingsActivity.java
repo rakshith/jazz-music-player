@@ -13,6 +13,7 @@ import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.helpers.ThemeStore;
 
 public class SettingsActivity extends BaseSettingsThemedActivity implements ColorChooserDialog.ColorCallback, ATEActivityThemeCustomizer {
 

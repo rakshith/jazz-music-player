@@ -84,7 +84,7 @@ public class MainActivity extends BaseMainActivity implements ATEActivityThemeCu
 
         super.onCreate(savedInstanceState);
 
-        addBackstackListener();
+        //addBackstackListener();
 
         navigationMap.put(Constants.NAVIGATE_LIBRARY, navigateMusicLibrary);
         navigationMap.put(Constants.NAVIGATE_PLAYLIST, navigatePlaylist);
@@ -429,7 +429,9 @@ public class MainActivity extends BaseMainActivity implements ATEActivityThemeCu
     }
 
     private void addBackstackListener() {
-        getSupportFragmentManager().addOnBackStackChangedListener(() -> getSupportFragmentManager().findFragmentById(R.id.songContainer).onResume());
+        /*getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            getSupportFragmentManager().findFragmentById(R.id.songContainer).onResume();
+        });*/
     }
 
 }

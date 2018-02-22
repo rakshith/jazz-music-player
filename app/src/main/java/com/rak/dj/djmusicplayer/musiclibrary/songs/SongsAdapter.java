@@ -28,6 +28,7 @@ import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 import com.rak.dj.djmusicplayer.widgets.MusicVisualizer;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,8 +37,7 @@ import java.util.List;
 
 public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
-    public int currentlyPlayingPosition, itemPosition;
-    private List<Song> arraylist;
+    public int currentlyPlayingPosition;
     private AppCompatActivity mContext;
     private long[] songIDs;
     private boolean isPlaylist;
@@ -46,9 +46,8 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
     private String ateKey;
     private long playlistId;
 
-    public SongsAdapter(AppCompatActivity context, List<Song> arraylist, boolean isPlaylistSong, boolean animate) {
+    public SongsAdapter(AppCompatActivity context, ArrayList<Song> arraylist, boolean isPlaylistSong, boolean animate) {
         super(context, arraylist);
-        this.arraylist = arraylist;
         this.mContext = context;
         this.isPlaylist = isPlaylistSong;
         this.songIDs = getSongIds();
@@ -71,8 +70,8 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
 
     @Override
     public void genericBindViewHolder(ItemHolder itemHolder, int position) {
-        itemPosition = position;
-        Song localItem = arraylist.get(position);
+
+        Song localItem = items.get(position);
 
         itemHolder.title.setText(localItem.title);
         itemHolder.artist.setText(localItem.artistName);
@@ -119,7 +118,7 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
             menu.inflate(R.menu.popup_song);
             menu.setOnMenuItemClickListener(item -> {
 
-                menuFunctionalityForSong(mContext, item, arraylist.get(position), playlistId, songIDs);
+                menuFunctionalityForSong(mContext, item, position, playlistId, songIDs);
                 return false;
             });
 
@@ -127,11 +126,6 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
             if (isPlaylist)
                 menu.getMenu().findItem(R.id.popup_song_remove_playlist).setVisible(true);
         });
-    }
-
-    @Override
-    public int getItemPosition() {
-        return itemPosition;
     }
 
     private void setAnimation(View viewToAnimate, int position) {
@@ -147,21 +141,27 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
 
     @Override
     public int getItemCount() {
-        return (null != arraylist ? arraylist.size() : 0);
+        return (null != items ? items.size() : 0);
     }
 
     public long[] getSongIds() {
         long[] ret = new long[getItemCount()];
         for (int i = 0; i < getItemCount(); i++) {
-            ret[i] = arraylist.get(i).id;
+            ret[i] = items.get(i).id;
         }
 
         return ret;
     }
 
-    public void updateDataSet(List<Song> arraylist) {
-        this.arraylist = arraylist;
+    @Override
+    public void updateDataSet(ArrayList<Song> data) {
+        this.items = data;
         this.songIDs = getSongIds();
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<Song> getDataSet() {
+        return this.items;
     }
 
     public int getCurrentlyPlayingPosition() {
@@ -169,15 +169,11 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
     }
 
     public Song getSongAt(int i) {
-        return arraylist.get(i);
+        return this.items.get(i);
     }
 
     public void addSongTo(int i, Song song) {
-        arraylist.add(i, song);
-    }
-
-    public void removeSongAt(int i) {
-        arraylist.remove(i);
+        this.items.add(i, song);
     }
 
     public void setPlaylistId(long playlistId) {
@@ -188,9 +184,9 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
     @NonNull
     @Override
     public String getSectionName(int position) {
-        if (arraylist == null || arraylist.size() == 0)
+        if (this.items == null || this.items.size() == 0)
             return "";
-        Character ch = arraylist.get(position).title.charAt(0);
+        Character ch = this.items.get(position).title.charAt(0);
         if (Character.isDigit(ch)) {
             return "#";
         } else
@@ -221,7 +217,7 @@ public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder>
                     currentlyPlayingPosition = getAdapterPosition();
                     playAll(mContext, songIDs, getAdapterPosition(), -1,
                             JazzUtil.IdType.NA, false,
-                            arraylist.get(getAdapterPosition()), false);
+                            items.get(getAdapterPosition()), false);
                     Handler handler1 = new Handler();
                     handler1.postDelayed(new Runnable() {
                         @Override

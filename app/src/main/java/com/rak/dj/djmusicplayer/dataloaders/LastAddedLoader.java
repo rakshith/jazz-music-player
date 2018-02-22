@@ -31,7 +31,7 @@ public class LastAddedLoader {
 
     private static Cursor mCursor;
 
-    public static List<Song> getLastAddedSongs(Context context) {
+    public static ArrayList<Song> getLastAddedSongs(Context context) {
 
         ArrayList<Song> mSongList = new ArrayList<>();
         mCursor = makeLastAddedCursor(context);

@@ -27,5 +27,5 @@
 
     <attr name="toolbar_popup_theme" format="reference" />
 
-    
+    <attr name="rectSelectorStrong" format="reference" />
 </resources>

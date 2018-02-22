@@ -16,6 +16,7 @@ package com.rak.dj.djmusicplayer.queuemanager;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
+import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 import com.rak.dj.djmusicplayer.widgets.MusicVisualizer;
 
 import java.util.List;
@@ -114,7 +116,7 @@ public class PlayingQueueAdapter extends RecyclerView.Adapter<PlayingQueueAdapte
                                 NavigationUtil.goToArtist(mContext, arraylist.get(position).artistId);
                                 break;
                             case R.id.popup_song_addto_playlist:
-                                //AddPlaylistDialog.newInstance(arraylist.get(position)).show(((AppCompatActivity) mContext).getSupportFragmentManager(), "ADD_PLAYLIST");
+                                AddPlaylistDialog.newInstance(arraylist.get(position)).show(((AppCompatActivity) mContext).getSupportFragmentManager(), "ADD_PLAYLIST");
                                 break;
                         }
                         return false;
@@ -138,6 +140,15 @@ public class PlayingQueueAdapter extends RecyclerView.Adapter<PlayingQueueAdapte
         }
 
         return ret;
+    }
+
+    public void updateDataSet(List<Song> data) {
+        this.arraylist = data;
+        notifyDataSetChanged();
+    }
+
+    public List<Song> getDataSet() {
+        return arraylist;
     }
 
     public Song getSongAt(int i) {

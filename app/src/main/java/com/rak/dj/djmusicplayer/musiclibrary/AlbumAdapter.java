@@ -23,21 +23,22 @@ import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.models.upgraded.Album;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by sraksh on 1/24/2018.
  */
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter{
-    private List<Album> arraylist;
+    private ArrayList<Album> arraylist;
     private AppCompatActivity mContext;
     private boolean isGrid;
-
-    public AlbumAdapter(AppCompatActivity context, List<Album> arraylist) {
+    protected boolean usePalette = false;
+    public AlbumAdapter(AppCompatActivity context, ArrayList<Album> arraylist, boolean usePalette) {
         this.arraylist = arraylist;
         this.mContext = context;
         this.isGrid = PreferencesUtils.getInstance(mContext).isAlbumsInGrid();
+        this.usePalette = usePalette;
     }
 
     @Override
@@ -51,10 +52,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ItemHolder> 
             ItemHolder ml = new ItemHolder(v);
             return ml;
         }
-    }
-
-    public boolean loadUsePalette() {
-        return PreferencesUtils.getInstance(mContext).albumColoredFooters();
     }
 
     protected void setColors(int color, ItemHolder holder) {
@@ -86,7 +83,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ItemHolder> 
                     @Override
                     public void onColorReady(int color) {
                         if (isGrid) {
-                            if (loadUsePalette())
+                            if (usePalette)
                                 setColors(color, holder);
                             else
                                 setColors(getDefaultFooterColor(), holder);
@@ -103,50 +100,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ItemHolder> 
         itemHolder.artist.setText(localItem.getArtistName());
 
         loadAlbumCover(localItem, itemHolder);
-
-        /*ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(localItem.id).toString(), itemHolder.albumArt,
-                new DisplayImageOptions.Builder().cacheInMemory(true)
-                        .showImageOnLoading(R.drawable.ic_empty_music2)
-                        .resetViewBeforeLoading(true)
-                        .displayer(new FadeInBitmapDisplayer(400))
-                        .build(), new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        if (isGrid) {
-                            new Palette.Builder(loadedImage).generate(palette ->  {
-                                Palette.Swatch swatch = palette.getVibrantSwatch();
-                                if (swatch != null) {
-                                    int color = swatch.getRgb();
-                                    itemHolder.footer.setBackgroundColor(color);
-                                    int textColor = JazzUtil.getBlackWhiteColor(swatch.getTitleTextColor());
-                                    itemHolder.title.setTextColor(textColor);
-                                    itemHolder.artist.setTextColor(textColor);
-                                } else {
-                                    Palette.Swatch mutedSwatch = palette.getMutedSwatch();
-                                    if (mutedSwatch != null) {
-                                        int color = mutedSwatch.getRgb();
-                                        itemHolder.footer.setBackgroundColor(color);
-                                        int textColor = JazzUtil.getBlackWhiteColor(mutedSwatch.getTitleTextColor());
-                                        itemHolder.title.setTextColor(textColor);
-                                        itemHolder.artist.setTextColor(textColor);
-                                    }
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        if (isGrid) {
-                            itemHolder.footer.setBackgroundColor(0);
-                            if (mContext != null) {
-                                int textColorPrimary = Config.textColorPrimary(mContext, Helpers.getATEKey(mContext));
-                                itemHolder.title.setTextColor(textColorPrimary);
-                                itemHolder.artist.setTextColor(textColorPrimary);
-                            }
-                        }
-                    }
-                });*/
 
         if (JazzUtil.isLollipop())
             itemHolder.albumArt.setTransitionName("transition_album_art" + position);
@@ -191,8 +144,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ItemHolder> 
         return (null != arraylist ? arraylist.size() : 0);
     }
 
-    public void updateDataSet(List<Album> arraylist) {
-        this.arraylist = arraylist;
+    public void updateDataSet(ArrayList<Album> data) {
+        this.arraylist = data;
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<Album> getDataSet() {
+        return arraylist;
     }
 
 }

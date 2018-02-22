@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.glide.ArtistGlideRequest;
 import com.rak.dj.djmusicplayer.glide.JazzColoredTarget;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
@@ -36,14 +37,16 @@ import com.rak.dj.djmusicplayer.lastfmapi.upgradedapi.rest.LastFMRestClient;
 import com.rak.dj.djmusicplayer.models.upgraded.Artist;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
+import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.upgraded.ArtistLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
+public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment implements MusicStateListener {
 
     private int artistID = -1;
     private ImageView artistArt;
@@ -77,6 +80,9 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+
         View rootView = inflater.inflate(
                 R.layout.fragment_artist_detail, container, false);
 
@@ -139,7 +145,7 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
 
     private void setUpArtistDetails() {
         artist = ArtistLoader.getArtist(getActivity(), artistID);
-        List<Song> songList = artist.getSongs();
+        ArrayList<Song> songList = artist.getSongs();
         mAdapter = new ArtistSongAdapter((AppCompatActivity) getActivity(), songList, artistID);
 
         collapsingToolbarLayout.setTitle(artist.getName());
@@ -219,6 +225,7 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         setHasOptionsMenu(true);
     }
 
@@ -280,4 +287,18 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment {
     }
 
 
+    @Override
+    public void restartLoader() {
+
+    }
+
+    @Override
+    public void onPlaylistChanged() {
+
+    }
+
+    @Override
+    public void onMetaChanged() {
+        mAdapter.notifyDataSetChanged();
+    }
 }

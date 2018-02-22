@@ -20,8 +20,8 @@ import java.util.ArrayList;
  * @author Rakshith Raj S
  */
 public class SongLoader {
-    protected static final String BASE_SELECTION = AudioColumns.IS_MUSIC + "=1" + " AND " + AudioColumns.TITLE + " != ''";
-    protected static final String[] BASE_PROJECTION = new String[]{
+    public static final String BASE_SELECTION = AudioColumns.IS_MUSIC + "=1" + " AND " + AudioColumns.TITLE + " != ''";
+    public static final String[] BASE_PROJECTION = new String[]{
             BaseColumns._ID,// 0
             AudioColumns.TITLE,// 1
             AudioColumns.TRACK,// 2
@@ -32,7 +32,7 @@ public class SongLoader {
             AudioColumns.ALBUM_ID,// 7
             AudioColumns.ALBUM,// 8
             AudioColumns.ARTIST_ID,// 9
-            AudioColumns.ARTIST,// 10
+            AudioColumns.ARTIST // 10
     };
 
     public static Song getSongFromPath(String songPath, Context context) {
@@ -42,16 +42,16 @@ public class SongLoader {
         String selection = MediaStore.Audio.Media.DATA;
         String[] selectionArgs = {songPath};
         String[] projection = new String[]{
-                BaseColumns._ID,
-                MediaStore.Audio.AudioColumns.TITLE,
-                MediaStore.Audio.AudioColumns.ARTIST,
-                MediaStore.Audio.AudioColumns.ALBUM,
-                MediaStore.Audio.AudioColumns.DURATION,
-                MediaStore.Audio.AudioColumns.TRACK,
-                MediaStore.Audio.AudioColumns.ARTIST_ID,
-                MediaStore.Audio.AudioColumns.ALBUM_ID,
-                MediaStore.Audio.AudioColumns.DATA,
-                MediaStore.Audio.AudioColumns.DATE_MODIFIED};
+                BaseColumns._ID, //0
+                MediaStore.Audio.AudioColumns.TITLE, //1
+                MediaStore.Audio.AudioColumns.ARTIST, // 2
+                MediaStore.Audio.AudioColumns.ALBUM, // 3
+                MediaStore.Audio.AudioColumns.DURATION,// 4
+                MediaStore.Audio.AudioColumns.TRACK, // 5
+                MediaStore.Audio.AudioColumns.ARTIST_ID,//6
+                MediaStore.Audio.AudioColumns.ALBUM_ID, //7
+                MediaStore.Audio.AudioColumns.DATA, //8
+                MediaStore.Audio.AudioColumns.DATE_MODIFIED}; //9
         String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
 
         Cursor cursor = cr.query(uri, projection, selection + "=?", selectionArgs, sortOrder);

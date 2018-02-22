@@ -39,16 +39,17 @@ import com.rak.dj.djmusicplayer.models.upgraded.Artist;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
-    private List<Artist> arraylist;
+    private ArrayList<Artist> arraylist;
     private Activity mContext;
     private boolean isGrid;
     protected boolean usePalette = false;
 
-    public ArtistAdapter(Activity context, List<Artist> arraylist, boolean usePalette) {
+    public ArtistAdapter(Activity context, ArrayList<Artist> arraylist, boolean usePalette) {
         this.arraylist = arraylist;
         this.mContext = context;
         this.usePalette = usePalette;
@@ -82,67 +83,6 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder
         itemHolder.albums.setText(JazzUtil.makeCombinedString(mContext, albumNumber, songCount));
 
         loadArtistImage(localItem, itemHolder);
-
-        /*LastFmClient.getInstance(mContext).getArtistInfo(new ArtistQuery(localItem.name), new ArtistInfoListener() {
-            @Override
-            public void artistInfoSucess(LastfmArtist artist) {
-                if (artist != null && artist.mArtwork != null) {
-                    if (isGrid) {
-                        ImageLoader.getInstance().displayImage(artist.mArtwork.get(2).mUrl, itemHolder.artistImage,
-                                new DisplayImageOptions.Builder().cacheInMemory(true)
-                                        .cacheOnDisk(true)
-                                        .showImageOnLoading(R.drawable.ic_empty_music2)
-                                        .resetViewBeforeLoading(true)
-                                        .displayer(new FadeInBitmapDisplayer(400))
-                                        .build(), new SimpleImageLoadingListener() {
-                                    @Override
-                                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                                        if (isGrid && loadedImage != null) {
-                                            new Palette.Builder(loadedImage).generate(palette ->  {
-                                                int color = palette.getVibrantColor(Color.parseColor("#66000000"));
-                                                itemHolder.footer.setBackgroundColor(color);
-                                                Palette.Swatch swatch = palette.getVibrantSwatch();
-                                                int textColor;
-                                                if (swatch != null) {
-                                                    textColor = getOpaqueColor(swatch.getTitleTextColor());
-                                                } else textColor = Color.parseColor("#ffffff");
-
-                                                itemHolder.name.setTextColor(textColor);
-                                                itemHolder.albums.setTextColor(textColor);
-                                            });
-                                        }
-
-                                    }
-
-                                    @Override
-                                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                                        if (isGrid) {
-                                            itemHolder.footer.setBackgroundColor(0);
-                                            if (mContext != null) {
-                                                int textColorPrimary = Config.textColorPrimary(mContext, Helpers.getATEKey(mContext));
-                                                itemHolder.name.setTextColor(textColorPrimary);
-                                                itemHolder.albums.setTextColor(textColorPrimary);
-                                            }
-                                        }
-                                    }
-                                });
-                    } else {
-                        ImageLoader.getInstance().displayImage(artist.mArtwork.get(1).mUrl, itemHolder.artistImage,
-                                new DisplayImageOptions.Builder().cacheInMemory(true)
-                                        .cacheOnDisk(true)
-                                        .showImageOnLoading(R.drawable.ic_empty_music2)
-                                        .resetViewBeforeLoading(true)
-                                        .displayer(new FadeInBitmapDisplayer(400))
-                                        .build());
-                    }
-                }
-            }
-
-            @Override
-            public void artistInfoFailed() {
-
-            }
-        });*/
 
         if (JazzUtil.isLollipop())
             itemHolder.artistImage.setTransitionName("transition_artist_art" + i);
@@ -205,10 +145,13 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder
         return (null != arraylist ? arraylist.size() : 0);
     }
 
+    public void updateDataSet(ArrayList<Artist> data) {
+        this.arraylist = data;
+        notifyDataSetChanged();
+    }
 
-
-    public void updateDataSet(List<Artist> arrayList) {
-        this.arraylist = arrayList;
+    public ArrayList<Artist> getDataSet() {
+        return arraylist;
     }
 
     public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

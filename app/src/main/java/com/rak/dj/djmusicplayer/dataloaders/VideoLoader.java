@@ -75,14 +75,15 @@ public class VideoLoader {
         return context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, BASE_VIDEO_PROJECTION, null, paramArrayOfString, sortOrder);
     }
 
-    public static List<AlbumVideo> getAlbumVideos(Context context){
-        List<Video> videos = getAllVideo(context);
+    public static ArrayList<AlbumVideo> getAlbumVideos(Context context){
+        ArrayList<Video> videos = getAllVideo(context);
 
         HashSet<Video> uniqueSet = new HashSet<>(videos);
 
-        List<Video> uniqueList = new ArrayList<>(uniqueSet);
-        List<AlbumVideo> albumVideos = new ArrayList<>();
+        ArrayList<Video> uniqueList = new ArrayList<>(uniqueSet);
+        ArrayList<AlbumVideo> albumVideos = new ArrayList<>();
 
+        // This works only in Android 7.0 above and 6.0 gives runtime exception
         uniqueList.forEach(video -> {
             int videoCount = getVideos(context, video.albumName).size();
             albumVideos.add(new AlbumVideo(video.id, video.albumName, videoCount));

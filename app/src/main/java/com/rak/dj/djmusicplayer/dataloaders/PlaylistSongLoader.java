@@ -38,7 +38,7 @@ public class PlaylistSongLoader {
     private static Context context;
 
 
-    public static List<Song> getSongsInPlaylist(Context mContext, long playlistID) {
+    public static ArrayList<Song> getSongsInPlaylist(Context mContext, long playlistID) {
         ArrayList<Song> mSongList = new ArrayList<>();
 
         context = mContext;

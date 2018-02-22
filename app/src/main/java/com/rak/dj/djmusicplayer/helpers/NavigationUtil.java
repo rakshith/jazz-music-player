@@ -10,11 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+
 import android.util.Pair;
 import android.view.View;
 import android.widget.Toast;
 
 import com.rak.dj.djmusicplayer.MainActivity;
+import com.rak.dj.djmusicplayer.models.upgraded.Genre;
+import com.rak.dj.djmusicplayer.musiclibrary.genres.GenreDetailFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.video.VideoListFragment;
 import com.rak.dj.djmusicplayer.musictoolsmanager.MusicToolsActivity;
 import com.rak.dj.djmusicplayer.playingmanager.NowPlayingActivity;
@@ -51,6 +54,23 @@ public class NavigationUtil {
         transaction.addToBackStack(null).commit();
 
     }
+
+    @TargetApi(21)
+    public static void navigateToGenre(Activity context, Genre genreId, Pair<View, String> transitionViews) {
+
+        FragmentTransaction transaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+        Fragment fragment;
+
+        transaction.setCustomAnimations(R.anim.activity_fade_in,
+                R.anim.activity_fade_out, R.anim.activity_fade_in, R.anim.activity_fade_out);
+        fragment = GenreDetailFragment.newInstance(genreId, false, null);
+
+        transaction.hide(((AppCompatActivity) context).getSupportFragmentManager().findFragmentById(R.id.songContainer));
+        transaction.add(R.id.songContainer, fragment);
+        transaction.addToBackStack(null).commit();
+
+    }
+
 
     public static void navigateToSettings(Activity context) {
         final Intent intent = new Intent(context, SettingsActivity.class);

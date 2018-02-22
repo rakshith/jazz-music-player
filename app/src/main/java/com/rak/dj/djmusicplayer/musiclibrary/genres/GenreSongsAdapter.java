@@ -1,18 +1,4 @@
-/*
- * Copyright (C) 2015 Naman Dwivedi
- *
- * Licensed under the GNU General Public License v3
- *
- * This is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- */
-
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.genres;
 
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -23,81 +9,34 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-
-import com.afollestad.appthemeengine.Config;
-import com.rak.dj.djmusicplayer.helpers.Helpers;
-import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
-import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsSongsAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.AlbumSongsAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlbumSongsAdapter extends AbsSongsAdapter<Song, AlbumSongsAdapter.ItemHolder> {
+/**
+ * Created by sraksh on 2/19/2018.
+ */
+
+public class GenreSongsAdapter extends AbsSongsAdapter<Song, GenreSongsAdapter.ItemHolder> {
 
     private ArrayList<Song> arraylist;
     private AppCompatActivity mContext;
     private long albumID;
     private long[] songIDs;
     private int itemPosition;
-    private String ateKey;
-    public AlbumSongsAdapter(AppCompatActivity context, ArrayList<Song> arraylist, long albumID) {
+
+    public GenreSongsAdapter(AppCompatActivity context, ArrayList<Song> arraylist, long genreId) {
         super(context, arraylist);
         this.arraylist = arraylist;
         this.mContext = context;
         this.songIDs = getSongIds();
-        this.albumID = albumID;
-        this.ateKey = Helpers.getATEKey(context);
-    }
-
-    @Override
-    public ItemHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_album_song, null);
-        ItemHolder ml = new ItemHolder(v);
-        return ml;
-    }
-
-    @Override
-    public void genericBindViewHolder(ItemHolder itemHolder, int position) {
-        this.itemPosition = position;
-        Song localItem = arraylist.get(position);
-
-        itemHolder.title.setText(localItem.title);
-        itemHolder.duration.setText(JazzUtil.makeShortTimeString(mContext, (localItem.duration) / 1000));
-        int tracknumber = localItem.trackNumber;
-        if (tracknumber == 0) {
-            itemHolder.trackNumber.setText("-");
-        } else itemHolder.trackNumber.setText(String.valueOf(tracknumber));
-
-        if (MusicPlayer.getCurrentAudioId() == localItem.id) {
-            itemHolder.title.setTextColor(Config.accentColor(mContext, ateKey));
-        }else{
-            itemHolder.title.setTextColor(Config.textColorPrimary(mContext, ateKey));
-        }
-
-        setOnPopupMenuListener(itemHolder, position);
-    }
-
-    private void setOnPopupMenuListener(ItemHolder itemHolder, final int position) {
-
-        itemHolder.menu.setOnClickListener(v -> {
-
-            final PopupMenu menu = new PopupMenu(mContext, v);
-            menu.setOnMenuItemClickListener(menuItem ->  {
-
-                menuFunctionalityForSong(mContext, menuItem, position, -1, songIDs);
-
-                return false;
-            });
-            menu.inflate(R.menu.popup_song);
-            menu.show();
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return (null != arraylist ? arraylist.size() : 0);
+        this.albumID = genreId;
     }
 
     public long[] getSongIds() {
@@ -118,6 +57,44 @@ public class AlbumSongsAdapter extends AbsSongsAdapter<Song, AlbumSongsAdapter.I
     @Override
     public void removeSongAt(int i){
         arraylist.remove(i);
+    }
+
+    @Override
+    public GenreSongsAdapter.ItemHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_album_song, null);
+        GenreSongsAdapter.ItemHolder ml = new GenreSongsAdapter.ItemHolder(v);
+        return ml;
+    }
+
+    @Override
+    public void genericBindViewHolder(GenreSongsAdapter.ItemHolder itemHolder, int position) {
+        this.itemPosition = position;
+        Song localItem = arraylist.get(position);
+
+        itemHolder.title.setText(localItem.title);
+        itemHolder.duration.setText(JazzUtil.makeShortTimeString(mContext, (localItem.duration) / 1000));
+        int tracknumber = localItem.trackNumber;
+        if (tracknumber == 0) {
+            itemHolder.trackNumber.setText("-");
+        } else itemHolder.trackNumber.setText(String.valueOf(tracknumber));
+
+        setOnPopupMenuListener(itemHolder, position);
+    }
+
+    private void setOnPopupMenuListener(GenreSongsAdapter.ItemHolder itemHolder, final int position) {
+
+        itemHolder.menu.setOnClickListener(v -> {
+
+            final PopupMenu menu = new PopupMenu(mContext, v);
+            menu.setOnMenuItemClickListener(menuItem ->  {
+
+                menuFunctionalityForSong(mContext, menuItem, position, -1, songIDs);
+
+                return false;
+            });
+            menu.inflate(R.menu.popup_song);
+            menu.show();
+        });
     }
 
     public class ItemHolder extends BaseViewHolder implements View.OnClickListener {
@@ -142,8 +119,4 @@ public class AlbumSongsAdapter extends AbsSongsAdapter<Song, AlbumSongsAdapter.I
         }
 
     }
-
 }
-
-
-

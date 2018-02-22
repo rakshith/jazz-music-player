@@ -18,6 +18,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.MusicUtil;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
@@ -113,8 +115,50 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
 
             final PopupMenu menu = new PopupMenu(mContext, v);
             menu.inflate(R.menu.popup_song);
-            menu.setOnMenuItemClickListener(item -> {
-                menuFunctionalityForSong(mContext, item, arraylist.get(position), -1, songIDs);
+            menu.setOnMenuItemClickListener(menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case R.id.popup_song_remove_playlist:
+                        JazzUtil.removeFromPlaylist(mContext, arraylist.get(position).id, -1);
+                        removeSongAt(position);
+                        notifyItemRemoved(position);
+                        break;
+                    case R.id.popup_song_play:
+                        MusicPlayer.playAll(mContext,songIDs , position, -1, JazzUtil.IdType.NA, false);
+                        break;
+                    case R.id.popup_song_play_next:
+                        long[] ids = new long[1];
+                        ids[0] = arraylist.get(position).id;
+                        MusicPlayer.playNext(mContext, ids, -1, JazzUtil.IdType.NA);
+                        break;
+                    case R.id.popup_song_goto_album:
+                        NavigationUtil.goToAlbum(mContext, arraylist.get(position).albumId);
+                        break;
+                    case R.id.popup_song_goto_artist:
+                        NavigationUtil.goToArtist(mContext, arraylist.get(position).artistId);
+                        break;
+                    case R.id.popup_song_addto_queue:
+                        long[] id = new long[1];
+                        id[0] = arraylist.get(position).id;
+                        MusicPlayer.addToQueue(mContext, id, -1, JazzUtil.IdType.NA);
+                        break;
+                    case R.id.popup_song_addto_playlist:
+                        //AddPlaylistDialog.newInstance(song).show(mContext.getSupportFragmentManager(), "ADD_PLAYLIST");
+                        break;
+                    case R.id.popup_cut:
+
+                        MusicUtil.startRingdroidEditor(mContext.getBaseContext(), arraylist.get(position).data);
+                        break;
+                    case R.id.popup_tag_editor:
+                        NavigationUtil.navigateToSongTagEditor(mContext, arraylist.get(position).id);
+                        break;
+                    case R.id.popup_song_share:
+                        JazzUtil.shareTrack(mContext, arraylist.get(position).id);
+                        break;
+                    case R.id.popup_song_delete:
+                        long[] deleteIds = {arraylist.get(position).id};
+                        JazzUtil.showDeleteDialog(mContext,arraylist.get(position).title, deleteIds, MiniTracksAdapter.this, position);
+                        break;
+                }
                 return false;
             });
 

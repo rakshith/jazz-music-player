@@ -34,7 +34,6 @@ public class PlaylistFragment extends Fragment {
     private ViewPager viewPager;
     private FragmentStatePagerAdapter adapter;
     private List<PlaylistPagerFragment> fragments = new ArrayList<>();
-    private final String[] imageArray = {"assets://image1.jpg", "assets://image2.jpg", "assets://image3.jpg", "assets://image4.jpg", "assets://image5.jpg"};
 
     private int playlistcount;
     private List<Playlist> playlists = new ArrayList<>();

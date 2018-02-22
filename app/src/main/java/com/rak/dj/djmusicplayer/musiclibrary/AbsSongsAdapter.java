@@ -19,6 +19,7 @@ import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ import java.util.List;
 
 public abstract  class AbsSongsAdapter<T, VH extends BaseViewHolder> extends RecyclerView.Adapter<VH> {
 
-    private List<T> items;
+    protected ArrayList<T> items;
     private LayoutInflater layoutInflater;
 
     /**
@@ -36,7 +37,7 @@ public abstract  class AbsSongsAdapter<T, VH extends BaseViewHolder> extends Rec
      *
      * @param context Context needed to retrieve LayoutInflater
      */
-    public AbsSongsAdapter(AppCompatActivity context, List<T> dataSet) {
+    public AbsSongsAdapter(AppCompatActivity context, ArrayList<T> dataSet) {
         layoutInflater = LayoutInflater.from(context);
         items = dataSet;
     }
@@ -77,31 +78,8 @@ public abstract  class AbsSongsAdapter<T, VH extends BaseViewHolder> extends Rec
         return items != null ? items.size() : 0;
     }
 
-    /**
-     * Sets items to the adapter and notifies that data set has been changed.
-     *
-     * @param items items to set to the adapter
-     * @throws IllegalArgumentException in case of setting `null` items
-     */
-    public void setItems(List<T> items) {
-        if (items == null) {
-            throw new IllegalArgumentException("Cannot set `null` item to the Recycler adapter");
-        }
-        this.items.clear();
-        this.items.addAll(items);
-        notifyDataSetChanged();
-    }
 
-    public void updateDataSet(List<T> arraylist) {}
-
-    /**
-     * Returns all items from the data set held by the adapter.
-     *
-     * @return All of items in this adapter.
-     */
-    public List<T> getItems() {
-        return items;
-    }
+    public abstract void updateDataSet(ArrayList<T> arraylist);
 
     /**
      * Returns an items from the data set at a certain position.
@@ -112,105 +90,11 @@ public abstract  class AbsSongsAdapter<T, VH extends BaseViewHolder> extends Rec
         return items.get(position);
     }
 
-    /**
-     * Adds item to the end of the data set.
-     * Notifies that item has been inserted.
-     *
-     * @param item item which has to be added to the adapter.
-     */
-    public void add(T item) {
-        if (item == null) {
-            throw new IllegalArgumentException("Cannot add null item to the Recycler adapter");
-        }
-        items.add(item);
-        notifyItemInserted(items.size() - 1);
-    }
 
-    /**
-     * Adds list of items to the end of the adapter's data set.
-     * Notifies that item has been inserted.
-     *
-     * @param items items which has to be added to the adapter.
-     */
-    public void addAll(List<T> items) {
-        if (items == null) {
-            throw new IllegalArgumentException("Cannot add `null` items to the Recycler adapter");
-        }
-        this.items.addAll(items);
-        notifyItemRangeInserted(this.items.size() - items.size(), items.size());
+    public void removeSongAt(int i){
+        items.remove(i);
+        updateDataSet(items);
     }
-
-    /**
-     * Clears all the items in the adapter.
-     */
-    public void clear() {
-        items.clear();
-        notifyDataSetChanged();
-    }
-
-    /**
-     * Removes an item from the adapter.
-     * Notifies that item has been removed.
-     *
-     * @param item to be removed
-     */
-    public void remove(T item) {
-        int position = items.indexOf(item);
-        if (position > -1) {
-            items.remove(position);
-            notifyItemRemoved(position);
-        }
-    }
-
-    /**
-     * Returns whether adapter is empty or not.
-     *
-     * @return `true` if adapter is empty or `false` otherwise
-     */
-    public boolean isEmpty() {
-        return getItemCount() == 0;
-    }
-
-    /**
-     * Indicates whether each item in the data set can be represented with a unique identifier
-     * of type {@link Long}.
-     *
-     * @param hasStableIds Whether items in data set have unique identifiers or not.
-     * @see #hasStableIds()
-     * @see #getItemId(int)
-     */
-    @Override
-    public void setHasStableIds(boolean hasStableIds) {
-        super.setHasStableIds(hasStableIds);
-    }
-
-    /**
-     * Inflates a view.
-     *
-     * @param layout       layout to me inflater
-     * @param parent       container where to inflate
-     * @param attachToRoot whether to attach to root or not
-     * @return inflated View
-     */
-    @NonNull
-    protected View inflate(@LayoutRes final int layout, @Nullable final ViewGroup parent, final boolean attachToRoot) {
-        return layoutInflater.inflate(layout, parent, attachToRoot);
-    }
-
-    /**
-     * Inflates a view.
-     *
-     * @param layout layout to me inflater
-     * @param parent container where to inflate
-     * @return inflated View
-     */
-    @NonNull
-    protected View inflate(@LayoutRes final int layout, final @Nullable ViewGroup parent) {
-        return inflate(layout, parent, false);
-    }
-
-    public void removeSongAt(int i){}
-    public abstract int getItemPosition();
 
     public void playAll(final Activity context, final long[] list, int position,
                         final long sourceId, final JazzUtil.IdType sourceType,
@@ -223,8 +107,8 @@ public abstract  class AbsSongsAdapter<T, VH extends BaseViewHolder> extends Rec
         }
     }
 
-    protected void menuFunctionalityForSong(AppCompatActivity mContext, MenuItem menuItem, Song song, long playlistId, long[] songIDs){
-        int position = getItemPosition();
+    protected void menuFunctionalityForSong(AppCompatActivity mContext, MenuItem menuItem, int position, long playlistId, long[] songIDs){
+        Song song = (Song) getItem(position);
         switch (menuItem.getItemId()) {
             case R.id.popup_song_remove_playlist:
                 JazzUtil.removeFromPlaylist(mContext, song.id, playlistId);

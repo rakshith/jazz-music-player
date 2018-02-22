@@ -1,69 +1,87 @@
 package com.rak.dj.djmusicplayer.musiclibrary.video;
 
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.VideoLoader;
+import com.rak.dj.djmusicplayer.helpers.misc.WrappedAsyncTaskLoader;
+import com.rak.dj.djmusicplayer.models.AlbumVideo;
 import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
-import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
+import com.rak.dj.djmusicplayer.searchmanager.LoaderIds;
+
+import java.util.ArrayList;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoFragment extends AbsRecyclerViewFragment {
+public class VideoFragment extends AbsRecyclerViewFragment<AlbumVideoAdapter> implements LoaderManager.LoaderCallbacks<ArrayList<AlbumVideo>>{
 
-    AlbumVideoAdapter albumVideoAdapter;
+    public static final String TAG = VideoFragment.class.getSimpleName();
 
-    public VideoFragment() {
-        // Required empty public constructor
+    private static final int LOADER_ID = LoaderIds.VIDEO_FRAGMENT;
+
+    @Override
+    protected boolean getGrid() {
+        return false;
+    }
+
+    @NonNull
+    @Override
+    protected AlbumVideoAdapter createAdapter() {
+        ArrayList<AlbumVideo> dataSet = getAdapter() == null ? new ArrayList<AlbumVideo>() : getAdapter().getDataSet();
+        return new AlbumVideoAdapter((AppCompatActivity) getActivity(), dataSet, loadUsePalette());
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
     @Override
-    public View setBaseListView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recylerview, container, false);
-        recyclerView = rootView.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return rootView;
+    protected String getEmptyMessage() {
+        return getAppResources().getString(R.string.no_video_albums);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        new loadAlbumVideos().execute("");
+    protected boolean loadUsePalette() {
+        return false;
     }
 
+    @Override
+    public Loader<ArrayList<AlbumVideo>> onCreateLoader(int i, Bundle bundle) {
+        return new AsyncVideoAlbumLoader(getActivity());
+    }
 
-    private class loadAlbumVideos extends AsyncTask<String, Void, String> {
+    @Override
+    public void onLoadFinished(Loader<ArrayList<AlbumVideo>> loader, ArrayList<AlbumVideo> data) {
+        getAdapter().updateDataSet(data);
+        setItemDecoration();
+    }
 
-        @Override
-        protected String doInBackground(String... params) {
-            if (getActivity() != null)
-                albumVideoAdapter = new AlbumVideoAdapter((AppCompatActivity) getActivity(), VideoLoader.getAlbumVideos(getActivity()), false);
-            return "Executed";
+    @Override
+    public void onLoaderReset(Loader<ArrayList<AlbumVideo>> loader) {
+        getAdapter().updateDataSet(new ArrayList<AlbumVideo>());
+        //setItemDecoration();
+    }
+
+    private static class AsyncVideoAlbumLoader extends WrappedAsyncTaskLoader<ArrayList<AlbumVideo>> {
+        public AsyncVideoAlbumLoader(Context context) {
+            super(context);
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            recyclerView.setAdapter(albumVideoAdapter);
-            if (getActivity() != null)
-                recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-
-        }
-
-        @Override
-        protected void onPreExecute() {
+        public ArrayList<AlbumVideo> loadInBackground() {
+            return VideoLoader.getAlbumVideos(getContext());
         }
     }
 }

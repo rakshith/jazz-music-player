@@ -33,6 +33,13 @@
     <string name="lyrics_makeitpersonal">Powered by <a href="https://makeitpersonal.co/">makeitpersonal.co</a></string>
     <string name="lyrics_loading">Loading...</string>
 
+    <string name="no_artists">No Artists</string>
+    <string name="no_albums">No Albums</string>
+    <string name="no_genres">No Genres</string>
+    <string name="no_miniTracks">No MiniTracks</string>
+    <string name="no_video_albums">No Video Albums</string>
+    <string name="no_songs">No Tracks</string>
+    <string name="no_songs_queue">No songs in queue</string>
     <string name="personalisation">Personalisation</string>
     <string name="other">Other</string>
 
@@ -84,7 +91,7 @@
     <string name="albums">Albums</string>
     <string name="artists">Artists</string>
     <string name="genres">Genres</string>
-    <string name="video">Video</string>
+    <string name="video">Videos</string>
     <string name="minitracks">Mini Tracks</string>
     <string name="library">Library</string>
     <string name="playlists">Playlists</string>

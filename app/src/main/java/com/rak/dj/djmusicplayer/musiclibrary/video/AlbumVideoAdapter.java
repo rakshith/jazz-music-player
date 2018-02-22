@@ -25,6 +25,7 @@ import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,13 +34,13 @@ import java.util.List;
 
 public class AlbumVideoAdapter extends BaseAdapter<AlbumVideoAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
-    private List<AlbumVideo> arraylist;
+    private ArrayList<AlbumVideo> arraylist;
     private AppCompatActivity mContext;
     private String ateKey;
     private boolean animate;
     private int lastPosition = -1, itemPosition;
 
-    public AlbumVideoAdapter(AppCompatActivity context, List<AlbumVideo> arraylist, boolean animate) {
+    public AlbumVideoAdapter(AppCompatActivity context, ArrayList<AlbumVideo> arraylist, boolean animate) {
         this.arraylist = arraylist;
         this.mContext = context;
         this.ateKey = Helpers.getATEKey(context);
@@ -95,6 +96,14 @@ public class AlbumVideoAdapter extends BaseAdapter<AlbumVideoAdapter.ItemHolder>
     @Override
     public int getItemPosition() {
         return itemPosition;
+    }
+    public void updateDataSet(ArrayList<AlbumVideo> data) {
+        this.arraylist = data;
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<AlbumVideo> getDataSet() {
+        return arraylist;
     }
 
     @NonNull

@@ -7,17 +7,11 @@
     android:elevation="3dp"
     android:background="?attr/selectableItemBackground">
 
-    <FrameLayout
-        android:id="@+id/content"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent">
-
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
             android:orientation="vertical">
-
 
             <com.rak.dj.djmusicplayer.widgets.WidthFitSquareLayout
                 android:id="@+id/image_container"
@@ -68,7 +62,6 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
             </LinearLayout>
         </LinearLayout>
-    </FrameLayout>
 
     <View
         android:layout_width="match_parent"

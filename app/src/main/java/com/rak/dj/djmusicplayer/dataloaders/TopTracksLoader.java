@@ -20,12 +20,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.*;
 import com.rak.dj.djmusicplayer.providers.RecentStore;
 import com.rak.dj.djmusicplayer.providers.SongPlayCount;
 
 import java.util.ArrayList;
 
-public class TopTracksLoader extends SongLoader {
+public class TopTracksLoader extends com.rak.dj.djmusicplayer.dataloaders.upgraded.SongLoader {
 
     public static final int NUMBER_OF_SONGS = 99;
     protected static QueryType mQueryType;

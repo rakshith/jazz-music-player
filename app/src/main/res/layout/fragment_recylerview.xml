@@ -6,7 +6,7 @@
     android:id="@+id/baseMusicLibraryLayout">
 
 
-    <com.rak.dj.djmusicplayer.widgets.BaseRecyclerView
+    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

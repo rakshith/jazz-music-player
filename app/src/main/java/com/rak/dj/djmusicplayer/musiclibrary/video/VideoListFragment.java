@@ -21,17 +21,20 @@ import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.VideoLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
 import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
+import com.rak.dj.djmusicplayer.widgets.BaseRecyclerView;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoListFragment extends AbsRecyclerViewFragment {
+public class VideoListFragment extends android.support.v4.app.Fragment {
 
     String albumName = null;
 
     VideoListAdapter videoListAdapter;
     private ProgressBar mProgressBar;
+    private BaseRecyclerView recyclerView;
+
 
     public static VideoListFragment newInstance(String  albumName, boolean useTransition, String transitionName) {
         VideoListFragment fragment = new VideoListFragment();
@@ -45,8 +48,9 @@ public class VideoListFragment extends AbsRecyclerViewFragment {
     }
 
 
+    @Nullable
     @Override
-    public View setBaseListView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_video_list, container, false);
         if (getArguments() != null) {
             albumName = getArguments().getString(Constants.ALBUM_VIDEO_ID);

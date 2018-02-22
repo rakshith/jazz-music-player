@@ -44,6 +44,7 @@ import com.rak.dj.djmusicplayer.helpers.Constants;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
 import com.rak.dj.djmusicplayer.widgets.DragSortRecycler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -177,7 +178,7 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
 
         @Override
         protected String doInBackground(String... params) {
-            List<Song> lastadded = LastAddedLoader.getLastAddedSongs(mContext);
+            ArrayList<Song> lastadded = LastAddedLoader.getLastAddedSongs(mContext);
             mAdapter = new SongsAdapter(mContext, lastadded, true, animate);
             mAdapter.setPlaylistId(playlistID);
             return "Executed";
@@ -198,7 +199,7 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
         @Override
         protected String doInBackground(String... params) {
             TopTracksLoader loader = new TopTracksLoader(mContext, TopTracksLoader.QueryType.RecentSongs);
-            List<Song> recentsongs = SongLoader.getSongs(TopTracksLoader.getCursor());
+            ArrayList<Song> recentsongs = SongLoader.getSongs(TopTracksLoader.getCursor());
             mAdapter = new SongsAdapter(mContext, recentsongs, true, animate);
             mAdapter.setPlaylistId(playlistID);
             return "Executed";
@@ -220,7 +221,7 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
         @Override
         protected String doInBackground(String... params) {
             TopTracksLoader loader = new TopTracksLoader(mContext, TopTracksLoader.QueryType.TopTracks);
-            List<Song> toptracks = SongLoader.getSongs(TopTracksLoader.getCursor());
+            ArrayList<Song> toptracks = SongLoader.getSongs(TopTracksLoader.getCursor());
             mAdapter = new SongsAdapter(mContext, toptracks, true, animate);
             mAdapter.setPlaylistId(playlistID);
             return "Executed";
@@ -241,7 +242,7 @@ public class PlaylistDetailActivity extends BaseMainActivity implements ATEActiv
         @Override
         protected String doInBackground(String... params) {
             playlistID = getIntent().getExtras().getInt(Constants.PLAYLIST_ID);
-            List<Song> playlistsongs = PlaylistSongLoader.getSongsInPlaylist(mContext, playlistID);
+            ArrayList<Song> playlistsongs = PlaylistSongLoader.getSongsInPlaylist(mContext, playlistID);
             mAdapter = new SongsAdapter(mContext, playlistsongs, true, animate);
             mAdapter.setPlaylistId(playlistID);
             return "Executed";

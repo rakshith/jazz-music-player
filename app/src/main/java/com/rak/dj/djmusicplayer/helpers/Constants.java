@@ -19,7 +19,7 @@ public final class Constants {
     public static final String ALBUM_ID = "album_id";
     public static final String ARTIST_ID = "artist_id";
     public static final String PLAYLIST_ID = "playlist_id";
-
+    public static final String GENRE_ID ="genre_id";
     public static final String ALBUM_VIDEO_ID = "album_video_id";
 
     public static final int PLAYLIST_VIEW_DEFAULT = 0;

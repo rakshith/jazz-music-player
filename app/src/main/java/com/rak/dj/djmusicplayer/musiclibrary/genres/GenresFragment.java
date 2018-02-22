@@ -2,52 +2,63 @@ package com.rak.dj.djmusicplayer.musiclibrary.genres;
 
 
 import android.app.Fragment;
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.R;
-import com.rak.dj.djmusicplayer.dataloaders.GenreLoader;
+import com.rak.dj.djmusicplayer.dataloaders.upgraded.GenreLoader;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.helpers.misc.WrappedAsyncTaskLoader;
+import com.rak.dj.djmusicplayer.models.upgraded.Genre;
 import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
-import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
+import com.rak.dj.djmusicplayer.searchmanager.LoaderIds;
+
+import java.util.ArrayList;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GenresFragment extends AbsRecyclerViewFragment implements MusicStateListener {
+public class GenresFragment extends AbsRecyclerViewFragment<GenreAdapter> implements MusicStateListener, LoaderManager.LoaderCallbacks<ArrayList<Genre>> {
 
 
-    private GenreAdapter genreAdapter;
-
-    public GenresFragment() {
-        // Required empty public constructor
-    }
+    private static final int LOADER_ID = LoaderIds.GENRES_FRAGMENT;
 
     @Override
-    public View setBaseListView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View rootView, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(rootView, savedInstanceState);
         ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
-        View rootView = inflater.inflate(R.layout.fragment_recylerview, container, false);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+    }
 
-        recyclerView = rootView.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return rootView;
+    @Override
+    protected boolean getGrid() {
+        return false;
     }
 
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected GenreAdapter createAdapter() {
+        ArrayList<Genre> dataSet = getAdapter() == null ? new ArrayList<Genre>() : getAdapter().getDataSet();
+        return new GenreAdapter((AppCompatActivity) getActivity(), dataSet, false);
+    }
 
-        new loadGenres().execute("");
+    @Override
+    protected String getEmptyMessage() {
+        return getAppResources().getString(R.string.no_genres);
+    }
+
+    @Override
+    protected boolean loadUsePalette() {
+        return false;
     }
 
     public void restartLoader() {
@@ -59,30 +70,32 @@ public class GenresFragment extends AbsRecyclerViewFragment implements MusicStat
     }
 
     public void onMetaChanged() {
-        if (genreAdapter != null) {
-            genreAdapter.notifyDataSetChanged();
-        }
+        getAdapter().notifyDataSetChanged();
     }
 
-    private class loadGenres extends AsyncTask<String, Void, String> {
+    @Override
+    public Loader<ArrayList<Genre>> onCreateLoader(int id, Bundle args) {
+        return new AsyncGenreLoader(getActivity());
+    }
 
-        @Override
-        protected String doInBackground(String... params) {
-            if (getActivity() != null)
-                genreAdapter = new GenreAdapter((AppCompatActivity) getActivity(), GenreLoader.getAllGenres(getActivity()), false);
-            return "Executed";
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Genre>> loader, ArrayList<Genre> data) {
+        getAdapter().updateDataSet(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Genre>> loader) {
+        getAdapter().updateDataSet(new ArrayList<Genre>());
+    }
+
+    private static class AsyncGenreLoader extends WrappedAsyncTaskLoader<ArrayList<Genre>> {
+        public AsyncGenreLoader(Context context) {
+            super(context);
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            recyclerView.setAdapter(genreAdapter);
-            if (getActivity() != null)
-                recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-
-        }
-
-        @Override
-        protected void onPreExecute() {
+        public ArrayList<Genre> loadInBackground() {
+            return GenreLoader.getAllGenres(getContext());
         }
     }
 }

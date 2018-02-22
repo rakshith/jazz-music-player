@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.helpers.SortOrder;
 import com.rak.dj.djmusicplayer.models.upgraded.Album;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
 
@@ -22,12 +23,24 @@ public class AlbumLoader {
 
     @NonNull
     public static ArrayList<Album> getAllAlbums(@NonNull final Context context) {
-        ArrayList<Song> songs = SongLoader.getSongs(SongLoader.makeSongCursor(
-                context,
-                null,
-                null,
-                getSongLoaderSortOrder(context))
-        );
+        ArrayList<Song> songs = new ArrayList<>();
+        switch(PreferencesUtils.getInstance(context).getAlbumSortOrder()){
+            case SortOrder.AlbumSortOrder.ALBUM_YEAR:
+                break;
+            case SortOrder.AlbumSortOrder.ALBUM_ARTIST:
+                break;
+            case SortOrder.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS:
+                break;
+
+            default:
+                songs = SongLoader.getSongs(SongLoader.makeSongCursor(
+                        context,
+                        null,
+                        null,
+                        getSongLoaderSortOrder(context))
+                );
+        }
+
         return splitIntoAlbums(songs);
     }
 

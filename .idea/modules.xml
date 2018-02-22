@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DJMusicPlayer.iml" filepath="$PROJECT_DIR$/DJMusicPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/apprecording/apprecording.iml" filepath="$PROJECT_DIR$/apprecording/apprecording.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jazaa-music-player.iml" filepath="$PROJECT_DIR$/jazaa-music-player.iml" />
     </modules>
   </component>
 </project>

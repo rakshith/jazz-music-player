@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
 
+import com.afollestad.appthemeengine.Config;
 import com.rak.dj.djmusicplayer.R;
 
 /**
@@ -246,7 +247,7 @@ public class ThemeStore implements ThemeStorePrefKeys, ThemeStoreInterface {
     @CheckResult
     @ColorInt
     public static int accentColor(@NonNull Context context) {
-        return prefs(context).getInt(KEY_ACCENT_COLOR, ATEUtils.resolveColor(context, R.attr.colorAccent, Color.parseColor("#263238")));
+        return Config.accentColor(context, Helpers.getATEKey(context));
     }
 
     @CheckResult

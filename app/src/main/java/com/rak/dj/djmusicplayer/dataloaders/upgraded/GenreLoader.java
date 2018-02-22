@@ -1,4 +1,4 @@
-package com.rak.dj.djmusicplayer.dataloaders;
+package com.rak.dj.djmusicplayer.dataloaders.upgraded;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,9 +6,10 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.rak.dj.djmusicplayer.dataloaders.BaseLoader;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
-import com.rak.dj.djmusicplayer.models.Genre;
-import com.rak.dj.djmusicplayer.models.Song;
+import com.rak.dj.djmusicplayer.models.upgraded.Genre;
+import com.rak.dj.djmusicplayer.models.upgraded.Song;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,8 @@ import java.util.ArrayList;
  * Created by sraksh on 2/11/2018.
  */
 
-public class GenreLoader extends BaseLoader{
+public class GenreLoader extends BaseLoader {
+
     @NonNull
     public static ArrayList<Genre> getAllGenres(@NonNull final Context context) {
         return getGenresFromCursor(context, makeGenreCursor(context));
@@ -24,8 +26,9 @@ public class GenreLoader extends BaseLoader{
 
     @NonNull
     public static ArrayList<Song> getSongs(@NonNull final Context context, final int genreId) {
-        return SongLoader.getSongsForCursor(makeGenreSongCursor(context, genreId));
+        return SongLoader.getSongs(makeGenreSongCursor(context, genreId));
     }
+
 
     @NonNull
     private static ArrayList<Genre> getGenresFromCursor(@NonNull final Context context, @Nullable final Cursor cursor) {
@@ -65,7 +68,7 @@ public class GenreLoader extends BaseLoader{
         try {
             return context.getContentResolver().query(
                     MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
-                    BASE_AUDIO_PROJECTION, BASE_AUDIO_SELECTION, null, PreferencesUtils.getInstance(context).getSongSortOrder());
+                    SongLoader.BASE_PROJECTION, SongLoader.BASE_SELECTION, null, PreferencesUtils.getInstance(context).getSongSortOrder());
         } catch (SecurityException e) {
             return null;
         }

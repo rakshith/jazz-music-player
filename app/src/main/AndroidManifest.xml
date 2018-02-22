@@ -92,7 +92,8 @@
             android:process=":main" />
 
         <activity
-            android:name=".searchmanager.SearchActivity" />
+            android:name=".searchmanager.SearchActivity"
+            android:theme="@style/AppTheme.FullScreen.Light" />
 
         <activity
             android:name=".playingmanager.NowPlayingActivity"

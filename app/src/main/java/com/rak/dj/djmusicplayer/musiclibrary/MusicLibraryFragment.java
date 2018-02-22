@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +19,11 @@ import android.view.ViewGroup;
 
 import com.afollestad.appthemeengine.ATE;
 import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.musiclibrary.genres.GenresFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.minitracks.MiniTracksFragment;
-import com.rak.dj.djmusicplayer.musiclibrary.video.VideoFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.songs.SongsFragment;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.musiclibrary.video.VideoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,10 +75,10 @@ public class MusicLibraryFragment extends Fragment {
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getChildFragmentManager());
         adapter.addFragment(new SongsFragment(), this.getString(R.string.songs));
+        adapter.addFragment(new VideoFragment(), this.getString(R.string.video));
         adapter.addFragment(new AlbumFragment(), this.getString(R.string.albums));
         adapter.addFragment(new ArtistFragment(), this.getString(R.string.artists));
         adapter.addFragment(new GenresFragment(), this.getString(R.string.genres));
-        adapter.addFragment(new VideoFragment(), this.getString(R.string.video));
         adapter.addFragment(new MiniTracksFragment(), this.getString(R.string.minitracks));
         viewPager.setAdapter(adapter);
     }
@@ -88,13 +88,6 @@ public class MusicLibraryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewPager.setCurrentItem(mPreferences.getStartPageIndex());
-
-        /*Handler handler = new Handler();
-        handler.postDelayed(()-> {
-            List<Song> songs = SongLoader.findDuplicateSong(getActivity());
-            Log.d(TAG, "Jazz Video Files"+songs.size());
-            Log.d(TAG, "Jazz Video Files"+songs.get(1).toString());
-        }, 200);*/
     }
 
     @Override
@@ -117,7 +110,7 @@ public class MusicLibraryFragment extends Fragment {
         }
     }
 
-    static class Adapter extends FragmentPagerAdapter {
+    static class Adapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();
         private final List<String> mFragmentTitles = new ArrayList<>();
 

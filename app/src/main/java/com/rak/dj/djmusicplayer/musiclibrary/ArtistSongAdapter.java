@@ -27,29 +27,35 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 
+import com.afollestad.appthemeengine.Config;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.dataloaders.upgraded.ArtistLoader;
+import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
+import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
+import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.ItemHolder> {
 
-    private List<Song> arraylist;
+    private ArrayList<Song> arraylist;
     private AppCompatActivity mContext;
     private int artistID;
     private long[] songIDs;
-
-    public ArtistSongAdapter(AppCompatActivity context, List<Song> arraylist, int artistID) {
+    private String ateKey;
+    public ArtistSongAdapter(AppCompatActivity context, ArrayList<Song> arraylist, int artistID) {
         super(context, arraylist);
         this.arraylist = arraylist;
         this.mContext = context;
         this.artistID = artistID;
         this.songIDs = getSongIds();
+        this.ateKey = Helpers.getATEKey(context);
     }
 
     @Override
@@ -79,9 +85,14 @@ public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.I
             ImageLoader.getInstance().displayImage(JazzUtil.getAlbumArtUri(localItem.albumId).toString(),
                     itemHolder.albumArt, new DisplayImageOptions.Builder()
                             .cacheInMemory(true).showImageOnLoading(R.drawable.ic_empty_music2).resetViewBeforeLoading(true).build());
+
+            if (MusicPlayer.getCurrentAudioId() == localItem.id) {
+                itemHolder.title.setTextColor(Config.accentColor(mContext, ateKey));
+            }else{
+                itemHolder.title.setTextColor(Config.textColorPrimary(mContext, ateKey));
+            }
             setOnPopupMenuListener(itemHolder, i - 1);
         }
-
     }
 
     @Override
@@ -104,9 +115,10 @@ public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.I
             final PopupMenu menu = new PopupMenu(mContext, v);
             menu.setOnMenuItemClickListener(item -> {
 
-                menuFunctionalityForSong(mContext, item, arraylist.get(position+1), -1, songIDs);
+                //Commented because of the song position is changed, so need to rewrite this logic for common menu options
+                //menuFunctionalityForSong(mContext, item, arraylist.get(position), -1, songIDs);
 
-               /* switch (item.getItemId()) {
+                switch (item.getItemId()) {
                     case R.id.popup_song_play:
                         MusicPlayer.playAll(mContext, songIDs, position, -1, JazzUtil.IdType.NA, false);
                         break;
@@ -139,7 +151,7 @@ public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.I
                         long[] deleteIds = {arraylist.get(position + 1).id};
                         JazzUtil.showDeleteDialog(mContext,arraylist.get(position + 1).title, deleteIds, ArtistSongAdapter.this, position + 1);
                         break;
-                }*/
+                }
                 return false;
             });
             menu.inflate(R.menu.popup_song);
@@ -186,14 +198,9 @@ public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.I
     }
 
     @Override
-    public void updateDataSet(List<Song> arraylist) {
+    public void updateDataSet(ArrayList<Song> arraylist) {
         this.arraylist = arraylist;
         this.songIDs = getSongIds();
-    }
-
-    @Override
-    public int getItemPosition() {
-        return 0;
     }
 
     @Override

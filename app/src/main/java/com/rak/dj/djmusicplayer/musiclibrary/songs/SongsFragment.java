@@ -1,10 +1,14 @@
 package com.rak.dj.djmusicplayer.musiclibrary.songs;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,48 +23,52 @@ import android.view.ViewGroup;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.dataloaders.upgraded.SongLoader;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.helpers.misc.WrappedAsyncTaskLoader;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.R;
 
 import com.rak.dj.djmusicplayer.helpers.SortOrder;
+import com.rak.dj.djmusicplayer.searchmanager.LoaderIds;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class SongsFragment extends AbsRecyclerViewFragment implements MusicStateListener {
+public class SongsFragment extends AbsRecyclerViewFragment<SongsAdapter> implements MusicStateListener, LoaderManager.LoaderCallbacks<ArrayList<Song>> {
 
-    private SongsAdapter songsAdapter;
-    private RecyclerView recyclerView;
-    private PreferencesUtils mPreferences;
+    public static final String TAG = SongsFragment.class.getSimpleName();
 
-    @Override
-    public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPreferences = PreferencesUtils.getInstance(getActivity());
-    }
+    private static final int LOADER_ID = LoaderIds.SONGS_FRAGMENT;
 
     @Override
-    public View setBaseListView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(
-                R.layout.fragment_recylerview, container, false);
-        recyclerView =  rootView.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return rootView;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
-        new loadSongs().execute("");
-    }
-
-    @Override
-    public void onActivityCreated(final Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
+        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+    }
+
+    @Override
+    protected boolean getGrid() {
+        return false;
+    }
+
+    @NonNull
+    @Override
+    protected SongsAdapter createAdapter() {
+        ArrayList<Song> dataSet = getAdapter() == null ? new ArrayList<Song>() : (ArrayList<Song>) getAdapter().getDataSet();
+        return new SongsAdapter((AppCompatActivity) getActivity(), dataSet, false, false);
+    }
+
+    @Override
+    protected String getEmptyMessage() {
+        return getAppResources().getString(R.string.no_songs);
+    }
+
+    @Override
+    protected boolean loadUsePalette() {
+        return false;
     }
 
     @Override
@@ -109,60 +117,40 @@ public class SongsFragment extends AbsRecyclerViewFragment implements MusicState
     }
 
     public void onMetaChanged() {
-        if (songsAdapter != null) {
-            songsAdapter.notifyDataSetChanged();
-        }
+        getAdapter().notifyDataSetChanged();
+        //reloadAdapter();
     }
-
-
 
     private void reloadAdapter() {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(final Void... unused) {
-                List<Song> songList = SongLoader.getAllSongs(getActivity());
-                songsAdapter.updateDataSet(songList);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                songsAdapter.notifyDataSetChanged();
-            }
-        }.execute();
+        getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-
+    public Loader<ArrayList<Song>> onCreateLoader(int id, Bundle args) {
+        return new AsyncSongsLoader(getActivity());
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
+    public void onLoadFinished(Loader<ArrayList<Song>> loader, ArrayList<Song> data) {
+        getAdapter().updateDataSet(data);
+        setItemDecoration();
     }
 
-    private class loadSongs extends AsyncTask<String, Void, String> {
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Song>> loader) {
+        getAdapter().updateDataSet(new ArrayList<>());
+        //setItemDecoration();
+    }
 
-        @Override
-        protected String doInBackground(String... params) {
-            if (getActivity() != null)
-                songsAdapter = new SongsAdapter((AppCompatActivity) getActivity(), SongLoader.getAllSongs(getActivity()), false, false);
-            return "Executed";
+
+    private static class AsyncSongsLoader extends WrappedAsyncTaskLoader<ArrayList<Song>> {
+        public AsyncSongsLoader(Context context) {
+            super(context);
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            recyclerView.setAdapter(songsAdapter);
-            if (getActivity() != null)
-                recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-
-        }
-
-        @Override
-        protected void onPreExecute() {
+        public ArrayList<Song> loadInBackground() {
+            return SongLoader.getAllSongs(getContext());
         }
     }
 
