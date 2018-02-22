@@ -21,38 +21,37 @@ import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
-import com.rak.dj.djmusicplayer.musiclibrary.AbsSongsAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewAdapter;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseViewHolder;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
-import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 import com.rak.dj.djmusicplayer.widgets.MusicVisualizer;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by sraksh on 1/12/2018.
  */
 
-public class SongsAdapter extends AbsSongsAdapter<Song, SongsAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
+public class SongsAdapter extends AbsRecyclerViewAdapter<Song, SongsAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
     public int currentlyPlayingPosition;
-    private AppCompatActivity mContext;
     private long[] songIDs;
     private boolean isPlaylist;
     private boolean animate;
     private int lastPosition = -1;
-    private String ateKey;
     private long playlistId;
 
     public SongsAdapter(AppCompatActivity context, ArrayList<Song> arraylist, boolean isPlaylistSong, boolean animate) {
         super(context, arraylist);
-        this.mContext = context;
         this.isPlaylist = isPlaylistSong;
         this.songIDs = getSongIds();
-        this.ateKey = Helpers.getATEKey(context);
         this.animate = animate;
+    }
+
+    @Override
+    public String getAteKey() {
+        return this.ateKey = Helpers.getATEKey(mContext);
     }
 
     @Override

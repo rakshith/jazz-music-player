@@ -23,32 +23,31 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-
 import com.afollestad.appthemeengine.Config;
+import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
-import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class AlbumSongsAdapter extends AbsSongsAdapter<Song, AlbumSongsAdapter.ItemHolder> {
+public class AlbumSongsAdapter extends AbsRecyclerViewAdapter<Song, AlbumSongsAdapter.ItemHolder> {
 
     private ArrayList<Song> arraylist;
-    private AppCompatActivity mContext;
     private long albumID;
     private long[] songIDs;
-    private int itemPosition;
-    private String ateKey;
+
     public AlbumSongsAdapter(AppCompatActivity context, ArrayList<Song> arraylist, long albumID) {
         super(context, arraylist);
         this.arraylist = arraylist;
-        this.mContext = context;
         this.songIDs = getSongIds();
         this.albumID = albumID;
-        this.ateKey = Helpers.getATEKey(context);
+    }
+
+    @Override
+    public String getAteKey() {
+        return ateKey = Helpers.getATEKey(mContext);
     }
 
     @Override
@@ -60,7 +59,6 @@ public class AlbumSongsAdapter extends AbsSongsAdapter<Song, AlbumSongsAdapter.I
 
     @Override
     public void genericBindViewHolder(ItemHolder itemHolder, int position) {
-        this.itemPosition = position;
         Song localItem = arraylist.get(position);
 
         itemHolder.title.setText(localItem.title);

@@ -10,33 +10,29 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
-import com.rak.dj.djmusicplayer.musiclibrary.AbsSongsAdapter;
-import com.rak.dj.djmusicplayer.musiclibrary.AlbumSongsAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewAdapter;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseViewHolder;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by sraksh on 2/19/2018.
  */
 
-public class GenreSongsAdapter extends AbsSongsAdapter<Song, GenreSongsAdapter.ItemHolder> {
+public class GenreSongsAdapter extends AbsRecyclerViewAdapter<Song, GenreSongsAdapter.ItemHolder> {
 
     private ArrayList<Song> arraylist;
-    private AppCompatActivity mContext;
-    private long albumID;
+    private long genreId;
     private long[] songIDs;
-    private int itemPosition;
 
     public GenreSongsAdapter(AppCompatActivity context, ArrayList<Song> arraylist, long genreId) {
         super(context, arraylist);
         this.arraylist = arraylist;
-        this.mContext = context;
         this.songIDs = getSongIds();
-        this.albumID = genreId;
+        this.genreId = genreId;
     }
 
     public long[] getSongIds() {
@@ -46,6 +42,11 @@ public class GenreSongsAdapter extends AbsSongsAdapter<Song, GenreSongsAdapter.I
         }
 
         return ret;
+    }
+
+    @Override
+    public String getAteKey() {
+        return ateKey = Helpers.getATEKey(mContext);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class GenreSongsAdapter extends AbsSongsAdapter<Song, GenreSongsAdapter.I
 
     @Override
     public void genericBindViewHolder(GenreSongsAdapter.ItemHolder itemHolder, int position) {
-        this.itemPosition = position;
+
         Song localItem = arraylist.get(position);
 
         itemHolder.title.setText(localItem.title);
@@ -113,7 +114,7 @@ public class GenreSongsAdapter extends AbsSongsAdapter<Song, GenreSongsAdapter.I
         @Override
         public void onClick(View v) {
             Handler handler = new Handler();
-            handler.postDelayed(() -> playAll(mContext, songIDs, getAdapterPosition(), albumID,
+            handler.postDelayed(() -> playAll(mContext, songIDs, getAdapterPosition(), genreId,
                     JazzUtil.IdType.Album, false,
                     arraylist.get(getAdapterPosition()), true), 100);
         }

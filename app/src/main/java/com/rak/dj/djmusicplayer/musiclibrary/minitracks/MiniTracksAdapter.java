@@ -1,6 +1,7 @@
 package com.rak.dj.djmusicplayer.musiclibrary.minitracks;
 
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -21,33 +22,38 @@ import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.helpers.MusicUtil;
 import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.BaseViewHolder;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musiclibrary.BaseAdapter;
 import com.rak.dj.djmusicplayer.widgets.BubbleTextGetter;
 import com.rak.dj.djmusicplayer.widgets.PopupImageView;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by sraksh on 2/12/2018.
  */
 
-public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder> implements BubbleTextGetter {
+public class MiniTracksAdapter extends AbsRecyclerViewAdapter<Song, MiniTracksAdapter.ItemHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
     public int currentlyPlayingPosition;
-    private List<Song> arraylist;
-    private AppCompatActivity mContext;
     private long[] songIDs;
-    private String ateKey;
     private boolean animate;
-    private int lastPosition = -1, itemPosition;
+    private int lastPosition = -1;
 
-    public MiniTracksAdapter(AppCompatActivity context, List<Song> arraylist, boolean animate) {
-        this.arraylist = arraylist;
-        this.mContext = context;
+    public MiniTracksAdapter(AppCompatActivity context, ArrayList<Song> arraylist, boolean animate) {
+        super(context, arraylist);
+        this.items = arraylist;
         this.songIDs = getSongIds();
-        this.ateKey = Helpers.getATEKey(context);
         this.animate = animate;
+    }
+
+    @Override
+    public String getAteKey() {
+        return ateKey = Helpers.getATEKey(mContext);
     }
 
     @Override
@@ -58,10 +64,9 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
     }
 
     @Override
-    public void onBindViewHolder(MiniTracksAdapter.ItemHolder itemHolder, int position) {
-        this.itemPosition = position;
+    public void genericBindViewHolder(ItemHolder itemHolder, int position) {
 
-        Song localItem = arraylist.get(position);
+        Song localItem = items.get(position);
 
         itemHolder.title.setText(localItem.title);
         itemHolder.songArtist.setText(localItem.artistName);
@@ -103,7 +108,7 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
     public long[] getSongIds() {
         long[] ret = new long[getItemCount()];
         for (int i = 0; i < getItemCount(); i++) {
-            ret[i] = arraylist.get(i).id;
+            ret[i] = items.get(i).id;
         }
 
         return ret;
@@ -118,7 +123,7 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
             menu.setOnMenuItemClickListener(menuItem -> {
                 switch (menuItem.getItemId()) {
                     case R.id.popup_song_remove_playlist:
-                        JazzUtil.removeFromPlaylist(mContext, arraylist.get(position).id, -1);
+                        JazzUtil.removeFromPlaylist(mContext, items.get(position).id, -1);
                         removeSongAt(position);
                         notifyItemRemoved(position);
                         break;
@@ -127,18 +132,18 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
                         break;
                     case R.id.popup_song_play_next:
                         long[] ids = new long[1];
-                        ids[0] = arraylist.get(position).id;
+                        ids[0] = items.get(position).id;
                         MusicPlayer.playNext(mContext, ids, -1, JazzUtil.IdType.NA);
                         break;
                     case R.id.popup_song_goto_album:
-                        NavigationUtil.goToAlbum(mContext, arraylist.get(position).albumId);
+                        NavigationUtil.goToAlbum(mContext, items.get(position).albumId);
                         break;
                     case R.id.popup_song_goto_artist:
-                        NavigationUtil.goToArtist(mContext, arraylist.get(position).artistId);
+                        NavigationUtil.goToArtist(mContext, items.get(position).artistId);
                         break;
                     case R.id.popup_song_addto_queue:
                         long[] id = new long[1];
-                        id[0] = arraylist.get(position).id;
+                        id[0] = items.get(position).id;
                         MusicPlayer.addToQueue(mContext, id, -1, JazzUtil.IdType.NA);
                         break;
                     case R.id.popup_song_addto_playlist:
@@ -146,17 +151,17 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
                         break;
                     case R.id.popup_cut:
 
-                        MusicUtil.startRingdroidEditor(mContext.getBaseContext(), arraylist.get(position).data);
+                        MusicUtil.startRingdroidEditor(mContext.getBaseContext(), items.get(position).data);
                         break;
                     case R.id.popup_tag_editor:
-                        NavigationUtil.navigateToSongTagEditor(mContext, arraylist.get(position).id);
+                        NavigationUtil.navigateToSongTagEditor(mContext, items.get(position).id);
                         break;
                     case R.id.popup_song_share:
-                        JazzUtil.shareTrack(mContext, arraylist.get(position).id);
+                        JazzUtil.shareTrack(mContext, items.get(position).id);
                         break;
                     case R.id.popup_song_delete:
-                        long[] deleteIds = {arraylist.get(position).id};
-                        JazzUtil.showDeleteDialog(mContext,arraylist.get(position).title, deleteIds, MiniTracksAdapter.this, position);
+                        long[] deleteIds = {items.get(position).id};
+                        JazzUtil.showDeleteDialog(mContext,items.get(position).title, deleteIds, MiniTracksAdapter.this, position);
                         break;
                 }
                 return false;
@@ -168,26 +173,29 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
 
     @Override
     public int getItemCount() {
-        return (null != arraylist ? arraylist.size() : 0);
+        return (null != items ? items.size() : 0);
     }
 
+    @NonNull
     @Override
-    public int getItemPosition() {
-        return itemPosition;
-    }
-
-    @Override
-    public String getTextToShowInBubble(final int pos) {
-        if (arraylist == null || arraylist.size() == 0)
+    public String getSectionName(int position) {
+        if (items == null || items.size() == 0)
             return "";
-        Character ch = arraylist.get(pos).title.charAt(0);
+        Character ch = items.get(position).title.charAt(0);
         if (Character.isDigit(ch)) {
             return "#";
         } else
             return Character.toString(ch);
     }
 
-    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    @Override
+    public void updateDataSet(ArrayList<Song> data) {
+        this.items = data;
+        this.songIDs = getSongIds();
+        notifyDataSetChanged();
+    }
+
+    public class ItemHolder extends BaseViewHolder implements View.OnClickListener {
         protected TextView title, songArtist, songDuration;
         protected ImageView albumArt;
         protected PopupImageView popupMenu;
@@ -211,7 +219,7 @@ public class MiniTracksAdapter extends BaseAdapter<MiniTracksAdapter.ItemHolder>
                     currentlyPlayingPosition = getAdapterPosition();
                     playAll(mContext, songIDs, getAdapterPosition(), -1,
                             JazzUtil.IdType.NA, false,
-                            arraylist.get(getAdapterPosition()), false);
+                            items.get(getAdapterPosition()), false);
                     Handler handler1 = new Handler();
                     handler1.postDelayed(new Runnable() {
                         @Override

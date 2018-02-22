@@ -42,20 +42,22 @@ import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArtistSongAdapter extends AbsSongsAdapter<Song, ArtistSongAdapter.ItemHolder> {
+public class ArtistSongAdapter extends AbsRecyclerViewAdapter<Song, ArtistSongAdapter.ItemHolder> {
 
     private ArrayList<Song> arraylist;
-    private AppCompatActivity mContext;
     private int artistID;
     private long[] songIDs;
-    private String ateKey;
+
     public ArtistSongAdapter(AppCompatActivity context, ArrayList<Song> arraylist, int artistID) {
         super(context, arraylist);
         this.arraylist = arraylist;
-        this.mContext = context;
         this.artistID = artistID;
         this.songIDs = getSongIds();
-        this.ateKey = Helpers.getATEKey(context);
+    }
+
+    @Override
+    public String getAteKey() {
+        return this.ateKey = Helpers.getATEKey(mContext);
     }
 
     @Override

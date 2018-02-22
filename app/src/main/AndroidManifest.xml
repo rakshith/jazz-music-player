@@ -127,6 +127,15 @@
 
         <activity android:name=".settingsmanager.SettingsActivity"
             android:theme="@style/AppTheme.FullScreen.Light"></activity>
+
+        <receiver android:name=".helpers.MediaButtonIntentReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+            </intent-filter>
+        </receiver>
+
+
     </application>
 
 </manifest>
