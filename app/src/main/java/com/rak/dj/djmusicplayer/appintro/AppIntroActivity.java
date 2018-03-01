@@ -35,6 +35,7 @@ public class AppIntroActivity extends AppIntro {
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
+        this.finishAffinity();
         // Do something when users tap on Done button.
         NavigationUtil.navigateToMainApp(this);
 

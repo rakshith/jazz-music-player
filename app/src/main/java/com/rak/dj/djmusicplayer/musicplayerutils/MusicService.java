@@ -83,7 +83,7 @@ public class MusicService extends Service {
     public static final String REPEATMODE_CHANGED = "com.rak.dj.repeatmodechanged";
     public static final String SHUFFLEMODE_CHANGED = "com.rak.dj.shufflemodechanged";
     public static final String TRACK_ERROR = "com.rak.dj.trackerror";
-    public static final String TIMBER_PACKAGE_NAME = "com.rak.dj";
+    public static final String JAZZ_PACKAGE_NAME = "com.rak.dj.djmusicplayer";
     public static final String MUSIC_PACKAGE_NAME = "com.android.music";
     public static final String SERVICECMD = "com.rak.dj.musicservicecommand";
     public static final String TOGGLEPAUSE_ACTION = "com.rak.dj.togglepause";
@@ -95,7 +95,7 @@ public class MusicService extends Service {
     public static final String REPEAT_ACTION = "com.rak.dj.repeat";
     public static final String SHUFFLE_ACTION = "com.rak.dj.shuffle";
     public static final String FROM_MEDIA_BUTTON = "frommediabutton";
-    public static final String REFRESH = "com.naman14.timber.refresh";
+    public static final String REFRESH = "com.rak.dj.refresh";
     public static final String UPDATE_LOCKSCREEN = "com.rak.dj.updatelockscreen";
     public static final String CMDNAME = "command";
     public static final String CMDTOGGLEPAUSE = "togglepause";
@@ -106,7 +106,7 @@ public class MusicService extends Service {
     public static final String CMDNEXT = "next";
     public static final String CMDNOTIF = "buttonId";
     public static final String UPDATE_PREFERENCES = "updatepreferences";
-    public static final String CHANNEL_ID = "timber_channel_01";
+    public static final String CHANNEL_ID = "jazz_channel_01";
 
 
     private String mFileToPlay;
@@ -118,7 +118,7 @@ public class MusicService extends Service {
     private NotificationManagerCompat mNotificationManager;
 
     private AudioManager mAudioManager;
-    private static final String SHUTDOWN = "com.naman14.timber.shutdown";
+    private static final String SHUTDOWN = "com.rak.dj.shutdown";
     private static final int IDCOLIDX = 0;
     private Cursor mCursor;
     private Cursor mAlbumCursor;
@@ -380,7 +380,7 @@ public class MusicService extends Service {
     }
 
     private void setUpMediaSession() {
-        mSession = new MediaSessionCompat(this, "Timber");
+        mSession = new MediaSessionCompat(this, "Jazz");
         mSession.setCallback(new MediaSessionCompat.Callback() {
             @Override
             public void onPause() {
@@ -1107,7 +1107,7 @@ public class MusicService extends Service {
         sendStickyBroadcast(intent);
 
         final Intent musicIntent = new Intent(intent);
-        musicIntent.setAction(what.replace(TIMBER_PACKAGE_NAME, MUSIC_PACKAGE_NAME));
+        musicIntent.setAction(what.replace(JAZZ_PACKAGE_NAME, MUSIC_PACKAGE_NAME));
         sendStickyBroadcast(musicIntent);
 
         if (what.equals(META_CHANGED)) {
@@ -1222,7 +1222,7 @@ public class MusicService extends Service {
 
     private void createNotificationChannel() {
         if (JazzUtil.isOreo()) {
-            CharSequence name = "Timber";
+            CharSequence name = "Jazz";
             int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);

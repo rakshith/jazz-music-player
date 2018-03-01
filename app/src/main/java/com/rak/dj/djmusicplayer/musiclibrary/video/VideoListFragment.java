@@ -1,12 +1,12 @@
 package com.rak.dj.djmusicplayer.musiclibrary.video;
 
 
-import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,20 +20,21 @@ import com.afollestad.appthemeengine.ATE;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.VideoLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
-import com.rak.dj.djmusicplayer.widgets.BaseRecyclerView;
+import com.rak.dj.djmusicplayer.helpers.ThemeStore;
+import com.rak.dj.djmusicplayer.helpers.ViewUtil;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoListFragment extends android.support.v4.app.Fragment {
+public class VideoListFragment extends Fragment {
 
     String albumName = null;
 
     VideoListAdapter videoListAdapter;
     private ProgressBar mProgressBar;
-    private BaseRecyclerView recyclerView;
+    private FastScrollRecyclerView recyclerView;
 
 
     public static VideoListFragment newInstance(String  albumName, boolean useTransition, String transitionName) {
@@ -64,7 +65,7 @@ public class VideoListFragment extends android.support.v4.app.Fragment {
 
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        ViewUtil.setUpFastScrollRecyclerViewColor(getActivity(), ((FastScrollRecyclerView) recyclerView), ThemeStore.accentColor(getActivity()));
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         return rootView;
     }

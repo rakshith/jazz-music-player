@@ -42,16 +42,17 @@ public class SongLoader {
         String selection = MediaStore.Audio.Media.DATA;
         String[] selectionArgs = {songPath};
         String[] projection = new String[]{
-                BaseColumns._ID, //0
-                MediaStore.Audio.AudioColumns.TITLE, //1
-                MediaStore.Audio.AudioColumns.ARTIST, // 2
-                MediaStore.Audio.AudioColumns.ALBUM, // 3
-                MediaStore.Audio.AudioColumns.DURATION,// 4
-                MediaStore.Audio.AudioColumns.TRACK, // 5
-                MediaStore.Audio.AudioColumns.ARTIST_ID,//6
-                MediaStore.Audio.AudioColumns.ALBUM_ID, //7
-                MediaStore.Audio.AudioColumns.DATA, //8
-                MediaStore.Audio.AudioColumns.DATE_MODIFIED}; //9
+                BaseColumns._ID,// 0
+                AudioColumns.TITLE,// 1
+                AudioColumns.TRACK,// 2
+                AudioColumns.YEAR,// 3
+                AudioColumns.DURATION,// 4
+                AudioColumns.DATA,// 5
+                AudioColumns.DATE_MODIFIED,// 6
+                AudioColumns.ALBUM_ID,// 7
+                AudioColumns.ALBUM,// 8
+                AudioColumns.ARTIST_ID,// 9
+                AudioColumns.ARTIST}; //10
         String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
 
         Cursor cursor = cr.query(uri, projection, selection + "=?", selectionArgs, sortOrder);

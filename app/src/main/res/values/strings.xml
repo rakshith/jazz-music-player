@@ -18,6 +18,8 @@
     <string name="no_results">No results</string>
     <string name="play">Play</string>
     <string name="add_to_playlist">Add to playlist</string>
+    <string name="biography">Biography</string>
+    <string name="biography_unavailable">Couldn\u2019t find a biography entry for this artist.</string>
     <string name="go_to_album">Go to album</string>
     <string name="go_to_artist">Go to artist</string>
     <string name="set_as_ringtone">Set as ringtone</string>
