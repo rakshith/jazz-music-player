@@ -19,7 +19,7 @@ public interface JazzVideoCallback {
 
     void onRetry(JazzVideoPlayer player, Uri source);
 
-    void onSubmit(JazzVideoPlayer player, Uri source);
+    void onNext(JazzVideoPlayer player, Uri source);
 
     void onClickVideoFrame(JazzVideoPlayer player);
 }

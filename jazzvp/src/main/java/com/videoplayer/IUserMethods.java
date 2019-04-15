@@ -35,9 +35,9 @@ public interface IUserMethods {
 
     void setRetryTextRes(@StringRes int res);
 
-    void setSubmitText(@Nullable CharSequence text);
+    void setNextDrawable(@NonNull Drawable drawable);
 
-    void setSubmitTextRes(@StringRes int res);
+    void setNextDrawableRes(@DrawableRes int res);
 
     void setRestartDrawable(@NonNull Drawable drawable);
 

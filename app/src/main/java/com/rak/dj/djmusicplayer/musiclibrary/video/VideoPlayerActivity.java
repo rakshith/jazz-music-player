@@ -30,7 +30,7 @@ public class VideoPlayerActivity extends Activity implements JazzVideoCallback{
         // To play files, you can use Uri.fromFile(new File("..."))
         //player.setSource(Uri.parse(TEST_URL));
         player.setSource(playerSource);
-        player.setRightAction(JazzVideoPlayer.RIGHT_ACTION_SUBMIT);
+        player.setRightAction(JazzVideoPlayer.RIGHT_ACTION_NEXT);
 
         // From here, the player view will show a progress indicator until the player is prepared.
         // Once it's prepared, the progress indicator goes away and the controls become enabled for the user to begin playback.
@@ -77,7 +77,7 @@ public class VideoPlayerActivity extends Activity implements JazzVideoCallback{
     }
 
     @Override
-    public void onSubmit(JazzVideoPlayer player, Uri source) {
+    public void onNext(JazzVideoPlayer player, Uri source) {
         // TODO handle if used
     }
 

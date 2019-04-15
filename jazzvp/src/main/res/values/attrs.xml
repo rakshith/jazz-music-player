@@ -23,6 +23,7 @@
         <attr name="jvp_bottomText" format="string" />
 
         <attr name="jvp_restartDrawable" format="reference" />
+        <attr name="jvp_nextDrawable" format="reference" />
         <attr name="jvp_playDrawable" format="reference" />
         <attr name="jvp_pauseDrawable" format="reference" />
 

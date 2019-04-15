@@ -67,7 +67,7 @@ public class JazzVideoPlayer extends FrameLayout implements
     @Retention(RetentionPolicy.SOURCE)
     public @interface LeftAction {}
 
-    @IntDef({RIGHT_ACTION_NONE, RIGHT_ACTION_SUBMIT, RIGHT_ACTION_CUSTOM_LABEL})
+    @IntDef({RIGHT_ACTION_NONE, RIGHT_ACTION_NEXT, RIGHT_ACTION_CUSTOM_LABEL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface RightAction {}
 
@@ -75,7 +75,7 @@ public class JazzVideoPlayer extends FrameLayout implements
     public static final int LEFT_ACTION_RESTART = 1;
     public static final int LEFT_ACTION_RETRY = 2;
     public static final int RIGHT_ACTION_NONE = 3;
-    public static final int RIGHT_ACTION_SUBMIT = 4;
+    public static final int RIGHT_ACTION_NEXT = 4;
     public static final int RIGHT_ACTION_CUSTOM_LABEL = 5;
     private static final int UPDATE_INTERVAL = 100;
 
@@ -107,7 +107,7 @@ public class JazzVideoPlayer extends FrameLayout implements
     private ImageButton mBtnRestart;
     private TextView mBtnRetry;
     private ImageButton mBtnPlayPause;
-    private TextView mBtnSubmit;
+    private ImageButton mBtnNext;
     private TextView mLabelCustom;
     private TextView mLabelBottom;
 
@@ -128,6 +128,7 @@ public class JazzVideoPlayer extends FrameLayout implements
     private CharSequence mRetryText;
     private CharSequence mSubmitText;
     private Drawable mRestartDrawable;
+    private Drawable mNextDrawable;
     private Drawable mPlayDrawable;
     private Drawable mPauseDrawable;
     private CharSequence mCustomLabelText;
@@ -177,13 +178,13 @@ public class JazzVideoPlayer extends FrameLayout implements
 
                 mCustomLabelText = a.getText(R.styleable.JazzVideoPlayer_jvp_customLabelText);
                 mRetryText = a.getText(R.styleable.JazzVideoPlayer_jvp_retryText);
-                mSubmitText = a.getText(R.styleable.JazzVideoPlayer_jvp_submitText);
                 mBottomLabelText = a.getText(R.styleable.JazzVideoPlayer_jvp_bottomText);
 
                 int restartDrawableResId =
                         a.getResourceId(R.styleable.JazzVideoPlayer_jvp_restartDrawable, -1);
                 int playDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_playDrawable, -1);
                 int pauseDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_pauseDrawable, -1);
+                int nextDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_nextDrawable, -1);
 
                 if (restartDrawableResId != -1) {
                     mRestartDrawable = AppCompatResources.getDrawable(context, restartDrawableResId);
@@ -193,6 +194,10 @@ public class JazzVideoPlayer extends FrameLayout implements
                 }
                 if (pauseDrawableResId != -1) {
                     mPauseDrawable = AppCompatResources.getDrawable(context, pauseDrawableResId);
+                }
+
+                if(nextDrawableResId != -1) {
+                    mNextDrawable = AppCompatResources.getDrawable(context, nextDrawableResId);
                 }
 
                 mHideControlsOnPlay =
@@ -222,7 +227,6 @@ public class JazzVideoPlayer extends FrameLayout implements
         }
 
         if (mRetryText == null) mRetryText = context.getResources().getText(R.string.jvp_retry);
-        if (mSubmitText == null) mSubmitText = context.getResources().getText(R.string.jvp_submit);
 
         if (mRestartDrawable == null)
             mRestartDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_restart);
@@ -230,6 +234,9 @@ public class JazzVideoPlayer extends FrameLayout implements
             mPlayDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_play);
         if (mPauseDrawable == null)
             mPauseDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_pause);
+        if(mNextDrawable == null)
+            mNextDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_next);
+
     }
 
     @Override
@@ -309,14 +316,14 @@ public class JazzVideoPlayer extends FrameLayout implements
     }
 
     @Override
-    public void setSubmitText(@Nullable CharSequence text) {
-        mSubmitText = text;
-        mBtnSubmit.setText(text);
+    public void setNextDrawable(@Nullable Drawable drawable) {
+       mNextDrawable = drawable;
+        mBtnNext.setImageDrawable(drawable);
     }
 
     @Override
-    public void setSubmitTextRes(@StringRes int res) {
-        setSubmitText(getResources().getText(res));
+    public void setNextDrawableRes(@DrawableRes int res) {
+        setNextDrawable(AppCompatResources.getDrawable(getContext(), res));
     }
 
     @Override
@@ -434,13 +441,13 @@ public class JazzVideoPlayer extends FrameLayout implements
         if (mSeeker == null) return;
         mSeeker.setEnabled(enabled);
         mBtnPlayPause.setEnabled(enabled);
-        mBtnSubmit.setEnabled(enabled);
+        mBtnNext.setEnabled(enabled);
         mBtnRestart.setEnabled(enabled);
         mBtnRetry.setEnabled(enabled);
 
         final float disabledAlpha = .4f;
         mBtnPlayPause.setAlpha(enabled ? 1f : disabledAlpha);
-        mBtnSubmit.setAlpha(enabled ? 1f : disabledAlpha);
+        mBtnNext.setAlpha(enabled ? 1f : disabledAlpha);
         mBtnRestart.setAlpha(enabled ? 1f : disabledAlpha);
 
         mClickFrame.setEnabled(enabled);
@@ -858,9 +865,9 @@ public class JazzVideoPlayer extends FrameLayout implements
         mBtnPlayPause.setOnClickListener(this);
         mBtnPlayPause.setImageDrawable(mPlayDrawable);
 
-        mBtnSubmit = (TextView) mControlsFrame.findViewById(R.id.btnSubmit);
-        mBtnSubmit.setOnClickListener(this);
-        mBtnSubmit.setText(mSubmitText);
+        mBtnNext = (ImageButton) mControlsFrame.findViewById(R.id.btnSubmit);
+        mBtnNext.setOnClickListener(this);
+        mBtnNext.setImageDrawable(mNextDrawable);
 
         mLabelCustom = (TextView) mControlsFrame.findViewById(R.id.labelCustom);
         mLabelCustom.setText(mCustomLabelText);
@@ -891,9 +898,7 @@ public class JazzVideoPlayer extends FrameLayout implements
         } else if (view.getId() == R.id.btnRetry) {
             if (mCallback != null) mCallback.onRetry(this, mSource);
         } else if (view.getId() == R.id.btnSubmit) {
-            // if (mCallback != null) mCallback.onSubmit(this, mSource);
-            int duration = mPlayer.getDuration();
-            seekTo(duration - 5);
+            if (mCallback != null) mCallback.onNext(this, mSource);
         }
     }
 
@@ -924,7 +929,7 @@ public class JazzVideoPlayer extends FrameLayout implements
         mLabelDuration = null;
         mBtnPlayPause = null;
         mBtnRestart = null;
-        mBtnSubmit = null;
+        mBtnNext = null;
 
         mControlsFrame = null;
         mClickFrame = null;
@@ -963,15 +968,15 @@ public class JazzVideoPlayer extends FrameLayout implements
         }
         switch (mRightAction) {
             case RIGHT_ACTION_NONE:
-                mBtnSubmit.setVisibility(View.GONE);
+                mBtnNext.setVisibility(View.GONE);
                 mLabelCustom.setVisibility(View.GONE);
                 break;
-            case RIGHT_ACTION_SUBMIT:
-                mBtnSubmit.setVisibility(View.VISIBLE);
+            case RIGHT_ACTION_NEXT:
+                mBtnNext.setVisibility(View.VISIBLE);
                 mLabelCustom.setVisibility(View.GONE);
                 break;
             case RIGHT_ACTION_CUSTOM_LABEL:
-                mBtnSubmit.setVisibility(View.GONE);
+                mBtnNext.setVisibility(View.GONE);
                 mLabelCustom.setVisibility(View.VISIBLE);
                 break;
         }
@@ -1057,8 +1062,7 @@ public class JazzVideoPlayer extends FrameLayout implements
         setTint(mSeeker, labelColor);
         mBtnRetry.setTextColor(labelColor);
         tintSelector(mBtnRetry, labelColor);
-        mBtnSubmit.setTextColor(labelColor);
-        tintSelector(mBtnSubmit, labelColor);
+        tintSelector(mBtnNext, labelColor);
         mLabelCustom.setTextColor(labelColor);
         mLabelBottom.setTextColor(labelColor);
         mPlayDrawable = tintDrawable(mPlayDrawable.mutate(), labelColor);
