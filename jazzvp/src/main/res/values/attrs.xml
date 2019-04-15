@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="EasyVideoPlayer">
+    <declare-styleable name="JazzVideoPlayer">
 
-        <attr name="evp_source" format="string" />
+        <attr name="jvp_source" format="string" />
 
-        <attr name="evp_leftAction" format="enum">
+        <attr name="jvp_leftAction" format="enum">
             <enum name="none" value="0" />
             <enum name="restart" value="1" />
             <enum name="retry" value="2" />
         </attr>
 
-        <attr name="evp_rightAction" format="enum">
+        <attr name="jvp_rightAction" format="enum">
             <enum name="none" value="3" />
             <enum name="submit" value="4" />
             <enum name="customLabel" value="5" />
         </attr>
 
-        <attr name="evp_customLabelText" format="string" />
-        <attr name="evp_retryText" format="string" />
-        <attr name="evp_submitText" format="string" />
-        <attr name="evp_bottomText" format="string" />
+        <attr name="jvp_customLabelText" format="string" />
+        <attr name="jvp_retryText" format="string" />
+        <attr name="jvp_submitText" format="string" />
+        <attr name="jvp_bottomText" format="string" />
 
-        <attr name="evp_restartDrawable" format="reference" />
-        <attr name="evp_playDrawable" format="reference" />
-        <attr name="evp_pauseDrawable" format="reference" />
+        <attr name="jvp_restartDrawable" format="reference" />
+        <attr name="jvp_playDrawable" format="reference" />
+        <attr name="jvp_pauseDrawable" format="reference" />
 
-        <attr name="evp_hideControlsOnPlay" format="boolean" />
-        <attr name="evp_autoPlay" format="boolean" />
+        <attr name="jvp_hideControlsOnPlay" format="boolean" />
+        <attr name="jvp_autoPlay" format="boolean" />
 
-        <attr name="evp_disableControls" format="boolean" />
+        <attr name="jvp_disableControls" format="boolean" />
 
-        <attr name="evp_themeColor" format="color" />
+        <attr name="jvp_themeColor" format="color" />
 
-        <attr name="evp_autoFullscreen" format="boolean" />
+        <attr name="jvp_autoFullscreen" format="boolean" />
 
-        <attr name="evp_loop" format="boolean" />
+        <attr name="jvp_loop" format="boolean" />
 
     </declare-styleable>
 

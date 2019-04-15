@@ -8,7 +8,7 @@ import com.rak.dj.djmusicplayer.R;
 import com.videoplayer.JazzVideoCallback;
 import com.videoplayer.JazzVideoPlayer;
 
-public class VideoPlayerActivity extends Activity implements JazzVideoCallback {
+public class VideoPlayerActivity extends Activity implements JazzVideoCallback{
 
     private static final String TEST_URL = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
     private JazzVideoPlayer player;
@@ -25,10 +25,12 @@ public class VideoPlayerActivity extends Activity implements JazzVideoCallback {
         // Sets the callback to this Activity, since it inherits EasyVideoCallback
         player.setCallback(this);
 
+
         // Sets the source to the HTTP URL held in the TEST_URL variable.
         // To play files, you can use Uri.fromFile(new File("..."))
         //player.setSource(Uri.parse(TEST_URL));
         player.setSource(playerSource);
+        player.setRightAction(JazzVideoPlayer.RIGHT_ACTION_SUBMIT);
 
         // From here, the player view will show a progress indicator until the player is prepared.
         // Once it's prepared, the progress indicator goes away and the controls become enabled for the user to begin playback.
@@ -51,6 +53,7 @@ public class VideoPlayerActivity extends Activity implements JazzVideoCallback {
     @Override
     public void onPrepared(JazzVideoPlayer player) {
         // TODO handle
+        player.setAutoPlay(true);
     }
 
     @Override
@@ -92,4 +95,5 @@ public class VideoPlayerActivity extends Activity implements JazzVideoCallback {
     public void onPaused(JazzVideoPlayer player) {
         // TODO handle if needed
     }
+
 }

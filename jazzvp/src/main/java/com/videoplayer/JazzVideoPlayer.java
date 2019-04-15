@@ -13,17 +13,21 @@ import android.graphics.PorterDuff;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.CheckResult;
 import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
@@ -59,6 +63,14 @@ public class JazzVideoPlayer extends FrameLayout implements
         View.OnClickListener,
         SeekBar.OnSeekBarChangeListener {
 
+    @IntDef({LEFT_ACTION_NONE, LEFT_ACTION_RESTART, LEFT_ACTION_RETRY})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface LeftAction {}
+
+    @IntDef({RIGHT_ACTION_NONE, RIGHT_ACTION_SUBMIT, RIGHT_ACTION_CUSTOM_LABEL})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface RightAction {}
+
     public static final int LEFT_ACTION_NONE = 0;
     public static final int LEFT_ACTION_RESTART = 1;
     public static final int LEFT_ACTION_RETRY = 2;
@@ -67,26 +79,27 @@ public class JazzVideoPlayer extends FrameLayout implements
     public static final int RIGHT_ACTION_CUSTOM_LABEL = 5;
     private static final int UPDATE_INTERVAL = 100;
 
-    @LeftAction private int mLeftAction = LEFT_ACTION_RESTART;
-    @RightAction private int mRightAction = RIGHT_ACTION_NONE;
+    public JazzVideoPlayer(Context context) {
+        super(context);
+        init(context, null);
+    }
+
+    public JazzVideoPlayer(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs);
+    }
+
+    public JazzVideoPlayer(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
 
     private TextureView mTextureView;
     private Surface mSurface;
 
+    private View mControlsFrame;
     private View mProgressFrame;
     private View mClickFrame;
-    private View mControlsFrame;
-
-    private boolean mControlsDisabled;
-    private boolean mAutoFullscreen = false;
-    private boolean mHideControlsOnPlay = true;
-    private boolean mAutoPlay;
-    private int mInitialPosition = -1;
-    private int mThemeColor = 0;
-    private boolean mLoop = false;
-
-    private JazzVideoCallback mCallback;
-    private JazzVideoProgressCallback mProgressCallback;
 
     private SeekBar mSeeker;
     private TextView mLabelPosition;
@@ -98,16 +111,6 @@ public class JazzVideoPlayer extends FrameLayout implements
     private TextView mLabelCustom;
     private TextView mLabelBottom;
 
-    private CharSequence mCustomLabelText;
-    private CharSequence mBottomLabelText;
-    private CharSequence mRetryText;
-    private CharSequence mSubmitText;
-
-    private Drawable mRestartDrawable;
-    private Drawable mPlayDrawable;
-    private Drawable mPauseDrawable;
-
-    private Uri mSource;
     private MediaPlayer mPlayer;
     private boolean mSurfaceAvailable;
     private boolean mIsPrepared;
@@ -117,6 +120,25 @@ public class JazzVideoPlayer extends FrameLayout implements
 
     private Handler mHandler;
 
+    private Uri mSource;
+    private JazzVideoCallback mCallback;
+    private JazzVideoProgressCallback mProgressCallback;
+    @LeftAction private int mLeftAction = LEFT_ACTION_RESTART;
+    @RightAction private int mRightAction = RIGHT_ACTION_NONE;
+    private CharSequence mRetryText;
+    private CharSequence mSubmitText;
+    private Drawable mRestartDrawable;
+    private Drawable mPlayDrawable;
+    private Drawable mPauseDrawable;
+    private CharSequence mCustomLabelText;
+    private CharSequence mBottomLabelText;
+    private boolean mHideControlsOnPlay = true;
+    private boolean mAutoPlay;
+    private int mInitialPosition = -1;
+    private boolean mControlsDisabled;
+    private int mThemeColor = 0;
+    private boolean mAutoFullscreen = false;
+    private boolean mLoop = false;
 
     // Runnable used to run code on an interval to update counters and seeker
     private final Runnable mUpdateCounters =
@@ -137,46 +159,31 @@ public class JazzVideoPlayer extends FrameLayout implements
                 }
             };
 
-    public JazzVideoPlayer(@NonNull Context context) {
-        super(context);
-        init(context, null);
-    }
-
-    public JazzVideoPlayer(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
-    }
-
-    public JazzVideoPlayer(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs);
-    }
-
     private void init(Context context, AttributeSet attrs) {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setBackgroundColor(Color.BLACK);
 
         if (attrs != null) {
             TypedArray a =
-                    context.getTheme().obtainStyledAttributes(attrs, R.styleable.EasyVideoPlayer, 0, 0);
+                    context.getTheme().obtainStyledAttributes(attrs, R.styleable.JazzVideoPlayer, 0, 0);
             try {
-                String source = a.getString(R.styleable.EasyVideoPlayer_evp_source);
+                String source = a.getString(R.styleable.JazzVideoPlayer_jvp_source);
                 if (source != null && !source.trim().isEmpty()) mSource = Uri.parse(source);
 
                 //noinspection WrongConstant
-                mLeftAction = a.getInteger(R.styleable.EasyVideoPlayer_evp_leftAction, LEFT_ACTION_RESTART);
+                mLeftAction = a.getInteger(R.styleable.JazzVideoPlayer_jvp_leftAction, LEFT_ACTION_RESTART);
                 //noinspection WrongConstant
-                mRightAction = a.getInteger(R.styleable.EasyVideoPlayer_evp_rightAction, RIGHT_ACTION_NONE);
+                mRightAction = a.getInteger(R.styleable.JazzVideoPlayer_jvp_rightAction, RIGHT_ACTION_NONE);
 
-                mCustomLabelText = a.getText(R.styleable.EasyVideoPlayer_evp_customLabelText);
-                mRetryText = a.getText(R.styleable.EasyVideoPlayer_evp_retryText);
-                mSubmitText = a.getText(R.styleable.EasyVideoPlayer_evp_submitText);
-                mBottomLabelText = a.getText(R.styleable.EasyVideoPlayer_evp_bottomText);
+                mCustomLabelText = a.getText(R.styleable.JazzVideoPlayer_jvp_customLabelText);
+                mRetryText = a.getText(R.styleable.JazzVideoPlayer_jvp_retryText);
+                mSubmitText = a.getText(R.styleable.JazzVideoPlayer_jvp_submitText);
+                mBottomLabelText = a.getText(R.styleable.JazzVideoPlayer_jvp_bottomText);
 
                 int restartDrawableResId =
-                        a.getResourceId(R.styleable.EasyVideoPlayer_evp_restartDrawable, -1);
-                int playDrawableResId = a.getResourceId(R.styleable.EasyVideoPlayer_evp_playDrawable, -1);
-                int pauseDrawableResId = a.getResourceId(R.styleable.EasyVideoPlayer_evp_pauseDrawable, -1);
+                        a.getResourceId(R.styleable.JazzVideoPlayer_jvp_restartDrawable, -1);
+                int playDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_playDrawable, -1);
+                int pauseDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_pauseDrawable, -1);
 
                 if (restartDrawableResId != -1) {
                     mRestartDrawable = AppCompatResources.getDrawable(context, restartDrawableResId);
@@ -189,17 +196,17 @@ public class JazzVideoPlayer extends FrameLayout implements
                 }
 
                 mHideControlsOnPlay =
-                        a.getBoolean(R.styleable.EasyVideoPlayer_evp_hideControlsOnPlay, true);
-                mAutoPlay = a.getBoolean(R.styleable.EasyVideoPlayer_evp_autoPlay, false);
-                mControlsDisabled = a.getBoolean(R.styleable.EasyVideoPlayer_evp_disableControls, false);
+                        a.getBoolean(R.styleable.JazzVideoPlayer_jvp_hideControlsOnPlay, true);
+                mAutoPlay = a.getBoolean(R.styleable.JazzVideoPlayer_jvp_autoPlay, false);
+                mControlsDisabled = a.getBoolean(R.styleable.JazzVideoPlayer_jvp_disableControls, false);
 
                 mThemeColor =
                         a.getColor(
-                                R.styleable.EasyVideoPlayer_evp_themeColor,
+                                R.styleable.JazzVideoPlayer_jvp_themeColor,
                                 Util.resolveColor(context, R.attr.colorPrimary));
 
-                mAutoFullscreen = a.getBoolean(R.styleable.EasyVideoPlayer_evp_autoFullscreen, false);
-                mLoop = a.getBoolean(R.styleable.EasyVideoPlayer_evp_loop, false);
+                mAutoFullscreen = a.getBoolean(R.styleable.JazzVideoPlayer_jvp_autoFullscreen, false);
+                mLoop = a.getBoolean(R.styleable.JazzVideoPlayer_jvp_loop, false);
             } finally {
                 a.recycle();
             }
@@ -214,8 +221,8 @@ public class JazzVideoPlayer extends FrameLayout implements
             mLoop = false;
         }
 
-        if (mRetryText == null) mRetryText = context.getResources().getText(R.string.evp_retry);
-        if (mSubmitText == null) mSubmitText = context.getResources().getText(R.string.evp_submit);
+        if (mRetryText == null) mRetryText = context.getResources().getText(R.string.jvp_retry);
+        if (mSubmitText == null) mSubmitText = context.getResources().getText(R.string.jvp_submit);
 
         if (mRestartDrawable == null)
             mRestartDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_restart);
@@ -226,72 +233,260 @@ public class JazzVideoPlayer extends FrameLayout implements
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        setKeepScreenOn(true);
-
-        // Instantiate and add TextureView for rendering
-        final FrameLayout.LayoutParams textureLp =
-                new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mTextureView = new TextureView(getContext());
-        addView(mTextureView, textureLp);
-
-        mTextureView.setSurfaceTextureListener(this);
-
-        final LayoutInflater li = LayoutInflater.from(getContext());
-        // Inflate and add progress
-        mProgressFrame = li.inflate(R.layout.jvp_include_progress, this, false);
-        addView(mProgressFrame);
-
-        // Instantiate and add click frame (used to toggle controls)
-        mClickFrame = new FrameLayout(getContext());
-
-        //noinspection RedundantCast
-        ((FrameLayout) mClickFrame)
-                .setForeground(Util.resolveDrawable(getContext(), R.attr.selectableItemBackground));
-        addView(
-                mClickFrame,
-                new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-        // Inflate controls
-        mControlsFrame = li.inflate(R.layout.jvp_include_controls, this, false);
-        final FrameLayout.LayoutParams controlsLp =
-                new FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        controlsLp.gravity = Gravity.BOTTOM;
-        addView(mControlsFrame, controlsLp);
-
-        final JazzVideoPlayer jazzVideoPlayer = this;
-
-        if (mControlsDisabled) {
-            mClickFrame.setOnClickListener(null);
-            mControlsFrame.setVisibility(View.GONE);
-        } else {
-            mClickFrame.setOnClickListener(
-                    new OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            toggleControls();
-                            mCallback.onClickVideoFrame(jazzVideoPlayer);
-                        }
-                    });
+    public void setSource(@NonNull Uri source) {
+        boolean hadSource = mSource != null;
+        if (hadSource) stop();
+        mSource = source;
+        if (mPlayer != null) {
+            if (hadSource) {
+                sourceChanged();
+            } else {
+                prepare();
+            }
         }
+    }
 
-        // Retrieve controls
-        mSeeker = (SeekBar) mControlsFrame.findViewById(R.id.seeker);
-        mSeeker.setOnSeekBarChangeListener(this);
+    @Override
+    public void setCallback(@NonNull JazzVideoCallback callback) {
+        mCallback = callback;
+    }
 
-        mLabelPosition = (TextView) mControlsFrame.findViewById(R.id.position);
-        mLabelPosition.setText(Util.getDurationString(0, false));
+    @Override
+    public void setProgressCallback(@NonNull JazzVideoProgressCallback callback) {
+        mProgressCallback = callback;
+    }
 
-        mLabelDuration = (TextView) mControlsFrame.findViewById(R.id.duration);
-        mLabelDuration.setText(Util.getDurationString(0, true));
+    @Override
+    public void setLeftAction(@LeftAction int action) {
+        if (action < LEFT_ACTION_NONE || action > LEFT_ACTION_RETRY)
+            throw new IllegalArgumentException("Invalid left action specified.");
+        mLeftAction = action;
+        invalidateActions();
+    }
 
-        mBtnRestart = (ImageButton) mControlsFrame.findViewById(R.id.btnRestart);
-        mBtnRestart.setOnClickListener(this);
-        mBtnRestart.setImageDrawable(mRestartDrawable);
+    @Override
+    public void setRightAction(@RightAction int action) {
+        if (action < RIGHT_ACTION_NONE || action > RIGHT_ACTION_CUSTOM_LABEL)
+            throw new IllegalArgumentException("Invalid right action specified.");
+        mRightAction = action;
+        invalidateActions();
+    }
+
+    @Override
+    public void setCustomLabelText(@Nullable CharSequence text) {
+        mCustomLabelText = text;
+        mLabelCustom.setText(text);
+        setRightAction(RIGHT_ACTION_CUSTOM_LABEL);
+    }
+
+    @Override
+    public void setCustomLabelTextRes(@StringRes int textRes) {
+        setCustomLabelText(getResources().getText(textRes));
+    }
+
+    @Override
+    public void setBottomLabelText(@Nullable CharSequence text) {
+        mBottomLabelText = text;
+        mLabelBottom.setText(text);
+        if (text == null || text.toString().trim().length() == 0) mLabelBottom.setVisibility(View.GONE);
+        else mLabelBottom.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setBottomLabelTextRes(@StringRes int textRes) {
+        setBottomLabelText(getResources().getText(textRes));
+    }
+
+    @Override
+    public void setRetryText(@Nullable CharSequence text) {
+        mRetryText = text;
+        mBtnRetry.setText(text);
+    }
+
+    @Override
+    public void setRetryTextRes(@StringRes int res) {
+        setRetryText(getResources().getText(res));
+    }
+
+    @Override
+    public void setSubmitText(@Nullable CharSequence text) {
+        mSubmitText = text;
+        mBtnSubmit.setText(text);
+    }
+
+    @Override
+    public void setSubmitTextRes(@StringRes int res) {
+        setSubmitText(getResources().getText(res));
+    }
+
+    @Override
+    public void setRestartDrawable(@NonNull Drawable drawable) {
+        mRestartDrawable = drawable;
+        mBtnRestart.setImageDrawable(drawable);
+    }
+
+    @Override
+    public void setRestartDrawableRes(@DrawableRes int res) {
+        setRestartDrawable(AppCompatResources.getDrawable(getContext(), res));
+    }
+
+    @Override
+    public void setPlayDrawable(@NonNull Drawable drawable) {
+        mPlayDrawable = drawable;
+        if (!isPlaying()) mBtnPlayPause.setImageDrawable(drawable);
+    }
+
+    @Override
+    public void setPlayDrawableRes(@DrawableRes int res) {
+        setPlayDrawable(AppCompatResources.getDrawable(getContext(), res));
+    }
+
+    @Override
+    public void setPauseDrawable(@NonNull Drawable drawable) {
+        mPauseDrawable = drawable;
+        if (isPlaying()) mBtnPlayPause.setImageDrawable(drawable);
+    }
+
+    @Override
+    public void setPauseDrawableRes(@DrawableRes int res) {
+        setPauseDrawable(AppCompatResources.getDrawable(getContext(), res));
+    }
+
+    @Override
+    public void setThemeColor(@ColorInt int color) {
+        mThemeColor = color;
+        invalidateThemeColors();
+    }
+
+    @Override
+    public void setThemeColorRes(@ColorRes int colorRes) {
+        setThemeColor(ContextCompat.getColor(getContext(), colorRes));
+    }
+
+    @Override
+    public void setHideControlsOnPlay(boolean hide) {
+        mHideControlsOnPlay = hide;
+    }
+
+    @Override
+    public void setAutoPlay(boolean autoPlay) {
+        mAutoPlay = autoPlay;
+    }
+
+    @Override
+    public void setInitialPosition(@IntRange(from = 0, to = Integer.MAX_VALUE) int pos) {
+        mInitialPosition = pos;
+    }
+
+    private void sourceChanged() {
+        setControlsEnabled(false);
+        mSeeker.setProgress(0);
+        mSeeker.setEnabled(false);
+        mPlayer.reset();
+        if (mCallback != null) mCallback.onPreparing(this);
+        try {
+            setSourceInternal();
+        } catch (IOException e) {
+            throwError(e);
+        }
+    }
+
+    private void setSourceInternal() throws IOException {
+        if (mSource.getScheme() != null
+                && (mSource.getScheme().equals("http") || mSource.getScheme().equals("https"))) {
+            LOG("Loading web URI: " + mSource.toString());
+            mPlayer.setDataSource(mSource.toString());
+        } else if (mSource.getScheme() != null
+                && (mSource.getScheme().equals("file") && mSource.getPath().contains("/android_assets/"))) {
+            LOG("Loading assets URI: " + mSource.toString());
+            AssetFileDescriptor afd;
+            afd =
+                    getContext()
+                            .getAssets()
+                            .openFd(mSource.toString().replace("file:///android_assets/", ""));
+            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            afd.close();
+        } else if (mSource.getScheme() != null && mSource.getScheme().equals("asset")) {
+            LOG("Loading assets URI: " + mSource.toString());
+            AssetFileDescriptor afd;
+            afd = getContext().getAssets().openFd(mSource.toString().replace("asset://", ""));
+            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            afd.close();
+        } else {
+            LOG("Loading local URI: " + mSource.toString());
+            mPlayer.setDataSource(getContext(), mSource);
+        }
+        mPlayer.prepareAsync();
+    }
+
+    private void prepare() {
+        if (!mSurfaceAvailable || mSource == null || mPlayer == null || mIsPrepared) return;
+        if (mCallback != null) mCallback.onPreparing(this);
+        try {
+            mPlayer.setSurface(mSurface);
+            setSourceInternal();
+        } catch (IOException e) {
+            throwError(e);
+        }
+    }
+
+    private void setControlsEnabled(boolean enabled) {
+        if (mSeeker == null) return;
+        mSeeker.setEnabled(enabled);
+        mBtnPlayPause.setEnabled(enabled);
+        mBtnSubmit.setEnabled(enabled);
+        mBtnRestart.setEnabled(enabled);
+        mBtnRetry.setEnabled(enabled);
+
+        final float disabledAlpha = .4f;
+        mBtnPlayPause.setAlpha(enabled ? 1f : disabledAlpha);
+        mBtnSubmit.setAlpha(enabled ? 1f : disabledAlpha);
+        mBtnRestart.setAlpha(enabled ? 1f : disabledAlpha);
+
+        mClickFrame.setEnabled(enabled);
+    }
+
+    @Override
+    public void showControls() {
+        if (mControlsDisabled || isControlsShown() || mSeeker == null) return;
+
+        mControlsFrame.animate().cancel();
+        mControlsFrame.setAlpha(0f);
+        mControlsFrame.setVisibility(View.VISIBLE);
+        mControlsFrame
+                .animate()
+                .alpha(1f)
+                .setInterpolator(new DecelerateInterpolator())
+                .setListener(
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                if (mAutoFullscreen) setFullscreen(false);
+                            }
+                        })
+                .start();
+    }
+
+    @Override
+    public void hideControls() {
+        if (mControlsDisabled || !isControlsShown() || mSeeker == null) return;
+        mControlsFrame.animate().cancel();
+        mControlsFrame.setAlpha(1f);
+        mControlsFrame.setVisibility(View.VISIBLE);
+        mControlsFrame
+                .animate()
+                .alpha(0f)
+                .setInterpolator(new DecelerateInterpolator())
+                .setListener(
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                setFullscreen(true);
+
+                                if (mControlsFrame != null) mControlsFrame.setVisibility(View.INVISIBLE);
+                            }
+                        })
+                .start();
     }
 
     @CheckResult
@@ -351,6 +546,7 @@ public class JazzVideoPlayer extends FrameLayout implements
         return mPlayer.getCurrentPosition();
     }
 
+    @CheckResult
     @Override
     public int getDuration() {
         if (mPlayer == null) return -1;
@@ -443,20 +639,311 @@ public class JazzVideoPlayer extends FrameLayout implements
         if (mPlayer != null) mPlayer.setLooping(loop);
     }
 
-    private void prepare() {
-        if (!mSurfaceAvailable || mSource == null || mPlayer == null || mIsPrepared) return;
-        if (mCallback != null) mCallback.onPreparing(this);
-        try {
+    // Surface listeners
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
+        LOG("Surface texture available: %dx%d", width, height);
+        mInitialTextureWidth = width;
+        mInitialTextureHeight = height;
+        mSurfaceAvailable = true;
+        mSurface = new Surface(surfaceTexture);
+        if (mIsPrepared) {
             mPlayer.setSurface(mSurface);
-            setSourceInternal();
-        } catch (IOException e) {
-            throwError(e);
+        } else {
+            prepare();
         }
     }
 
-    private void throwError(Exception e) {
-        if (mCallback != null) mCallback.onError(this, e);
-        else throw new RuntimeException(e);
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
+        LOG("Surface texture changed: %dx%d", width, height);
+        adjustAspectRatio(width, height, mPlayer.getVideoWidth(), mPlayer.getVideoHeight());
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+        LOG("Surface texture destroyed");
+        mSurfaceAvailable = false;
+        mSurface = null;
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {}
+
+    // Media player listeners
+
+    @Override
+    public void onPrepared(MediaPlayer mediaPlayer) {
+        LOG("onPrepared()");
+        mProgressFrame.setVisibility(View.INVISIBLE);
+        mIsPrepared = true;
+        if (mCallback != null) mCallback.onPrepared(this);
+        mLabelPosition.setText(Util.getDurationString(0, false));
+        mLabelDuration.setText(Util.getDurationString(mediaPlayer.getDuration(), false));
+        mSeeker.setProgress(0);
+        mSeeker.setMax(mediaPlayer.getDuration());
+        setControlsEnabled(true);
+
+        if (mAutoPlay) {
+            if (!mControlsDisabled && mHideControlsOnPlay) hideControls();
+            start();
+            if (mInitialPosition > 0) {
+                seekTo(mInitialPosition);
+                mInitialPosition = -1;
+            }
+        } else {
+            // Hack to show first frame, is there another way?
+            mPlayer.start();
+            mPlayer.pause();
+        }
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mediaPlayer, int percent) {
+        LOG("Buffering: %d%%", percent);
+        if (mCallback != null) mCallback.onBuffering(percent);
+        if (mSeeker != null) {
+            if (percent == 100) mSeeker.setSecondaryProgress(0);
+            else mSeeker.setSecondaryProgress(mSeeker.getMax() * (percent / 100));
+        }
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        LOG("onCompletion()");
+        if (mLoop) {
+            mBtnPlayPause.setImageDrawable(mPlayDrawable);
+            if (mHandler != null) mHandler.removeCallbacks(mUpdateCounters);
+            mSeeker.setProgress(mSeeker.getMax());
+            showControls();
+        }
+        if (mCallback != null) {
+            mCallback.onCompletion(this);
+            if (mLoop) mCallback.onStarted(this);
+        }
+    }
+
+    @Override
+    public void onVideoSizeChanged(MediaPlayer mediaPlayer, int width, int height) {
+        LOG("Video size changed: %dx%d", width, height);
+        adjustAspectRatio(mInitialTextureWidth, mInitialTextureHeight, width, height);
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
+        if (what == -38) {
+            // Error code -38 happens on some Samsung devices
+            // Just ignore it
+            return false;
+        }
+        String errorMsg = "Preparation/playback error (" + what + "): ";
+        switch (what) {
+            default:
+                errorMsg += "Unknown error";
+                break;
+            case MediaPlayer.MEDIA_ERROR_IO:
+                errorMsg += "I/O error";
+                break;
+            case MediaPlayer.MEDIA_ERROR_MALFORMED:
+                errorMsg += "Malformed";
+                break;
+            case MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:
+                errorMsg += "Not valid for progressive playback";
+                break;
+            case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
+                errorMsg += "Server died";
+                break;
+            case MediaPlayer.MEDIA_ERROR_TIMED_OUT:
+                errorMsg += "Timed out";
+                break;
+            case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
+                errorMsg += "Unsupported";
+                break;
+        }
+        throwError(new Exception(errorMsg));
+        return false;
+    }
+
+    // View events
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        if (isInEditMode()) {
+            return;
+        }
+
+        setKeepScreenOn(true);
+
+        mHandler = new Handler();
+        mPlayer = new MediaPlayer();
+
+        mPlayer.setOnPreparedListener(this);
+        mPlayer.setOnBufferingUpdateListener(this);
+        mPlayer.setOnCompletionListener(this);
+        mPlayer.setOnVideoSizeChangedListener(this);
+        mPlayer.setOnErrorListener(this);
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mPlayer.setLooping(mLoop);
+
+        // Instantiate and add TextureView for rendering
+        final FrameLayout.LayoutParams textureLp =
+                new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mTextureView = new TextureView(getContext());
+        addView(mTextureView, textureLp);
+        mTextureView.setSurfaceTextureListener(this);
+
+        final LayoutInflater li = LayoutInflater.from(getContext());
+
+        // Inflate and add progress
+        mProgressFrame = li.inflate(R.layout.jvp_include_progress, this, false);
+        addView(mProgressFrame);
+
+        // Instantiate and add click frame (used to toggle controls)
+        mClickFrame = new FrameLayout(getContext());
+        //noinspection RedundantCast
+        ((FrameLayout) mClickFrame)
+                .setForeground(Util.resolveDrawable(getContext(), R.attr.selectableItemBackground));
+        addView(
+                mClickFrame,
+                new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // Inflate controls
+        mControlsFrame = li.inflate(R.layout.jvp_include_controls, this, false);
+        final FrameLayout.LayoutParams controlsLp =
+                new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        controlsLp.gravity = Gravity.BOTTOM;
+        addView(mControlsFrame, controlsLp);
+
+        final JazzVideoPlayer jazzVideoPlayer = this;
+
+        if (mControlsDisabled) {
+            mClickFrame.setOnClickListener(null);
+            mControlsFrame.setVisibility(View.GONE);
+        } else {
+            mClickFrame.setOnClickListener(
+                    new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            toggleControls();
+                            mCallback.onClickVideoFrame(jazzVideoPlayer);
+                        }
+                    });
+        }
+
+        // Retrieve controls
+        mSeeker = (SeekBar) mControlsFrame.findViewById(R.id.seeker);
+        mSeeker.setOnSeekBarChangeListener(this);
+
+        mLabelPosition = (TextView) mControlsFrame.findViewById(R.id.position);
+        mLabelPosition.setText(Util.getDurationString(0, false));
+
+        mLabelDuration = (TextView) mControlsFrame.findViewById(R.id.duration);
+        mLabelDuration.setText(Util.getDurationString(0, true));
+
+        mBtnRestart = (ImageButton) mControlsFrame.findViewById(R.id.btnRestart);
+        mBtnRestart.setOnClickListener(this);
+        mBtnRestart.setImageDrawable(mRestartDrawable);
+
+        mBtnRetry = (TextView) mControlsFrame.findViewById(R.id.btnRetry);
+        mBtnRetry.setOnClickListener(this);
+        mBtnRetry.setText(mRetryText);
+
+        mBtnPlayPause = (ImageButton) mControlsFrame.findViewById(R.id.btnPlayPause);
+        mBtnPlayPause.setOnClickListener(this);
+        mBtnPlayPause.setImageDrawable(mPlayDrawable);
+
+        mBtnSubmit = (TextView) mControlsFrame.findViewById(R.id.btnSubmit);
+        mBtnSubmit.setOnClickListener(this);
+        mBtnSubmit.setText(mSubmitText);
+
+        mLabelCustom = (TextView) mControlsFrame.findViewById(R.id.labelCustom);
+        mLabelCustom.setText(mCustomLabelText);
+
+        mLabelBottom = (TextView) mControlsFrame.findViewById(R.id.labelBottom);
+        setBottomLabelText(mBottomLabelText);
+
+        invalidateThemeColors();
+
+        setControlsEnabled(false);
+        invalidateActions();
+        prepare();
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        if (view.getId() == R.id.btnPlayPause) {
+            if (mPlayer.isPlaying()) {
+                pause();
+            } else {
+                if (mHideControlsOnPlay && !mControlsDisabled) hideControls();
+                start();
+            }
+        } else if (view.getId() == R.id.btnRestart) {
+            seekTo(0);
+            if (!isPlaying()) start();
+        } else if (view.getId() == R.id.btnRetry) {
+            if (mCallback != null) mCallback.onRetry(this, mSource);
+        } else if (view.getId() == R.id.btnSubmit) {
+            // if (mCallback != null) mCallback.onSubmit(this, mSource);
+            int duration = mPlayer.getDuration();
+            seekTo(duration - 5);
+        }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int value, boolean fromUser) {
+        if (fromUser) seekTo(value);
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        mWasPlaying = isPlaying();
+        if (mWasPlaying) mPlayer.pause(); // keeps the time updater running, unlike pause()
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        if (mWasPlaying) mPlayer.start();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        LOG("Detached from window");
+        release();
+
+        mSeeker = null;
+        mLabelPosition = null;
+        mLabelDuration = null;
+        mBtnPlayPause = null;
+        mBtnRestart = null;
+        mBtnSubmit = null;
+
+        mControlsFrame = null;
+        mClickFrame = null;
+        mProgressFrame = null;
+
+        if (mHandler != null) {
+            mHandler.removeCallbacks(mUpdateCounters);
+            mHandler = null;
+        }
+    }
+
+    // Utilities
+
+    private static void LOG(String message, Object... args) {
+        try {
+            if (args != null) message = String.format(message, args);
+            Log.d("EasyVideoPlayer", message);
+        } catch (Exception ignored) {
+        }
     }
 
     private void invalidateActions() {
@@ -514,143 +1001,9 @@ public class JazzVideoPlayer extends FrameLayout implements
         mTextureView.setTransform(txform);
     }
 
-    @Override
-    public void setSource(@NonNull Uri source) {
-        boolean hadSource = mSource != null;
-        if (hadSource) stop();
-        mSource = source;
-        if (mPlayer != null) {
-            if (hadSource) {
-                sourceChanged();
-            } else {
-                prepare();
-            }
-        }
-    }
-
-    @Override
-    public void setCallback(@NonNull JazzVideoCallback callback) {
-        mCallback = callback;
-    }
-
-    @Override
-    public void setProgressCallback(@NonNull JazzVideoProgressCallback callback) {
-        mProgressCallback = callback;
-    }
-
-    @Override
-    public void setLeftAction(int action) {
-        if (action < LEFT_ACTION_NONE || action > LEFT_ACTION_RETRY)
-            throw new IllegalArgumentException("Invalid left action specified.");
-        mLeftAction = action;
-        invalidateActions();
-    }
-
-    @Override
-    public void setRightAction(int action) {
-        if (action < RIGHT_ACTION_NONE || action > RIGHT_ACTION_CUSTOM_LABEL)
-            throw new IllegalArgumentException("Invalid right action specified.");
-        mRightAction = action;
-        invalidateActions();
-    }
-
-    @Override
-    public void setCustomLabelText(@Nullable CharSequence text) {
-        mCustomLabelText = text;
-        mLabelCustom.setText(text);
-        setRightAction(RIGHT_ACTION_CUSTOM_LABEL);
-    }
-
-    @Override
-    public void setCustomLabelTextRes(int textRes) {
-        setCustomLabelText(getResources().getText(textRes));
-    }
-
-    @Override
-    public void setBottomLabelText(@Nullable CharSequence text) {
-        mBottomLabelText = text;
-        mLabelBottom.setText(text);
-        if (text == null || text.toString().trim().length() == 0) mLabelBottom.setVisibility(View.GONE);
-        else mLabelBottom.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void setBottomLabelTextRes(int textRes) {
-        setBottomLabelText(getResources().getText(textRes));
-    }
-
-    @Override
-    public void setRetryText(@Nullable CharSequence text) {
-        mRetryText = text;
-        mBtnRetry.setText(text);
-    }
-
-    @Override
-    public void setRetryTextRes(int res) {
-        setRetryText(getResources().getText(res));
-    }
-
-    @Override
-    public void setSubmitText(@Nullable CharSequence text) {
-        mSubmitText = text;
-        mBtnSubmit.setText(text);
-    }
-
-    @Override
-    public void setSubmitTextRes(int res) {
-        setSubmitText(getResources().getText(res));
-    }
-
-    @Override
-    public void setRestartDrawable(@NonNull Drawable drawable) {
-        mRestartDrawable = drawable;
-        mBtnRestart.setImageDrawable(drawable);
-    }
-
-    @Override
-    public void setRestartDrawableRes(int res) {
-        setRestartDrawable(AppCompatResources.getDrawable(getContext(), res));
-    }
-
-    @Override
-    public void setPlayDrawable(@NonNull Drawable drawable) {
-        mPlayDrawable = drawable;
-        if (!isPlaying()) mBtnPlayPause.setImageDrawable(drawable);
-    }
-
-    @Override
-    public void setPlayDrawableRes(int res) {
-        setPlayDrawable(AppCompatResources.getDrawable(getContext(), res));
-    }
-
-    @Override
-    public void setPauseDrawable(@NonNull Drawable drawable) {
-        mPauseDrawable = drawable;
-        if (isPlaying()) mBtnPlayPause.setImageDrawable(drawable);
-    }
-
-    @Override
-    public void setPauseDrawableRes(int res) {
-        setPauseDrawable(AppCompatResources.getDrawable(getContext(), res));
-    }
-
-    private void invalidateThemeColors() {
-        final int labelColor = Util.isColorDark(mThemeColor) ? Color.WHITE : Color.BLACK;
-        mControlsFrame.setBackgroundColor(Util.adjustAlpha(mThemeColor, 0.8f));
-        tintSelector(mBtnRestart, labelColor);
-        tintSelector(mBtnPlayPause, labelColor);
-        mLabelDuration.setTextColor(labelColor);
-        mLabelPosition.setTextColor(labelColor);
-        setTint(mSeeker, labelColor);
-        mBtnRetry.setTextColor(labelColor);
-        tintSelector(mBtnRetry, labelColor);
-        mBtnSubmit.setTextColor(labelColor);
-        tintSelector(mBtnSubmit, labelColor);
-        mLabelCustom.setTextColor(labelColor);
-        mLabelBottom.setTextColor(labelColor);
-        mPlayDrawable = tintDrawable(mPlayDrawable.mutate(), labelColor);
-        mRestartDrawable = tintDrawable(mRestartDrawable.mutate(), labelColor);
-        mPauseDrawable = tintDrawable(mPauseDrawable.mutate(), labelColor);
+    private void throwError(Exception e) {
+        if (mCallback != null) mCallback.onError(this, e);
+        else throw new RuntimeException(e);
     }
 
     private static void setTint(@NonNull SeekBar seekBar, @ColorInt int color) {
@@ -694,140 +1047,23 @@ public class JazzVideoPlayer extends FrameLayout implements
         }
     }
 
-    @Override
-    public void setThemeColor(int color) {
-        mThemeColor = color;
-        invalidateThemeColors();
-    }
-
-    @Override
-    public void setThemeColorRes(int colorRes) {
-        setThemeColor(ContextCompat.getColor(getContext(), colorRes));
-    }
-
-    @Override
-    public void setHideControlsOnPlay(boolean hide) {
-        mHideControlsOnPlay = hide;
-    }
-
-    @Override
-    public void setAutoPlay(boolean autoPlay) {
-        mAutoPlay = autoPlay;
-    }
-
-    @Override
-    public void setInitialPosition(int pos) {
-        mInitialPosition = pos;
-    }
-
-
-    private void setControlsEnabled(boolean enabled) {
-        if (mSeeker == null) return;
-        mSeeker.setEnabled(enabled);
-        mBtnPlayPause.setEnabled(enabled);
-        mBtnSubmit.setEnabled(enabled);
-        mBtnRestart.setEnabled(enabled);
-        mBtnRetry.setEnabled(enabled);
-
-        final float disabledAlpha = .4f;
-        mBtnPlayPause.setAlpha(enabled ? 1f : disabledAlpha);
-        mBtnSubmit.setAlpha(enabled ? 1f : disabledAlpha);
-        mBtnRestart.setAlpha(enabled ? 1f : disabledAlpha);
-
-        mClickFrame.setEnabled(enabled);
-    }
-
-    private void sourceChanged() {
-        setControlsEnabled(false);
-        mSeeker.setProgress(0);
-        mSeeker.setEnabled(false);
-        mPlayer.reset();
-        if (mCallback != null) mCallback.onPreparing(this);
-        try {
-            setSourceInternal();
-        } catch (IOException e) {
-            throwError(e);
-        }
-    }
-
-    private void setSourceInternal() throws IOException {
-        if (mSource.getScheme() != null
-                && (mSource.getScheme().equals("http") || mSource.getScheme().equals("https"))) {
-            LOG("Loading web URI: " + mSource.toString());
-            mPlayer.setDataSource(mSource.toString());
-        } else if (mSource.getScheme() != null
-                && (mSource.getScheme().equals("file") && mSource.getPath().contains("/android_assets/"))) {
-            LOG("Loading assets URI: " + mSource.toString());
-            AssetFileDescriptor afd;
-            afd =
-                    getContext()
-                            .getAssets()
-                            .openFd(mSource.toString().replace("file:///android_assets/", ""));
-            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            afd.close();
-        } else if (mSource.getScheme() != null && mSource.getScheme().equals("asset")) {
-            LOG("Loading assets URI: " + mSource.toString());
-            AssetFileDescriptor afd;
-            afd = getContext().getAssets().openFd(mSource.toString().replace("asset://", ""));
-            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            afd.close();
-        } else {
-            LOG("Loading local URI: " + mSource.toString());
-            mPlayer.setDataSource(getContext(), mSource);
-        }
-        mPlayer.prepareAsync();
-    }
-
-    private static void LOG(String message, Object... args) {
-        try {
-            if (args != null) message = String.format(message, args);
-            Log.d("EasyVideoPlayer", message);
-        } catch (Exception ignored) {
-        }
-    }
-
-    @Override
-    public void showControls() {
-        if (mControlsDisabled || isControlsShown() || mSeeker == null) return;
-
-        mControlsFrame.animate().cancel();
-        mControlsFrame.setAlpha(0f);
-        mControlsFrame.setVisibility(View.VISIBLE);
-        mControlsFrame
-                .animate()
-                .alpha(1f)
-                .setInterpolator(new DecelerateInterpolator())
-                .setListener(
-                        new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                if (mAutoFullscreen) setFullscreen(false);
-                            }
-                        })
-                .start();
-    }
-
-    @Override
-    public void hideControls() {
-        if (mControlsDisabled || !isControlsShown() || mSeeker == null) return;
-        mControlsFrame.animate().cancel();
-        mControlsFrame.setAlpha(1f);
-        mControlsFrame.setVisibility(View.VISIBLE);
-        mControlsFrame
-                .animate()
-                .alpha(0f)
-                .setInterpolator(new DecelerateInterpolator())
-                .setListener(
-                        new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                setFullscreen(true);
-
-                                if (mControlsFrame != null)
-                                    mControlsFrame.setVisibility(View.INVISIBLE);
-                            }
-                        })
-                .start();
+    private void invalidateThemeColors() {
+        final int labelColor = Util.isColorDark(mThemeColor) ? Color.WHITE : Color.BLACK;
+        mControlsFrame.setBackgroundColor(Util.adjustAlpha(mThemeColor, 0.8f));
+        tintSelector(mBtnRestart, labelColor);
+        tintSelector(mBtnPlayPause, labelColor);
+        mLabelDuration.setTextColor(labelColor);
+        mLabelPosition.setTextColor(labelColor);
+        setTint(mSeeker, labelColor);
+        mBtnRetry.setTextColor(labelColor);
+        tintSelector(mBtnRetry, labelColor);
+        mBtnSubmit.setTextColor(labelColor);
+        tintSelector(mBtnSubmit, labelColor);
+        mLabelCustom.setTextColor(labelColor);
+        mLabelBottom.setTextColor(labelColor);
+        mPlayDrawable = tintDrawable(mPlayDrawable.mutate(), labelColor);
+        mRestartDrawable = tintDrawable(mRestartDrawable.mutate(), labelColor);
+        mPauseDrawable = tintDrawable(mPauseDrawable.mutate(), labelColor);
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -855,196 +1091,4 @@ public class JazzVideoPlayer extends FrameLayout implements
             }
         }
     }
-
-    @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-        LOG("Surface texture available: %dx%d", width, height);
-        mInitialTextureWidth = width;
-        mInitialTextureHeight = height;
-        mSurfaceAvailable = true;
-        mSurface = new Surface(surfaceTexture);
-        if (mIsPrepared) {
-            mPlayer.setSurface(mSurface);
-        } else {
-            prepare();
-        }
-    }
-
-    @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
-        LOG("Surface texture changed: %dx%d", width, height);
-        adjustAspectRatio(width, height, mPlayer.getVideoWidth(), mPlayer.getVideoHeight());
-    }
-
-    @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
-        LOG("Surface texture destroyed");
-        mSurfaceAvailable = false;
-        mSurface = null;
-        return false;
-    }
-
-    @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-
-    }
-
-    @Override
-    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        LOG("Buffering: %d%%", percent);
-        if (mCallback != null) mCallback.onBuffering(percent);
-        if (mSeeker != null) {
-            if (percent == 100) mSeeker.setSecondaryProgress(0);
-            else mSeeker.setSecondaryProgress(mSeeker.getMax() * (percent / 100));
-        }
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        LOG("onCompletion()");
-        if (mLoop) {
-            mBtnPlayPause.setImageDrawable(mPlayDrawable);
-            if (mHandler != null) mHandler.removeCallbacks(mUpdateCounters);
-            mSeeker.setProgress(mSeeker.getMax());
-            showControls();
-        }
-        if (mCallback != null) {
-            mCallback.onCompletion(this);
-            if (mLoop) mCallback.onStarted(this);
-        }
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
-        if (what == -38) {
-            // Error code -38 happens on some Samsung devices
-            // Just ignore it
-            return false;
-        }
-        String errorMsg = "Preparation/playback error (" + what + "): ";
-        switch (what) {
-            default:
-                errorMsg += "Unknown error";
-                break;
-            case MediaPlayer.MEDIA_ERROR_IO:
-                errorMsg += "I/O error";
-                break;
-            case MediaPlayer.MEDIA_ERROR_MALFORMED:
-                errorMsg += "Malformed";
-                break;
-            case MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:
-                errorMsg += "Not valid for progressive playback";
-                break;
-            case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                errorMsg += "Server died";
-                break;
-            case MediaPlayer.MEDIA_ERROR_TIMED_OUT:
-                errorMsg += "Timed out";
-                break;
-            case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
-                errorMsg += "Unsupported";
-                break;
-        }
-        throwError(new Exception(errorMsg));
-        return false;
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mediaPlayer) {
-        LOG("onPrepared()");
-        mProgressFrame.setVisibility(View.INVISIBLE);
-        mIsPrepared = true;
-        if (mCallback != null) mCallback.onPrepared(this);
-        mLabelPosition.setText(Util.getDurationString(0, false));
-        mLabelDuration.setText(Util.getDurationString(mediaPlayer.getDuration(), false));
-        mSeeker.setProgress(0);
-        mSeeker.setMax(mediaPlayer.getDuration());
-        setControlsEnabled(true);
-
-        if (mAutoPlay) {
-            if (!mControlsDisabled && mHideControlsOnPlay) hideControls();
-            start();
-            if (mInitialPosition > 0) {
-                seekTo(mInitialPosition);
-                mInitialPosition = -1;
-            }
-        } else {
-            // Hack to show first frame, is there another way?
-            mPlayer.start();
-            mPlayer.pause();
-        }
-    }
-
-    @Override
-    public void onVideoSizeChanged(MediaPlayer mediaPlayer, int width, int height) {
-        LOG("Video size changed: %dx%d", width, height);
-        adjustAspectRatio(mInitialTextureWidth, mInitialTextureHeight, width, height);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.btnPlayPause) {
-            if (mPlayer.isPlaying()) {
-                pause();
-            } else {
-                if (mHideControlsOnPlay && !mControlsDisabled) hideControls();
-                start();
-            }
-        } else if (view.getId() == R.id.btnRestart) {
-            seekTo(0);
-            if (!isPlaying()) start();
-        } else if (view.getId() == R.id.btnRetry) {
-            if (mCallback != null) mCallback.onRetry(this, mSource);
-        } else if (view.getId() == R.id.btnSubmit) {
-            if (mCallback != null) mCallback.onSubmit(this, mSource);
-        }
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int value, boolean fromUser) {
-        if (fromUser) seekTo(value);
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-        mWasPlaying = isPlaying();
-        if (mWasPlaying) mPlayer.pause(); // keeps the time updater running, unlike pause()
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-        if (mWasPlaying) mPlayer.start();
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        LOG("Detached from window");
-        release();
-
-        mSeeker = null;
-        mLabelPosition = null;
-        mLabelDuration = null;
-        mBtnPlayPause = null;
-        mBtnRestart = null;
-        mBtnSubmit = null;
-
-        mControlsFrame = null;
-        mClickFrame = null;
-        mProgressFrame = null;
-
-        if (mHandler != null) {
-            mHandler.removeCallbacks(mUpdateCounters);
-            mHandler = null;
-        }
-    }
-
-
-    @IntDef({LEFT_ACTION_NONE, LEFT_ACTION_RESTART, LEFT_ACTION_RETRY})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface LeftAction {}
-
-    @IntDef({RIGHT_ACTION_NONE, RIGHT_ACTION_SUBMIT, RIGHT_ACTION_CUSTOM_LABEL})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface RightAction {}
 }

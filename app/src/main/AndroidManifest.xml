@@ -105,7 +105,7 @@
         <activity
             android:name=".musiclibrary.video.VideoPlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <activity android:name=".tageditormanager.TagEditorActivity" />
 
