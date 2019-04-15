@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  */
 
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.artists;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,10 +25,6 @@ import android.view.ViewGroup;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.ArtistLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
-import com.rak.dj.djmusicplayer.lastfmapi.LastFmClient;
-import com.rak.dj.djmusicplayer.lastfmapi.callbacks.ArtistInfoListener;
-import com.rak.dj.djmusicplayer.lastfmapi.models.ArtistQuery;
-import com.rak.dj.djmusicplayer.lastfmapi.models.LastfmArtist;
 import com.rak.dj.djmusicplayer.models.Artist;
 
 

@@ -121,7 +121,7 @@ public class QueueFragment extends Fragment implements MusicStateListener, Loade
         });
 
         getLoaderManager().initLoader(LOADER_ID, null, this);
-        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListener(this);
 
         return rootView;
     }

@@ -11,11 +11,10 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  */
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.albums;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,39 +34,43 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.appthemeengine.Config;
+import com.afollestad.appthemeengine.ATE;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.kabouzeid.appthemehelper.ATH;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.upgraded.AlbumLoader;
 import com.rak.dj.djmusicplayer.glide.JazzColoredTarget;
 import com.rak.dj.djmusicplayer.glide.SongGlideRequest;
 import com.rak.dj.djmusicplayer.glide.palette.BitmapPaletteWrapper;
-import com.rak.dj.djmusicplayer.helpers.ATEUtils;
+import com.rak.dj.djmusicplayer.helpers.ColorUtil;
 import com.rak.dj.djmusicplayer.helpers.Constants;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.MaterialValueHelper;
 import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.helpers.SortOrder;
 import com.rak.dj.djmusicplayer.models.upgraded.Album;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsThemedMusicLibraryFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
 import com.rak.dj.djmusicplayer.widgets.DividerItemDecoration;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implements MusicStateListener{
+import static com.rak.dj.djmusicplayer.helpers.ATEUtils.setStatusBarColor;
+
+public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implements MusicStateListener {
 
     private int albumID = -1;
 
     private ImageView albumArt, artistArt;
-    private TextView albumTitle, albumDetails;
+    private TextView albumTitle, albumBy, albumLength, albumReleased;
     private AppCompatActivity mContext;
 
     private RecyclerView recyclerView;
@@ -83,7 +86,7 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
 
     private PreferencesUtils mPreferences;
     private Context context;
-    private int primaryColor = -1;
+    private int toolBarColor = -1;
 
     public static AlbumDetailFragment newInstance(int id, boolean useTransition, String transitionName) {
         AlbumDetailFragment fragment = new AlbumDetailFragment();
@@ -112,15 +115,17 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(
-                R.layout.fragment_album_detail, container, false);
-        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+                R.layout.fragment_album_detail_v2, container, false);
+        ((BaseMainActivity) getActivity()).setMusicStateListener(this);
         albumArt = rootView.findViewById(R.id.album_art);
         artistArt = rootView.findViewById(R.id.artist_art);
         albumTitle = rootView.findViewById(R.id.album_title);
-        albumDetails = rootView.findViewById(R.id.album_details);
+        albumBy = rootView.findViewById(R.id.albumBy);
+        albumLength = rootView.findViewById(R.id.albumLength);
+        albumReleased = rootView.findViewById(R.id.albumReleased);
 
         toolbar = rootView.findViewById(R.id.toolbar);
-
+        appBarLayout = rootView.findViewById(R.id.app_bar);
         fab = rootView.findViewById(R.id.fab);
 
         if (getArguments().getBoolean("transition")) {
@@ -158,7 +163,8 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         final ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-        collapsingToolbarLayout.setTitle(album.getTitle());
+        ab.setTitle("Album");
+        //collapsingToolbarLayout.setTitle(album.getTitle());
     }
 
     private void loadAlbumCover() {
@@ -188,12 +194,29 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
     }
 
     private void setColors(int color) {
-        //toolbarColor = color;
-        //albumTitleView.setBackgroundColor(color);
-        //albumTitleView.setTextColor(MaterialValueHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)));
+        toolBarColor = color;
+        toolbar.setBackgroundColor(color);
+        appBarLayout.setBackgroundColor(color);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar); // needed to auto readjust the toolbar content color
 
-        //setNavigationbarColor(color);
-        //setTaskDescriptionColor(color);
+        int secondaryTextColor = MaterialValueHelper.getSecondaryTextColor(getActivity(), ColorUtil.isColorLight(color));
+        albumTitle.setTextColor(MaterialValueHelper.getPrimaryTextColor(getActivity(), ColorUtil.isColorLight(color)));
+        albumBy.setTextColor(secondaryTextColor);
+        albumLength.setTextColor(secondaryTextColor);
+        albumReleased.setTextColor(secondaryTextColor);
+
+        String ateKey = Helpers.getATEKey(getActivity());
+        setStatusBarColor(getActivity(), ateKey , color);
+
+        ATH.setLightNavigationbar(getActivity(), false);
+
+        ATH.setTaskDescriptionColor(getActivity(), color);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setColors(toolBarColor);
     }
 
     private void setAlbumDetails() {
@@ -203,7 +226,16 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
         String year = (album.getYear() != 0) ? (" - " + String.valueOf(album.getYear())) : "";
 
         albumTitle.setText(album.getTitle());
-        albumDetails.setText(album.getArtistName() + " - " + songCount + year);
+        albumBy.setText("Album by: "+album.getArtistName());
+        albumLength.setText("Length: "+songCount);
+
+        if ((year != null)) {
+            albumReleased.setText("Released: " + year);
+        } else {
+            albumReleased.setText("Released: " + "-");
+        }
+
+
     }
 
     private void setUpAlbumSongs() {
@@ -246,8 +278,8 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.album_detail, menu);
-        //if (getActivity() != null)
-        //ATE.applyMenu(this, getATEKey(), menu);
+        if (getActivity() != null)
+            ATE.applyMenu(getActivity(), Helpers.getATEKey(getActivity()), menu);
     }
 
     @Override
@@ -288,14 +320,6 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        toolbar.setBackgroundColor(Color.TRANSPARENT);
-        String ateKey = Helpers.getATEKey(getActivity());
-        ATEUtils.setStatusBarColor(getActivity(), ateKey, Config.primaryColor(getActivity(), ateKey));
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
     }
@@ -310,11 +334,14 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
 
     }
 
+
     @Override
     public void onMetaChanged() {
         AlbumSongsAdapter adapter = (AlbumSongsAdapter) recyclerView.getAdapter();
         adapter.notifyDataSetChanged();
     }
+
+
 
     /*private class EnterTransitionListener extends SimplelTransitionListener {
 

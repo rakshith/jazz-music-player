@@ -3,6 +3,7 @@ package com.rak.dj.djmusicplayer.playingmanager;
 
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +29,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
+import com.rak.dj.djmusicplayer.helpers.ATEUtils;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
@@ -60,6 +63,7 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
     public ImageView albumart, shuffle, repeat, ivSongIcon;
     private PlayPauseButton mPlayPause;
     protected boolean menuEnabled = false;
+    private int primaryColor = -1;
     public BaseNowPlayingFragment() {
         // Required empty public constructor
     }
@@ -89,7 +93,7 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
     };
 
     public void setMusicStateListener() {
-        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListener(this);
     }
 
     public void restartLoader() {
@@ -172,7 +176,29 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
     }
 
     public void doAlbumArtStuff(Bitmap loadedImage) {
+        try {
+            new Palette.Builder(loadedImage).generate(new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(Palette palette) {
+                    Palette.Swatch swatch = palette.getVibrantSwatch();
+                    if (swatch != null) {
+                        if (getActivity() != null)
+                            primaryColor = swatch.getRgb();
+                            ATEUtils.setStatusBarColor(getActivity(), Helpers.getATEKey(getActivity()), primaryColor);
+                    } else {
+                        Palette.Swatch swatchMuted = palette.getMutedSwatch();
+                        if (swatchMuted != null) {
+                            if (getActivity() != null)
+                                primaryColor = swatch.getRgb();
+                                ATEUtils.setStatusBarColor(getActivity(), Helpers.getATEKey(getActivity()), primaryColor);
+                        }
+                    }
 
+                }
+            });
+        } catch (Exception ignored) {
+
+        }
     }
 
     private void updateSongDetails() {
@@ -476,6 +502,7 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
     public void onResume() {
         super.onResume();
         fragmentPaused = false;
+
         if (mProgress != null)
             mProgress.postDelayed(mUpdateProgress, 10);
     }

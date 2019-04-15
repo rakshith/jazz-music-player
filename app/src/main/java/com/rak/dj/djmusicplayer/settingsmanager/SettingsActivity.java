@@ -74,4 +74,9 @@ public class SettingsActivity extends BaseSettingsThemedActivity implements Colo
         config.commit();
         recreate(); // recreation needed to reach the checkboxes in the preferences layout
     }
+
+    @Override
+    public void onColorChooserDismissed(@NonNull ColorChooserDialog dialog) {
+
+    }
 }

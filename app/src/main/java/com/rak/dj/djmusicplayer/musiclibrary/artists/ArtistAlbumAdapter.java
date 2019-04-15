@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  */
 
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.artists;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;

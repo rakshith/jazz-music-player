@@ -35,7 +35,7 @@ public class GenresFragment extends AbsRecyclerViewFragment<GenreAdapter> implem
     @Override
     public void onViewCreated(@NonNull View rootView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(rootView, savedInstanceState);
-        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListener(this);
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 

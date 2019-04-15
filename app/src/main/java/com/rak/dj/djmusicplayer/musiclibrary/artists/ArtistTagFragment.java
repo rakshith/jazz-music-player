@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  */
 
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.artists;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsThemedMusicLibraryFragment;
 
 
 public class ArtistTagFragment extends AbsThemedMusicLibraryFragment {

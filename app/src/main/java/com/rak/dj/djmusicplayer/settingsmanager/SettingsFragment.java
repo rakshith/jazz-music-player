@@ -7,6 +7,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
 import com.afollestad.appthemeengine.ATE;
@@ -57,7 +58,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             public boolean onPreferenceClick(Preference preference) {
                 new ColorChooserDialog.Builder((SettingsActivity) getActivity(), R.string.primary_color)
                         .preselect(Config.primaryColor(getActivity(), mAteKey))
-                        .show();
+                        .show((FragmentActivity) getActivity());
                 return true;
             }
         });
@@ -69,7 +70,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             public boolean onPreferenceClick(Preference preference) {
                 new ColorChooserDialog.Builder((SettingsActivity) getActivity(), R.string.accent_color)
                         .preselect(Config.accentColor(getActivity(), mAteKey))
-                        .show();
+                        .show((FragmentActivity) getActivity());
                 return true;
             }
         });

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.afollestad.easyvideoplayer.EasyVideoPlayer
+    <com.videoplayer.JazzVideoPlayer
         android:id="@+id/player"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

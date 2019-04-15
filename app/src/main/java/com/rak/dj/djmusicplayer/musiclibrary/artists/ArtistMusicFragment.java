@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  */
 
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.artists;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

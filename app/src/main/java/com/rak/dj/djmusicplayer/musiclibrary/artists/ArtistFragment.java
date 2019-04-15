@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  */
 
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.artists;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -28,6 +28,7 @@ import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.helpers.SortOrder;
 import com.rak.dj.djmusicplayer.helpers.misc.WrappedAsyncTaskLoader;
 import com.rak.dj.djmusicplayer.models.upgraded.Artist;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
 import com.rak.dj.djmusicplayer.searchmanager.LoaderIds;
 
 import java.util.ArrayList;
@@ -70,7 +71,6 @@ public class ArtistFragment extends AbsRecyclerViewFragment<ArtistAdapter> imple
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.artist_sort_by, menu);
         inflater.inflate(R.menu.menu_show_as, menu);
-
     }
 
     @Override

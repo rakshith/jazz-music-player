@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  */
 
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.artists;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,16 +33,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.afollestad.appthemeengine.ATE;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.glide.ArtistGlideRequest;
 import com.rak.dj.djmusicplayer.glide.JazzColoredTarget;
+import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.lastfmapi.upgradedapi.rest.LastFMRestClient;
 import com.rak.dj.djmusicplayer.lastfmapi.upgradedapi.rest.model.LastFmArtist;
 import com.rak.dj.djmusicplayer.models.upgraded.Artist;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsThemedMusicLibraryFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
 import com.rak.dj.djmusicplayer.playlistmanager.AddPlaylistDialog;
@@ -51,7 +54,6 @@ import com.rak.dj.djmusicplayer.dataloaders.upgraded.ArtistLoader;
 import com.rak.dj.djmusicplayer.helpers.Constants;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -96,7 +98,7 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment implemen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListener(this);
 
         View rootView = inflater.inflate(
                 R.layout.fragment_artist_detail, container, false);
@@ -235,8 +237,9 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment implemen
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.artist_detail, menu);
-        //if (getActivity() != null)
-            //ATE.applyMenu(getActivity(), "dark_theme", menu);
+        String ateKey = Helpers.getATEKey(getActivity());
+        if (getActivity() != null)
+            ATE.applyMenu(getActivity(), ateKey, menu);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

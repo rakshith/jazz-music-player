@@ -1,4 +1,4 @@
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.albums;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;

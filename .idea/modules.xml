@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/apprecording/apprecording.iml" filepath="$PROJECT_DIR$/apprecording/apprecording.iml" />
       <module fileurl="file://$PROJECT_DIR$/equalizerx/equalizerx.iml" filepath="$PROJECT_DIR$/equalizerx/equalizerx.iml" />
       <module fileurl="file://$PROJECT_DIR$/jazaa-music-player.iml" filepath="$PROJECT_DIR$/jazaa-music-player.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jazzvp/jazzvp.iml" filepath="$PROJECT_DIR$/jazzvp/jazzvp.iml" />
     </modules>
   </component>
 </project>

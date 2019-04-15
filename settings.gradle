@@ -1,1 +1,1 @@
-include ':app', ':apprecording', ':equalizerx'
+include ':app', ':apprecording', ':equalizerx', ':jazzvp'

@@ -19,17 +19,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.appthemeengine.ATE;
+import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.customizers.ATEActivityThemeCustomizer;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.appintro.AppIntroActivity;
 import com.rak.dj.djmusicplayer.foldermanager.FoldersFragment;
+import com.rak.dj.djmusicplayer.helpers.ATEUtils;
 import com.rak.dj.djmusicplayer.helpers.Constants;
+import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.helpers.NavigationUtil;
 import com.rak.dj.djmusicplayer.lyricsmanager.LyricsFragment;
-import com.rak.dj.djmusicplayer.musiclibrary.AlbumDetailFragment;
-import com.rak.dj.djmusicplayer.musiclibrary.ArtistDetailFragment;
+import com.rak.dj.djmusicplayer.musiclibrary.albums.AlbumDetailFragment;
+import com.rak.dj.djmusicplayer.musiclibrary.artists.ArtistDetailFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.MusicLibraryFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.video.VideoListFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
@@ -254,7 +257,7 @@ public class MainActivity extends BaseMainActivity implements ATEActivityThemeCu
                 if (isNavigatingMain()) {
                     mDrawerLayout.openDrawer(GravityCompat.START);
                 } else
-                    super.onBackPressed();
+                    onBackPressed();
                 return true;
             }
         }
@@ -264,8 +267,6 @@ public class MainActivity extends BaseMainActivity implements ATEActivityThemeCu
     @Override
     public void onResume() {
         super.onResume();
-        /*String ateKey = Helpers.getATEKey(this);
-        ATEUtils.setStatusBarColor(this, ateKey, Config.primaryColor(this, ateKey));*/
 
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false)) {
             ATE.apply(this, "dark_theme");
@@ -408,6 +409,9 @@ public class MainActivity extends BaseMainActivity implements ATEActivityThemeCu
         } else {
             super.onBackPressed();
         }
+
+        String ateKey = Helpers.getATEKey(this);
+        ATEUtils.setStatusBarColor(this, ateKey, Config.primaryColor(this, ateKey));
     }
 
 

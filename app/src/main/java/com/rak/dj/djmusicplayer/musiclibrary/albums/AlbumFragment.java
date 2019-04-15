@@ -1,4 +1,4 @@
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.albums;
 
 
 import android.content.Context;
@@ -18,6 +18,7 @@ import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
 import com.rak.dj.djmusicplayer.helpers.SortOrder;
 import com.rak.dj.djmusicplayer.helpers.misc.WrappedAsyncTaskLoader;
 import com.rak.dj.djmusicplayer.models.upgraded.Album;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
 import com.rak.dj.djmusicplayer.searchmanager.LoaderIds;
 
 import java.util.ArrayList;

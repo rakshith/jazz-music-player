@@ -195,7 +195,7 @@ public abstract class BaseMainActivity extends AbsPermissionsActivity implements
         mMusicStateListener.clear();
     }
 
-    public void setMusicStateListenerListener(final MusicStateListener status) {
+    public void setMusicStateListener(final MusicStateListener status) {
         if (status == this) {
             throw new UnsupportedOperationException("Override the method, don't add a listener");
         }

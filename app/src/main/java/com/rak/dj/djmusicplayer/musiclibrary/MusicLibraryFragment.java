@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import com.afollestad.appthemeengine.ATE;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.musiclibrary.albums.AlbumFragment;
+import com.rak.dj.djmusicplayer.musiclibrary.artists.ArtistFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.genres.GenresFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.minitracks.MiniTracksFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.songs.SongsFragment;

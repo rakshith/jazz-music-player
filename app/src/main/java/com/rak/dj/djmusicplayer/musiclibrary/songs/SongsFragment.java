@@ -2,38 +2,26 @@ package com.rak.dj.djmusicplayer.musiclibrary.songs;
 
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.rak.dj.djmusicplayer.BaseMainActivity;
+import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.upgraded.SongLoader;
-import com.rak.dj.djmusicplayer.helpers.PreferencesUtils;
+import com.rak.dj.djmusicplayer.helpers.SortOrder;
 import com.rak.dj.djmusicplayer.helpers.misc.WrappedAsyncTaskLoader;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
 import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewFragment;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicStateListener;
-import com.rak.dj.djmusicplayer.R;
-
-import com.rak.dj.djmusicplayer.helpers.SortOrder;
 import com.rak.dj.djmusicplayer.searchmanager.LoaderIds;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class SongsFragment extends AbsRecyclerViewFragment<SongsAdapter> implements MusicStateListener, LoaderManager.LoaderCallbacks<ArrayList<Song>> {
@@ -45,7 +33,7 @@ public class SongsFragment extends AbsRecyclerViewFragment<SongsAdapter> impleme
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListener(this);
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 

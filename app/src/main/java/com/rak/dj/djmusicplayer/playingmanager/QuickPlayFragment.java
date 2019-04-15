@@ -49,7 +49,7 @@ public class QuickPlayFragment extends Fragment implements MusicStateListener  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListener(this);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_quick_play, container, false);
     }

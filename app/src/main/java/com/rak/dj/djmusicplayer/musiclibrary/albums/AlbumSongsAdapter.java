@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  */
 
-package com.rak.dj.djmusicplayer.musiclibrary;
+package com.rak.dj.djmusicplayer.musiclibrary.albums;
 
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +28,8 @@ import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
 import com.rak.dj.djmusicplayer.models.upgraded.Song;
+import com.rak.dj.djmusicplayer.musiclibrary.AbsRecyclerViewAdapter;
+import com.rak.dj.djmusicplayer.musiclibrary.BaseViewHolder;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 
 import java.util.ArrayList;

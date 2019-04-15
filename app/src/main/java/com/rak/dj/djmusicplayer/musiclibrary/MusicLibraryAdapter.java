@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.rak.dj.djmusicplayer.R;
+import com.rak.dj.djmusicplayer.musiclibrary.albums.AlbumFragment;
+import com.rak.dj.djmusicplayer.musiclibrary.artists.ArtistFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.songs.SongsFragment;
 import com.rak.dj.djmusicplayer.models.MusicLibrary;
 

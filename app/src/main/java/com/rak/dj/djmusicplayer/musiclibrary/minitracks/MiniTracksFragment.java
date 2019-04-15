@@ -34,7 +34,7 @@ public class MiniTracksFragment extends Fragment implements MusicStateListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((BaseMainActivity) getActivity()).setMusicStateListenerListener(this);
+        ((BaseMainActivity) getActivity()).setMusicStateListener(this);
         View rootView = inflater.inflate(R.layout.fragment_mini_tracks, container, false);
 
         recyclerView = rootView.findViewById(R.id.recyclerView);

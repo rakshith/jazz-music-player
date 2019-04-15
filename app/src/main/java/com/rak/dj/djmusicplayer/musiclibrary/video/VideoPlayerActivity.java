@@ -4,14 +4,14 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.afollestad.easyvideoplayer.EasyVideoCallback;
-import com.afollestad.easyvideoplayer.EasyVideoPlayer;
 import com.rak.dj.djmusicplayer.R;
+import com.videoplayer.JazzVideoCallback;
+import com.videoplayer.JazzVideoPlayer;
 
-public class VideoPlayerActivity extends Activity implements EasyVideoCallback {
+public class VideoPlayerActivity extends Activity implements JazzVideoCallback {
 
     private static final String TEST_URL = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-    private EasyVideoPlayer player;
+    private JazzVideoPlayer player;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +20,7 @@ public class VideoPlayerActivity extends Activity implements EasyVideoCallback {
         Uri playerSource =  getIntent().getData();
 
         // Grabs a reference to the player view
-        player = (EasyVideoPlayer) findViewById(R.id.player);
+        player = findViewById(R.id.player);
 
         // Sets the callback to this Activity, since it inherits EasyVideoCallback
         player.setCallback(this);
@@ -44,12 +44,12 @@ public class VideoPlayerActivity extends Activity implements EasyVideoCallback {
     // Methods for the implemented EasyVideoCallback
 
     @Override
-    public void onPreparing(EasyVideoPlayer player) {
+    public void onPreparing(JazzVideoPlayer player) {
         // TODO handle if needed
     }
 
     @Override
-    public void onPrepared(EasyVideoPlayer player) {
+    public void onPrepared(JazzVideoPlayer player) {
         // TODO handle
     }
 
@@ -59,32 +59,37 @@ public class VideoPlayerActivity extends Activity implements EasyVideoCallback {
     }
 
     @Override
-    public void onError(EasyVideoPlayer player, Exception e) {
+    public void onError(JazzVideoPlayer player, Exception e) {
         // TODO handle
     }
 
     @Override
-    public void onCompletion(EasyVideoPlayer player) {
+    public void onCompletion(JazzVideoPlayer player) {
         // TODO handle if needed
     }
 
     @Override
-    public void onRetry(EasyVideoPlayer player, Uri source) {
+    public void onRetry(JazzVideoPlayer player, Uri source) {
         // TODO handle if used
     }
 
     @Override
-    public void onSubmit(EasyVideoPlayer player, Uri source) {
+    public void onSubmit(JazzVideoPlayer player, Uri source) {
         // TODO handle if used
     }
 
     @Override
-    public void onStarted(EasyVideoPlayer player) {
+    public void onClickVideoFrame(JazzVideoPlayer player) {
+
+    }
+
+    @Override
+    public void onStarted(JazzVideoPlayer player) {
         // TODO handle if needed
     }
 
     @Override
-    public void onPaused(EasyVideoPlayer player) {
+    public void onPaused(JazzVideoPlayer player) {
         // TODO handle if needed
     }
 }

@@ -16,7 +16,7 @@ import com.rak.dj.djmusicplayer.helpers.Helpers;
  * Created by sraksh on 2/14/2018.
  */
 
-public abstract class AbsThemedMusicLibraryFragment extends Fragment {
+public abstract class AbsThemedMusicLibraryFragment extends Fragment{
 
     protected Toolbar toolbar;
 
@@ -24,6 +24,7 @@ public abstract class AbsThemedMusicLibraryFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         if (PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("dark_theme", false)) {
             ATE.apply(this, "dark_theme");
         } else {
@@ -31,16 +32,16 @@ public abstract class AbsThemedMusicLibraryFragment extends Fragment {
         }
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
-
-        if(toolbar != null){
+        /*if(toolbar != null){
             toolbar.setBackgroundColor(Color.TRANSPARENT);
-        }
+        }*/
 
-        String ateKey = Helpers.getATEKey(getActivity());
-        ATEUtils.setStatusBarColor(getActivity(), ateKey, Config.primaryColor(getActivity(), ateKey));
+       /* String ateKey = Helpers.getATEKey(getActivity());
+        ATEUtils.setStatusBarColor(getActivity(), ateKey, Config.primaryColor(getActivity(), ateKey));*/
     }
 
 }
