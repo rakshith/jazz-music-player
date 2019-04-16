@@ -106,7 +106,14 @@
             android:name=".musiclibrary.video.VideoPlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
             android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:mimeType="video/*" />
+            </intent-filter>
+        </activity>
 
         <activity android:name=".tageditormanager.TagEditorActivity" />
 
