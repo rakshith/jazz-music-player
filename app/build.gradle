@@ -90,9 +90,11 @@ dependencies {
     implementation 'com.github.apl-devs:appintro:v4.2.3'
     /*implementation 'com.anjlab.android.iab.v3:library:1.0.+'*/
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
-    implementation project(':apprecording')
+
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation project(':apprecording')
     implementation project(':jazzvp')
     implementation project(':equalizerx')
+    implementation project(':cutter')
 }
