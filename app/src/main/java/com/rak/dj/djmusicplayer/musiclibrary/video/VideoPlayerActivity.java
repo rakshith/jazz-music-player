@@ -72,11 +72,6 @@ public class VideoPlayerActivity extends Activity implements JazzVideoCallback{
     }
 
     @Override
-    public void onRetry(JazzVideoPlayer player, Uri source) {
-        // TODO handle if used
-    }
-
-    @Override
     public void onNext(JazzVideoPlayer player, Uri source) {
         // TODO handle if used
     }

@@ -105,11 +105,11 @@ public class JazzVideoPlayer extends FrameLayout implements
     private TextView mLabelPosition;
     private TextView mLabelDuration;
     private ImageButton mBtnRestart;
-    private TextView mBtnRetry;
+//    private TextView mBtnRetry;
     private ImageButton mBtnPlayPause;
     private ImageButton mBtnNext;
-    private TextView mLabelCustom;
-    private TextView mLabelBottom;
+//    private TextView mLabelCustom;
+//    private TextView mLabelBottom;
 
     private MediaPlayer mPlayer;
     private boolean mSurfaceAvailable;
@@ -125,14 +125,14 @@ public class JazzVideoPlayer extends FrameLayout implements
     private JazzVideoProgressCallback mProgressCallback;
     @LeftAction private int mLeftAction = LEFT_ACTION_RESTART;
     @RightAction private int mRightAction = RIGHT_ACTION_NONE;
-    private CharSequence mRetryText;
-    private CharSequence mSubmitText;
+
     private Drawable mRestartDrawable;
     private Drawable mNextDrawable;
     private Drawable mPlayDrawable;
     private Drawable mPauseDrawable;
-    private CharSequence mCustomLabelText;
-    private CharSequence mBottomLabelText;
+    private Drawable mLockDrawable;
+    private Drawable mFullScreenDrawable;
+
     private boolean mHideControlsOnPlay = true;
     private boolean mAutoPlay;
     private int mInitialPosition = -1;
@@ -176,15 +176,13 @@ public class JazzVideoPlayer extends FrameLayout implements
                 //noinspection WrongConstant
                 mRightAction = a.getInteger(R.styleable.JazzVideoPlayer_jvp_rightAction, RIGHT_ACTION_NONE);
 
-                mCustomLabelText = a.getText(R.styleable.JazzVideoPlayer_jvp_customLabelText);
-                mRetryText = a.getText(R.styleable.JazzVideoPlayer_jvp_retryText);
-                mBottomLabelText = a.getText(R.styleable.JazzVideoPlayer_jvp_bottomText);
-
                 int restartDrawableResId =
                         a.getResourceId(R.styleable.JazzVideoPlayer_jvp_restartDrawable, -1);
                 int playDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_playDrawable, -1);
                 int pauseDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_pauseDrawable, -1);
                 int nextDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_nextDrawable, -1);
+                int lockDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_lockDrawable, -1);
+                int fullScreenDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_fullScreenDrawable, -1);
 
                 if (restartDrawableResId != -1) {
                     mRestartDrawable = AppCompatResources.getDrawable(context, restartDrawableResId);
@@ -198,6 +196,14 @@ public class JazzVideoPlayer extends FrameLayout implements
 
                 if(nextDrawableResId != -1) {
                     mNextDrawable = AppCompatResources.getDrawable(context, nextDrawableResId);
+                }
+
+                if(lockDrawableResId != -1) {
+                    mLockDrawable = AppCompatResources.getDrawable(context, lockDrawableResId);
+                }
+
+                if(fullScreenDrawableResId != -1) {
+                    mFullScreenDrawable = AppCompatResources.getDrawable(context, fullScreenDrawableResId);
                 }
 
                 mHideControlsOnPlay =
@@ -225,8 +231,6 @@ public class JazzVideoPlayer extends FrameLayout implements
             mAutoFullscreen = false;
             mLoop = false;
         }
-
-        if (mRetryText == null) mRetryText = context.getResources().getText(R.string.jvp_retry);
 
         if (mRestartDrawable == null)
             mRestartDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_restart);
@@ -277,42 +281,6 @@ public class JazzVideoPlayer extends FrameLayout implements
             throw new IllegalArgumentException("Invalid right action specified.");
         mRightAction = action;
         invalidateActions();
-    }
-
-    @Override
-    public void setCustomLabelText(@Nullable CharSequence text) {
-        mCustomLabelText = text;
-        mLabelCustom.setText(text);
-        setRightAction(RIGHT_ACTION_CUSTOM_LABEL);
-    }
-
-    @Override
-    public void setCustomLabelTextRes(@StringRes int textRes) {
-        setCustomLabelText(getResources().getText(textRes));
-    }
-
-    @Override
-    public void setBottomLabelText(@Nullable CharSequence text) {
-        mBottomLabelText = text;
-        mLabelBottom.setText(text);
-        if (text == null || text.toString().trim().length() == 0) mLabelBottom.setVisibility(View.GONE);
-        else mLabelBottom.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void setBottomLabelTextRes(@StringRes int textRes) {
-        setBottomLabelText(getResources().getText(textRes));
-    }
-
-    @Override
-    public void setRetryText(@Nullable CharSequence text) {
-        mRetryText = text;
-        mBtnRetry.setText(text);
-    }
-
-    @Override
-    public void setRetryTextRes(@StringRes int res) {
-        setRetryText(getResources().getText(res));
     }
 
     @Override
@@ -443,7 +411,6 @@ public class JazzVideoPlayer extends FrameLayout implements
         mBtnPlayPause.setEnabled(enabled);
         mBtnNext.setEnabled(enabled);
         mBtnRestart.setEnabled(enabled);
-        mBtnRetry.setEnabled(enabled);
 
         final float disabledAlpha = .4f;
         mBtnPlayPause.setAlpha(enabled ? 1f : disabledAlpha);
@@ -857,23 +824,13 @@ public class JazzVideoPlayer extends FrameLayout implements
         mBtnRestart.setOnClickListener(this);
         mBtnRestart.setImageDrawable(mRestartDrawable);
 
-        mBtnRetry = (TextView) mControlsFrame.findViewById(R.id.btnRetry);
-        mBtnRetry.setOnClickListener(this);
-        mBtnRetry.setText(mRetryText);
-
         mBtnPlayPause = (ImageButton) mControlsFrame.findViewById(R.id.btnPlayPause);
         mBtnPlayPause.setOnClickListener(this);
         mBtnPlayPause.setImageDrawable(mPlayDrawable);
 
-        mBtnNext = (ImageButton) mControlsFrame.findViewById(R.id.btnSubmit);
+        mBtnNext = (ImageButton) mControlsFrame.findViewById(R.id.btnNext);
         mBtnNext.setOnClickListener(this);
         mBtnNext.setImageDrawable(mNextDrawable);
-
-        mLabelCustom = (TextView) mControlsFrame.findViewById(R.id.labelCustom);
-        mLabelCustom.setText(mCustomLabelText);
-
-        mLabelBottom = (TextView) mControlsFrame.findViewById(R.id.labelBottom);
-        setBottomLabelText(mBottomLabelText);
 
         invalidateThemeColors();
 
@@ -895,9 +852,9 @@ public class JazzVideoPlayer extends FrameLayout implements
         } else if (view.getId() == R.id.btnRestart) {
             seekTo(0);
             if (!isPlaying()) start();
-        } else if (view.getId() == R.id.btnRetry) {
-            if (mCallback != null) mCallback.onRetry(this, mSource);
-        } else if (view.getId() == R.id.btnSubmit) {
+        }
+
+        else if (view.getId() == R.id.btnNext) {
             if (mCallback != null) mCallback.onNext(this, mSource);
         }
     }
@@ -954,30 +911,30 @@ public class JazzVideoPlayer extends FrameLayout implements
     private void invalidateActions() {
         switch (mLeftAction) {
             case LEFT_ACTION_NONE:
-                mBtnRetry.setVisibility(View.GONE);
+                //mBtnRetry.setVisibility(View.GONE);
                 mBtnRestart.setVisibility(View.GONE);
                 break;
             case LEFT_ACTION_RESTART:
-                mBtnRetry.setVisibility(View.GONE);
+                //mBtnRetry.setVisibility(View.GONE);
                 mBtnRestart.setVisibility(View.VISIBLE);
                 break;
             case LEFT_ACTION_RETRY:
-                mBtnRetry.setVisibility(View.VISIBLE);
+                //mBtnRetry.setVisibility(View.VISIBLE);
                 mBtnRestart.setVisibility(View.GONE);
                 break;
         }
         switch (mRightAction) {
             case RIGHT_ACTION_NONE:
                 mBtnNext.setVisibility(View.GONE);
-                mLabelCustom.setVisibility(View.GONE);
+                //mLabelCustom.setVisibility(View.GONE);
                 break;
             case RIGHT_ACTION_NEXT:
                 mBtnNext.setVisibility(View.VISIBLE);
-                mLabelCustom.setVisibility(View.GONE);
+                //mLabelCustom.setVisibility(View.GONE);
                 break;
             case RIGHT_ACTION_CUSTOM_LABEL:
                 mBtnNext.setVisibility(View.GONE);
-                mLabelCustom.setVisibility(View.VISIBLE);
+                //mLabelCustom.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -1060,11 +1017,11 @@ public class JazzVideoPlayer extends FrameLayout implements
         mLabelDuration.setTextColor(labelColor);
         mLabelPosition.setTextColor(labelColor);
         setTint(mSeeker, labelColor);
-        mBtnRetry.setTextColor(labelColor);
-        tintSelector(mBtnRetry, labelColor);
+        //mBtnRetry.setTextColor(labelColor);
+        //tintSelector(mBtnRetry, labelColor);
         tintSelector(mBtnNext, labelColor);
-        mLabelCustom.setTextColor(labelColor);
-        mLabelBottom.setTextColor(labelColor);
+        //mLabelCustom.setTextColor(labelColor);
+        //mLabelBottom.setTextColor(labelColor);
         mPlayDrawable = tintDrawable(mPlayDrawable.mutate(), labelColor);
         mRestartDrawable = tintDrawable(mRestartDrawable.mutate(), labelColor);
         mPauseDrawable = tintDrawable(mPauseDrawable.mutate(), labelColor);

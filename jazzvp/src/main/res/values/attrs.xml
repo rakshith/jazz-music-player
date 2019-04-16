@@ -26,6 +26,8 @@
         <attr name="jvp_nextDrawable" format="reference" />
         <attr name="jvp_playDrawable" format="reference" />
         <attr name="jvp_pauseDrawable" format="reference" />
+        <attr name="jvp_lockDrawable" format="reference" />
+        <attr name="jvp_fullScreenDrawable" format="reference" />
 
         <attr name="jvp_hideControlsOnPlay" format="boolean" />
         <attr name="jvp_autoPlay" format="boolean" />

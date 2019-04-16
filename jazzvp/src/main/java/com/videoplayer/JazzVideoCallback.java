@@ -17,8 +17,6 @@ public interface JazzVideoCallback {
 
     void onCompletion(JazzVideoPlayer player);
 
-    void onRetry(JazzVideoPlayer player, Uri source);
-
     void onNext(JazzVideoPlayer player, Uri source);
 
     void onClickVideoFrame(JazzVideoPlayer player);

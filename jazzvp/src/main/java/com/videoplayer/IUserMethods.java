@@ -23,18 +23,6 @@ public interface IUserMethods {
 
     void setRightAction(@JazzVideoPlayer.RightAction int action);
 
-    void setCustomLabelText(@Nullable CharSequence text);
-
-    void setCustomLabelTextRes(@StringRes int textRes);
-
-    void setBottomLabelText(@Nullable CharSequence text);
-
-    void setBottomLabelTextRes(@StringRes int textRes);
-
-    void setRetryText(@Nullable CharSequence text);
-
-    void setRetryTextRes(@StringRes int res);
-
     void setNextDrawable(@NonNull Drawable drawable);
 
     void setNextDrawableRes(@DrawableRes int res);
