@@ -100,16 +100,18 @@ public class JazzVideoPlayer extends FrameLayout implements
     private View mControlsFrame;
     private View mProgressFrame;
     private View mClickFrame;
+    private View mUnLockFrame;
 
     private SeekBar mSeeker;
     private TextView mLabelPosition;
     private TextView mLabelDuration;
     private ImageButton mBtnRestart;
-//    private TextView mBtnRetry;
+
     private ImageButton mBtnPlayPause;
     private ImageButton mBtnNext;
-//    private TextView mLabelCustom;
-//    private TextView mLabelBottom;
+    private ImageButton mBtnLock;
+    private ImageButton mBtnUnLock;
+    private ImageButton mBtnFullScreen;
 
     private MediaPlayer mPlayer;
     private boolean mSurfaceAvailable;
@@ -131,7 +133,9 @@ public class JazzVideoPlayer extends FrameLayout implements
     private Drawable mPlayDrawable;
     private Drawable mPauseDrawable;
     private Drawable mLockDrawable;
+    private Drawable mUnLockDrawable;
     private Drawable mFullScreenDrawable;
+    private Drawable mFullScreenExitDrawable;
 
     private boolean mHideControlsOnPlay = true;
     private boolean mAutoPlay;
@@ -140,6 +144,7 @@ public class JazzVideoPlayer extends FrameLayout implements
     private int mThemeColor = 0;
     private boolean mAutoFullscreen = false;
     private boolean mLoop = false;
+    private boolean isControlsLocked = false;
 
     // Runnable used to run code on an interval to update counters and seeker
     private final Runnable mUpdateCounters =
@@ -182,7 +187,9 @@ public class JazzVideoPlayer extends FrameLayout implements
                 int pauseDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_pauseDrawable, -1);
                 int nextDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_nextDrawable, -1);
                 int lockDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_lockDrawable, -1);
+                int unLockDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_unLockDrawable, -1);
                 int fullScreenDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_fullScreenDrawable, -1);
+                int fullScreenExitDrawableResId = a.getResourceId(R.styleable.JazzVideoPlayer_jvp_fullScreenExitDrawable, -1);
 
                 if (restartDrawableResId != -1) {
                     mRestartDrawable = AppCompatResources.getDrawable(context, restartDrawableResId);
@@ -202,8 +209,16 @@ public class JazzVideoPlayer extends FrameLayout implements
                     mLockDrawable = AppCompatResources.getDrawable(context, lockDrawableResId);
                 }
 
+                if(unLockDrawableResId != -1) {
+                    mUnLockDrawable = AppCompatResources.getDrawable(context, unLockDrawableResId);
+                }
+
                 if(fullScreenDrawableResId != -1) {
                     mFullScreenDrawable = AppCompatResources.getDrawable(context, fullScreenDrawableResId);
+                }
+
+                if(fullScreenExitDrawableResId != -1) {
+                    mFullScreenDrawable = AppCompatResources.getDrawable(context, fullScreenExitDrawableResId);
                 }
 
                 mHideControlsOnPlay =
@@ -240,6 +255,14 @@ public class JazzVideoPlayer extends FrameLayout implements
             mPauseDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_pause);
         if(mNextDrawable == null)
             mNextDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_next);
+        if(mLockDrawable == null)
+            mLockDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_lock);
+        if(mUnLockDrawable == null)
+            mUnLockDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_unlock);
+        if(mFullScreenDrawable == null)
+            mFullScreenDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_fullscreen);
+        if(mFullScreenExitDrawable == null)
+            mFullScreenExitDrawable = AppCompatResources.getDrawable(context, R.drawable.jvp_action_fullscreen_exit);
 
     }
 
@@ -477,6 +500,13 @@ public class JazzVideoPlayer extends FrameLayout implements
         } else {
             showControls();
         }
+    }
+
+    public void toggleUnlockButton() {
+        if(mUnLockFrame != null && mUnLockFrame.getVisibility() == GONE)
+            mUnLockFrame.setVisibility(VISIBLE);
+        else
+            mUnLockFrame.setVisibility(GONE);
     }
 
     @Override
@@ -794,6 +824,14 @@ public class JazzVideoPlayer extends FrameLayout implements
         controlsLp.gravity = Gravity.BOTTOM;
         addView(mControlsFrame, controlsLp);
 
+        mUnLockFrame = li.inflate(R.layout.jvp_include_unlock_button, this, false);
+        mUnLockFrame.setVisibility(GONE);
+        final FrameLayout.LayoutParams unlockLp =
+                new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        unlockLp.gravity = Gravity.START | Gravity.TOP;
+        addView(mUnLockFrame, unlockLp);
+
         final JazzVideoPlayer jazzVideoPlayer = this;
 
         if (mControlsDisabled) {
@@ -804,8 +842,10 @@ public class JazzVideoPlayer extends FrameLayout implements
                     new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            toggleControls();
-                            mCallback.onClickVideoFrame(jazzVideoPlayer);
+                            if(!isControlsLocked){
+                                toggleControls();
+                                mCallback.onClickVideoFrame(jazzVideoPlayer);
+                            }
                         }
                     });
         }
@@ -832,6 +872,22 @@ public class JazzVideoPlayer extends FrameLayout implements
         mBtnNext.setOnClickListener(this);
         mBtnNext.setImageDrawable(mNextDrawable);
 
+        mBtnNext = (ImageButton) mControlsFrame.findViewById(R.id.btnNext);
+        mBtnNext.setOnClickListener(this);
+        mBtnNext.setImageDrawable(mNextDrawable);
+
+        mBtnLock = (ImageButton) mControlsFrame.findViewById(R.id.btnLock);
+        mBtnLock.setOnClickListener(this);
+        mBtnLock.setImageDrawable(mLockDrawable);
+
+        mBtnFullScreen = (ImageButton) mControlsFrame.findViewById(R.id.btnFullScreen);
+        mBtnFullScreen.setOnClickListener(this);
+        mBtnFullScreen.setImageDrawable(mFullScreenDrawable);
+
+        mBtnUnLock = (ImageButton) mUnLockFrame.findViewById(R.id.btnUnlock);
+        mBtnUnLock.setOnClickListener(this);
+        mBtnUnLock.setImageDrawable(mUnLockDrawable);
+
         invalidateThemeColors();
 
         setControlsEnabled(false);
@@ -852,10 +908,30 @@ public class JazzVideoPlayer extends FrameLayout implements
         } else if (view.getId() == R.id.btnRestart) {
             seekTo(0);
             if (!isPlaying()) start();
-        }
-
-        else if (view.getId() == R.id.btnNext) {
+        } else if (view.getId() == R.id.btnNext) {
             if (mCallback != null) mCallback.onNext(this, mSource);
+        } else if(view.getId() == R.id.btnLock) {
+            toggleUnlockButton();
+            isControlsLocked = true;
+            hideControls();
+        } else if(view.getId() == R.id.btnUnlock) {
+            toggleUnlockButton();
+            isControlsLocked = false;
+            showControls();
+        } else if(view.getId() == R.id.btnFullScreen) {
+            toggleFullScreen();
+        }
+    }
+
+    public void toggleFullScreen() {
+        if(!mAutoFullscreen) {
+            mAutoFullscreen = true;
+            setFullscreen(true);
+            mBtnFullScreen.setImageDrawable(mFullScreenExitDrawable);
+        } else {
+            mAutoFullscreen = false;
+            setFullscreen(false);
+            mBtnFullScreen.setImageDrawable(mFullScreenDrawable);
         }
     }
 
@@ -899,11 +975,10 @@ public class JazzVideoPlayer extends FrameLayout implements
     }
 
     // Utilities
-
     private static void LOG(String message, Object... args) {
         try {
             if (args != null) message = String.format(message, args);
-            Log.d("EasyVideoPlayer", message);
+            Log.d("JazzVideoPlayer", message);
         } catch (Exception ignored) {
         }
     }
@@ -911,30 +986,24 @@ public class JazzVideoPlayer extends FrameLayout implements
     private void invalidateActions() {
         switch (mLeftAction) {
             case LEFT_ACTION_NONE:
-                //mBtnRetry.setVisibility(View.GONE);
                 mBtnRestart.setVisibility(View.GONE);
                 break;
             case LEFT_ACTION_RESTART:
-                //mBtnRetry.setVisibility(View.GONE);
                 mBtnRestart.setVisibility(View.VISIBLE);
                 break;
             case LEFT_ACTION_RETRY:
-                //mBtnRetry.setVisibility(View.VISIBLE);
                 mBtnRestart.setVisibility(View.GONE);
                 break;
         }
         switch (mRightAction) {
             case RIGHT_ACTION_NONE:
                 mBtnNext.setVisibility(View.GONE);
-                //mLabelCustom.setVisibility(View.GONE);
                 break;
             case RIGHT_ACTION_NEXT:
                 mBtnNext.setVisibility(View.VISIBLE);
-                //mLabelCustom.setVisibility(View.GONE);
                 break;
             case RIGHT_ACTION_CUSTOM_LABEL:
                 mBtnNext.setVisibility(View.GONE);
-                //mLabelCustom.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -1012,19 +1081,21 @@ public class JazzVideoPlayer extends FrameLayout implements
     private void invalidateThemeColors() {
         final int labelColor = Util.isColorDark(mThemeColor) ? Color.WHITE : Color.BLACK;
         mControlsFrame.setBackgroundColor(Util.adjustAlpha(mThemeColor, 0.8f));
-        tintSelector(mBtnRestart, labelColor);
-        tintSelector(mBtnPlayPause, labelColor);
         mLabelDuration.setTextColor(labelColor);
         mLabelPosition.setTextColor(labelColor);
         setTint(mSeeker, labelColor);
-        //mBtnRetry.setTextColor(labelColor);
-        //tintSelector(mBtnRetry, labelColor);
+        tintSelector(mBtnRestart, labelColor);
+        tintSelector(mBtnPlayPause, labelColor);
         tintSelector(mBtnNext, labelColor);
-        //mLabelCustom.setTextColor(labelColor);
-        //mLabelBottom.setTextColor(labelColor);
+        tintSelector(mBtnFullScreen, labelColor);
+        tintSelector(mBtnLock, labelColor);
+        tintSelector(mBtnUnLock, labelColor);
         mPlayDrawable = tintDrawable(mPlayDrawable.mutate(), labelColor);
         mRestartDrawable = tintDrawable(mRestartDrawable.mutate(), labelColor);
         mPauseDrawable = tintDrawable(mPauseDrawable.mutate(), labelColor);
+        mLockDrawable = tintDrawable(mLockDrawable.mutate(), labelColor);
+        mUnLockDrawable = tintDrawable(mUnLockDrawable.mutate(), labelColor);
+        mFullScreenDrawable = tintDrawable(mFullScreenDrawable.mutate(), labelColor);
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)

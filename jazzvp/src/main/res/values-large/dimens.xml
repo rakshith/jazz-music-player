@@ -13,5 +13,5 @@
 
     <dimen name="jvp_negative_inset_large">-8dp</dimen>
     <dimen name="jvp_negative_inset_small">-2dp</dimen>
-
+    <dimen name="jvp_btn_unlock">80dp</dimen>
 </resources>

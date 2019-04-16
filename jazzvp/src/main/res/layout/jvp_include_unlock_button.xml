@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:background="#BF000000">
+
+    <ImageButton
+        android:id="@+id/btnUnlock"
+        android:layout_width="@dimen/jvp_btn_unlock"
+        android:layout_height="@dimen/jvp_btn_unlock"
+        android:layout_weight="1"
+        android:background="?selectableItemBackground"
+        android:src="@drawable/jvp_action_unlock" />
+</RelativeLayout>
