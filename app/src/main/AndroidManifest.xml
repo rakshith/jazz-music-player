@@ -7,6 +7,7 @@
 
     <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -118,7 +119,7 @@
         <activity android:name=".tageditormanager.TagEditorActivity" />
 
         <activity
-            android:name=".musiceditmanager.RingDroidActivity"
+            android:name=".musiceditmanager.JazzMusicEditActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">

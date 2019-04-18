@@ -12,8 +12,6 @@ import com.rak.dj.djmusicplayer.helpers.Helpers;
 
 public abstract class BaseThemedActivity extends ATEActivity {
 
-
-
     @Nullable
     @Override
     public String getATEKey() {

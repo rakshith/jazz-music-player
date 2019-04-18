@@ -84,7 +84,6 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ItemHolder
 
         if (JazzUtil.isLollipop())
             itemHolder.artistImage.setTransitionName("transition_artist_art" + i);
-
     }
 
     @NonNull

@@ -21,6 +21,7 @@ import com.rak.dj.djmusicplayer.musiclibrary.genres.GenreDetailFragment;
 import com.rak.dj.djmusicplayer.musiclibrary.video.VideoListFragment;
 import com.rak.dj.djmusicplayer.musictoolsmanager.MusicToolsActivity;
 import com.rak.dj.djmusicplayer.playingmanager.NowPlayingActivity;
+import com.rak.dj.djmusicplayer.playingmanager.themes.JazzTheme4;
 import com.rak.dj.djmusicplayer.playingmanager.themes.JazzTheme5;
 import com.rak.dj.djmusicplayer.playlistmanager.PlaylistDetailActivity;
 import com.rak.dj.djmusicplayer.R;
@@ -195,20 +196,20 @@ public class NavigationUtil {
 
     public static Fragment getFragmentForNowplayingID(String fragmentID) {
         switch (fragmentID) {
-            /*case Constants.TIMBER1:
-                return new Timber1();
-            case Constants.TIMBER2:
-                return new Timber2();
-            case Constants.TIMBER3:
-                return new Timber3();
-            case Constants.TIMBER4:
-                return new Timber4();*/
-            case Constants.TIMBER5:
+            case Constants.JAZZ1:
+                //return new Timber1();
+            case Constants.JAZZ2:
+                //return new Timber2();
+            case Constants.JAZZ3:
+                //return new Timber3();
+            case Constants.JAZZ4:
+                return new JazzTheme4();
+            case Constants.JAZZ5:
                 return new JazzTheme5();
-            /*case Constants.TIMBER6:
-                return new Timber6();*/
+            case Constants.JAZZ6:
+                //return new Timber6();
             default:
-               return new JazzTheme5();
+               return new JazzTheme4();
         }
 
     }

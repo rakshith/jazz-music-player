@@ -15,6 +15,7 @@ package com.rak.dj.djmusicplayer.musiclibrary.albums;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -78,7 +79,7 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
 
     private Album album;
 
-    private CollapsingToolbarLayout collapsingToolbarLayout;
+    // private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
     private FloatingActionButton fab;
 
@@ -132,7 +133,7 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
             albumArt.setTransitionName(getArguments().getString("transition_name"));
         }
         recyclerView = rootView.findViewById(R.id.recyclerview);
-        collapsingToolbarLayout = rootView.findViewById(R.id.collapsing_toolbar);
+        // collapsingToolbarLayout = rootView.findViewById(R.id.collapsing_toolbar);
         appBarLayout = rootView.findViewById(R.id.app_bar);
         recyclerView.setEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -196,21 +197,24 @@ public class AlbumDetailFragment extends AbsThemedMusicLibraryFragment implement
     private void setColors(int color) {
         toolBarColor = color;
         toolbar.setBackgroundColor(color);
-        appBarLayout.setBackgroundColor(color);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar); // needed to auto readjust the toolbar content color
-
         int secondaryTextColor = MaterialValueHelper.getSecondaryTextColor(getActivity(), ColorUtil.isColorLight(color));
-        albumTitle.setTextColor(MaterialValueHelper.getPrimaryTextColor(getActivity(), ColorUtil.isColorLight(color)));
-        albumBy.setTextColor(secondaryTextColor);
-        albumLength.setTextColor(secondaryTextColor);
-        albumReleased.setTextColor(secondaryTextColor);
+        int primaryTextColor = MaterialValueHelper.getPrimaryTextColor(getActivity(), ColorUtil.isColorLight(color));
 
         String ateKey = Helpers.getATEKey(getActivity());
         setStatusBarColor(getActivity(), ateKey , color);
 
-        ATH.setLightNavigationbar(getActivity(), false);
+        // ATH.setNavigationbarColor(getActivity(), color);
 
-        ATH.setTaskDescriptionColor(getActivity(), color);
+        ATH.setTaskDescriptionColor(getActivity(), primaryTextColor);
+
+        appBarLayout.setBackgroundColor(color);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar); // needed to auto readjust the toolbar content color
+
+
+        albumTitle.setTextColor(primaryTextColor);
+        albumBy.setTextColor(secondaryTextColor);
+        albumLength.setTextColor(secondaryTextColor);
+        albumReleased.setTextColor(secondaryTextColor);
     }
 
     @Override

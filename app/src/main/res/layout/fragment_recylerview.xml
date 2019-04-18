@@ -5,12 +5,10 @@
     tools:context=".MainActivity"
     android:id="@+id/baseMusicLibraryLayout">
 
-
-    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <include layout="@layout/empty_view"/>
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <include layout="@layout/empty_view" />
 
 </RelativeLayout>

@@ -315,10 +315,7 @@ public abstract class BaseMainActivity extends AbsPermissionsActivity implements
     @Override
     public void onPanelSlide(View panel, @FloatRange(from = 0, to = 1) float slideOffset) {
         setMiniPlayerAlphaProgress(slideOffset);
-
         setExpandPlayerAlphaProgress(slideOffset);
-
-
     }
 
     @Override

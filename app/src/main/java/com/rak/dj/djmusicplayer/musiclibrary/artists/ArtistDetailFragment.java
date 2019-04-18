@@ -14,6 +14,7 @@
 
 package com.rak.dj.djmusicplayer.musiclibrary.artists;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,11 +37,14 @@ import android.widget.Toast;
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.kabouzeid.appthemehelper.ATH;
 import com.rak.dj.djmusicplayer.BaseMainActivity;
 import com.rak.dj.djmusicplayer.glide.ArtistGlideRequest;
 import com.rak.dj.djmusicplayer.glide.JazzColoredTarget;
+import com.rak.dj.djmusicplayer.helpers.ColorUtil;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
+import com.rak.dj.djmusicplayer.helpers.MaterialValueHelper;
 import com.rak.dj.djmusicplayer.lastfmapi.upgradedapi.rest.LastFMRestClient;
 import com.rak.dj.djmusicplayer.lastfmapi.upgradedapi.rest.model.LastFmArtist;
 import com.rak.dj.djmusicplayer.models.upgraded.Artist;
@@ -60,6 +64,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.rak.dj.djmusicplayer.helpers.ATEUtils.setStatusBarColor;
+
 public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment implements MusicStateListener {
 
     private int artistID = -1;
@@ -68,12 +74,14 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment implemen
     private AppBarLayout appBarLayout;
     private boolean largeImageLoaded = false;
     private int primaryColor = -1;
+    private int toolBarColor = -1;
     private ArtistSongAdapter mAdapter;
     private Artist artist;
     private boolean forceDownload;
     private LastFMRestClient lastFMRestClient;
     private MaterialDialog biographyDialog;
     private Spanned biography;
+
     public static ArtistDetailFragment newInstance(int id, boolean useTransition, String transitionName) {
         ArtistDetailFragment fragment = new ArtistDetailFragment();
         Bundle args = new Bundle();
@@ -133,9 +141,21 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment implemen
     }
 
     private void setColors(int color) {
-        //toolbarColor = color;
+        toolBarColor = color;
+        toolbar.setBackgroundColor(color);
+
+        String ateKey = Helpers.getATEKey(getActivity());
+        setStatusBarColor(getActivity(), ateKey , color);
+
+        // ATH.setTaskDescriptionColor(getActivity(), primaryTextColor);
+
+        appBarLayout.setBackgroundColor(color);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar); // needed to auto readjust the toolbar content color
+
+
+        // toolbar.setTitleTextColor(MaterialValueHelper.getPrimaryTextColor(getContext(), ColorUtil.isColorLight(color)));
         //artistName.setBackgroundColor(color);
-       // artistName.setTextColor(MaterialValueHelper.getPrimaryTextColor(this, ColorUtil.isColorLight(color)));
+        //artistName.setTextColor(MaterialValueHelper.getPrimaryTextColor(getContext(), ColorUtil.isColorLight(color)));
         //setNavigationbarColor(color);
         //setTaskDescriptionColor(color);
     }
@@ -276,7 +296,7 @@ public class ArtistDetailFragment extends AbsThemedMusicLibraryFragment implemen
     @Override
     public void onResume() {
         super.onResume();
-
+        setColors(toolBarColor);
     }
 
     /*private class setBlurredAlbumArt extends AsyncTask<Bitmap, Void, Drawable> {

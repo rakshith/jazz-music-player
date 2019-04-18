@@ -1,0 +1,206 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.rak.dj.djmusicplayer.playingmanager.themes.JazzTheme4"
+    android:background="@color/md_blue_grey_900">
+
+
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <FrameLayout
+        android:id="@+id/headerView"
+        android:layout_width="match_parent"
+        app:layout_heightPercent="60%">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="top"
+            android:layout_marginTop="@dimen/appBarTopMargin"
+            android:theme="@style/Theme.AppCompat"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        <android.support.percent.PercentRelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:layout_heightPercent="60%"
+                app:layout_widthPercent="60%"
+                app:cardElevation="10dp"
+                android:layout_marginTop="15dp">
+
+                <ImageView
+                    android:id="@+id/album_art"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:layout_margin="1dp"
+                    android:scaleType="centerCrop"/>
+            </android.support.v7.widget.CardView>
+
+        </android.support.percent.PercentRelativeLayout>
+    </FrameLayout>
+        <TextView
+            android:id="@+id/song_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/headerView"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/md_white_1000"
+            android:text="Song title" />
+        <TextView
+            android:id="@+id/song_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/song_title"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/md_white_1000"
+            android:text="Song Artist" />
+
+        <TextView
+            android:id="@+id/song_album"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:visibility="gone" />
+    </android.support.percent.PercentRelativeLayout>
+
+    <TextView
+        android:id="@+id/song_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="150dp"
+        android:textColor="@color/md_white_1000"
+        android:text="-0:00" />
+
+    <TextView
+        android:id="@+id/song_elapsed_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:padding="5dp"
+        android:layout_marginBottom="150dp"
+        android:textColor="@color/md_white_1000"
+        android:text="0:00" />
+
+    <com.jazz.archseekbar.ArcSeekBar
+        android:id="@+id/song_progress_arc"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:progressColor="@color/md_white_1000"
+        app:progressBackgroundColor="@color/colorAccent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
+        app:roundEdges="true"/>
+
+    <ir.alirezaiyan.arclayout.ArcRelativeLayout
+        android:id="@+id/arcLayout"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:elevation="6dp"
+        app:arc_bottom_cropCurve="cropConvex"
+        app:arc_bottom_height="10dp"
+        app:arc_bottom_position="false"
+        app:arc_top_height="95dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:background="@color/md_pink_600"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="6dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp">
+
+                <ImageView
+                    android:id="@+id/shuffle"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="center" />
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:id="@+id/previous"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="center"
+                    app:materialIcon="skip_previous"
+                    app:materialIconColor="#fff"
+                    app:materialIconSize="35dp" />
+
+                <FrameLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1">
+
+                    <com.rak.dj.djmusicplayer.widgets.PlayPauseButton
+                        android:id="@+id/playpause"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp"
+                        android:layout_gravity="center" />
+
+                    <View
+                        android:id="@+id/playpausewrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless" />
+
+                </FrameLayout>
+
+                <net.steamcrafted.materialiconlib.MaterialIconView
+                    android:id="@+id/next"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="center"
+                    app:materialIcon="skip_next"
+                    app:materialIconColor="#fff"
+                    app:materialIconSize="35dp" />
+
+                <ImageView
+                    android:id="@+id/repeat"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:paddingLeft="5dp"
+                    android:scaleType="center" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ir.alirezaiyan.arclayout.ArcRelativeLayout>
+
+
+</RelativeLayout>

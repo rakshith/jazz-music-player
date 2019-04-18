@@ -47,10 +47,10 @@ public final class Constants {
 
     public static final int ACTION_WRITE_SETTINGS_PERMISSION = 489;
 
-    public static final String TIMBER1 = "timber1";
-    public static final String TIMBER2 = "timber2";
-    public static final String TIMBER3 = "timber3";
-    public static final String TIMBER4 = "timber4";
-    public static final String TIMBER5 = "timber5";
-    public static final String TIMBER6 = "timber6";
+    public static final String JAZZ1 = "jazz1";
+    public static final String JAZZ2 = "jazz2";
+    public static final String JAZZ3 = "jazz3";
+    public static final String JAZZ4 = "jazz4";
+    public static final String JAZZ5 = "jazz5";
+    public static final String JAZZ6 = "jazz6";
 }

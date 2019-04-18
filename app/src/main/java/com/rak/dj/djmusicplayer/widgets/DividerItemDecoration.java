@@ -26,6 +26,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     private int mOrientation;
 
     public DividerItemDecoration(Context context, int orientation) {
+        if(context == null) return;
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         if (PreferencesUtils.getInstance(context).getTheme().equals("light"))
             mDivider = ContextCompat.getDrawable(context, R.drawable.item_divider_black);

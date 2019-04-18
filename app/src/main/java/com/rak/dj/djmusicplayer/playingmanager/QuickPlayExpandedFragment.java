@@ -21,11 +21,14 @@ import android.widget.ImageView;
 
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.dataloaders.QueueLoader;
+import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.ImageUtil;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicPlayer;
 import com.rak.dj.djmusicplayer.musicplayerutils.MusicService;
 
 import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
+
+import static com.rak.dj.djmusicplayer.helpers.ATEUtils.setStatusBarColor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,8 +89,6 @@ public class QuickPlayExpandedFragment extends BaseNowPlayingFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
     }
 
     @Override

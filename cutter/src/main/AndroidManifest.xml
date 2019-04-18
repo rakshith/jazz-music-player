@@ -1,2 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jazz.songcut" />
+    package="com.jazz.songcut">
+
+    <application>
+        <activity android:name=".JazzSongCutterActivity"></activity>
+    </application>
+
+</manifest>

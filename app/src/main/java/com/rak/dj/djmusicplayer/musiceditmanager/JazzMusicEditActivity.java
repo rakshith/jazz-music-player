@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -17,7 +16,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -28,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +37,6 @@ import com.rak.dj.djmusicplayer.AbsPermissionsActivity;
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.helpers.Helpers;
 import com.rak.dj.djmusicplayer.helpers.JazzUtil;
-import com.rak.dj.djmusicplayer.helpers.ThemeStore;
 import com.rak.dj.djmusicplayer.musiceditmanager.soundfile.SoundFile;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.MarkerView;
 import com.rak.dj.djmusicplayer.musiceditmanager.utils.SamplePlayer;
@@ -55,7 +51,7 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.io.StringWriter;
 
-public class RingDroidActivity extends AbsPermissionsActivity implements MarkerView.MarkerListener,
+public class JazzMusicEditActivity extends AbsPermissionsActivity implements MarkerView.MarkerListener,
         WaveformView.WaveformListener, ATEActivityThemeCustomizer {
 
     private boolean isDarkTheme;
@@ -112,10 +108,10 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
     private int mTouchInitialEndPos;
     private long mWaveformTouchStartMsec;
     private float mDensity;
-    private int mMarkerLeftInset=0;
-    private int mMarkerRightInset=0;
-    private int mMarkerTopOffset=0;
-    private int mMarkerBottomOffset=0;
+    private int mMarkerLeftInset = 0;
+    private int mMarkerRightInset = 0;
+    private int mMarkerTopOffset = 0;
+    private int mMarkerBottomOffset = 0;
 
     private Thread mLoadSoundFileThread;
     private Thread mRecordAudioThread;
@@ -136,8 +132,6 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
     //
     // Public methods and protected overrides
     //
-
-
 
 
     @Override
@@ -187,7 +181,6 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
     }
 
 
-
     private void loadFromFile() {
         mFile = new File(mFilename);
 
@@ -202,12 +195,12 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         }
 
         getSupportActionBar().setTitle(titleLabel);
-       // setTitle(titleLabel);
+        // setTitle(titleLabel);
 
         mLoadingLastUpdateTime = getCurrentTime();
         mLoadingKeepGoing = true;
         mFinishActivity = false;
-        mProgressDialog = new ProgressDialog(RingDroidActivity.this);
+        mProgressDialog = new ProgressDialog(JazzMusicEditActivity.this);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setTitle(R.string.progress_dialog_loading);
         mProgressDialog.setCancelable(true);
@@ -288,8 +281,8 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
                         }
                     };
                     mHandler.post(runnable);
-                } else if (mFinishActivity){
-                    RingDroidActivity.this.finish();
+                } else if (mFinishActivity) {
+                    JazzMusicEditActivity.this.finish();
                 }
             }
         };
@@ -356,7 +349,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
             title = getResources().getText(R.string.alert_title_success);
         }
 
-        new AlertDialog.Builder(RingDroidActivity.this)
+        new AlertDialog.Builder(JazzMusicEditActivity.this)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(
@@ -416,7 +409,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
 
         final Handler handler = new Handler() {
             public void handleMessage(Message response) {
-                CharSequence newTitle = (CharSequence)response.obj;
+                CharSequence newTitle = (CharSequence) response.obj;
                 mNewFileKind = response.arg1;
                 saveRingtone(newTitle);
             }
@@ -432,7 +425,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         double endTime = mWaveformView.pixelsToSeconds(mEndPos);
         final int startFrame = mWaveformView.secondsToFrames(startTime);
         final int endFrame = mWaveformView.secondsToFrames(endTime);
-        final int duration = (int)(endTime - startTime + 0.5);
+        final int duration = (int) (endTime - startTime + 0.5);
 
         // Create an indeterminate progress dialog
         mProgressDialog = new ProgressDialog(this);
@@ -460,7 +453,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
                 Boolean fallbackToWAV = false;
                 try {
                     // Write the new file
-                    mSoundFile.WriteFile(outFile,  startFrame, endFrame - startFrame);
+                    mSoundFile.WriteFile(outFile, startFrame, endFrame - startFrame);
                 } catch (Exception e) {
                     // log the error and try to create a .wav file instead
                     if (outFile.exists()) {
@@ -577,7 +570,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         if (!externalRootDir.endsWith("/")) {
             externalRootDir += "/";
         }
-        switch(mNewFileKind) {
+        switch (mNewFileKind) {
             default:
             case FileSaveDialog.FILE_KIND_MUSIC:
                 // TODO(nfaralli): can directly use Environment.getExternalStoragePublicDirectory(
@@ -709,7 +702,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         // If it's a notification, give the user the option of making
         // this their default notification.  If they say no, we're finished.
         if (mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION) {
-            new AlertDialog.Builder(RingDroidActivity.this)
+            new AlertDialog.Builder(JazzMusicEditActivity.this)
                     .setTitle(R.string.alert_title_success)
                     .setMessage(R.string.set_default_notification)
                     .setPositiveButton(R.string.alert_yes_button,
@@ -717,7 +710,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
                                     RingtoneManager.setActualDefaultRingtoneUri(
-                                            RingDroidActivity.this,
+                                            JazzMusicEditActivity.this,
                                             RingtoneManager.TYPE_NOTIFICATION,
                                             newUri);
                                     finish();
@@ -745,11 +738,11 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
                 switch (actionId) {
                     case R.id.button_make_default:
                         RingtoneManager.setActualDefaultRingtoneUri(
-                                RingDroidActivity.this,
+                                JazzMusicEditActivity.this,
                                 RingtoneManager.TYPE_RINGTONE,
                                 newUri);
                         Toast.makeText(
-                                RingDroidActivity.this,
+                                JazzMusicEditActivity.this,
                                 R.string.default_ringtone_success_message,
                                 Toast.LENGTH_SHORT)
                                 .show();
@@ -779,7 +772,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         mRecordingLastUpdateTime = getCurrentTime();
         mRecordingKeepGoing = true;
         mFinishActivity = false;
-        AlertDialog.Builder adBuilder = new AlertDialog.Builder(RingDroidActivity.this);
+        AlertDialog.Builder adBuilder = new AlertDialog.Builder(JazzMusicEditActivity.this);
         adBuilder.setTitle(getResources().getText(R.string.progress_dialog_recording));
         adBuilder.setCancelable(true);
         adBuilder.setNegativeButton(
@@ -802,7 +795,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         // On the other hand, if the text is big enough, this is good enough.
         adBuilder.setView(getLayoutInflater().inflate(R.layout.record_audio, null));
         mAlertDialog = adBuilder.show();
-        mTimerTextView = (TextView)mAlertDialog.findViewById(R.id.record_audio_timer);
+        mTimerTextView = (TextView) mAlertDialog.findViewById(R.id.record_audio_timer);
 
         final SoundFile.ProgressListener listener =
                 new SoundFile.ProgressListener() {
@@ -813,8 +806,8 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
                             // Only UI thread can update Views such as TextViews.
                             runOnUiThread(new Runnable() {
                                 public void run() {
-                                    int min = (int)(mRecordingTime/60);
-                                    float sec = (float)(mRecordingTime - 60 * min);
+                                    int min = (int) (mRecordingTime / 60);
+                                    float sec = (float) (mRecordingTime - 60 * min);
                                     mTimerTextView.setText(String.format("%d:%05.2f", min, sec));
                                 }
                             });
@@ -862,8 +855,8 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
                     return;
                 }
                 mAlertDialog.dismiss();
-                if (mFinishActivity){
-                    RingDroidActivity.this.finish();
+                if (mFinishActivity) {
+                    JazzMusicEditActivity.this.finish();
                 } else {
                     Runnable runnable = new Runnable() {
                         public void run() {
@@ -910,7 +903,9 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         return System.nanoTime() / 1000000;
     }
 
-    /** Called when the activity is finally destroyed. */
+    /**
+     * Called when the activity is finally destroyed.
+     */
     @Override
     protected void onDestroy() {
         Log.v("Ringdroid", "EditActivity OnDestroy");
@@ -923,11 +918,11 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         mLoadSoundFileThread = null;
         mRecordAudioThread = null;
         mSaveSoundFileThread = null;
-        if(mProgressDialog != null) {
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
             mProgressDialog = null;
         }
-        if(mAlertDialog != null) {
+        if (mAlertDialog != null) {
             mAlertDialog.dismiss();
             mAlertDialog = null;
         }
@@ -944,7 +939,6 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
     }
 
 
-
     /**
      * Called from both onCreate and onConfigurationChanged
      * (if the user switched layouts)
@@ -955,7 +949,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
 
         //ringDroidLayout = findViewById(R.id.ringDroid_layout);
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             final ActionBar ab = getSupportActionBar();
@@ -967,17 +961,17 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         mDensity = metrics.density;
 
-        mMarkerLeftInset = (int)(46 * mDensity);
-        mMarkerRightInset = (int)(48 * mDensity);
-        mMarkerTopOffset = (int)(10 * mDensity);
-        mMarkerBottomOffset = (int)(10 * mDensity);
+        mMarkerLeftInset = (int) (46 * mDensity);
+        mMarkerRightInset = (int) (48 * mDensity);
+        mMarkerTopOffset = (int) (10 * mDensity);
+        mMarkerBottomOffset = (int) (10 * mDensity);
 
-        mStartText = (TextView)findViewById(R.id.starttext);
+        mStartText = (TextView) findViewById(R.id.starttext);
         mStartText.addTextChangedListener(mTextWatcher);
-        mEndText = (TextView)findViewById(R.id.endtext);
+        mEndText = (TextView) findViewById(R.id.endtext);
         mEndText.addTextChangedListener(mTextWatcher);
 
-        mPlayButton = (FloatingActionButton)findViewById(R.id.play);
+        mPlayButton = (FloatingActionButton) findViewById(R.id.play);
         playPauseDrawable.setColorFilter(JazzUtil.getBlackWhiteColor(accentColor), PorterDuff.Mode.MULTIPLY);
         mPlayButton.setImageDrawable(playPauseDrawable);
 
@@ -986,9 +980,9 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         else playPauseDrawable.transformToPlay(false);
 
         mPlayButton.setOnClickListener(mPlayListener);
-        mRewindButton = (MaterialIconView)findViewById(R.id.rew);
+        mRewindButton = (MaterialIconView) findViewById(R.id.rew);
         mRewindButton.setOnClickListener(mRewindListener);
-        mFfwdButton = (MaterialIconView)findViewById(R.id.ffwd);
+        mFfwdButton = (MaterialIconView) findViewById(R.id.ffwd);
         mFfwdButton.setOnClickListener(mFfwdListener);
 
         TextView markStartButton = (TextView) findViewById(R.id.mark_start);
@@ -998,10 +992,10 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
 
         enableDisableButtons();
 
-        mWaveformView = (WaveformView)findViewById(R.id.waveform);
+        mWaveformView = (WaveformView) findViewById(R.id.waveform);
         mWaveformView.setListener(this);
 
-        mInfo = (TextView)findViewById(R.id.info);
+        mInfo = (TextView) findViewById(R.id.info);
         mInfo.setText(mCaption);
 
         mMaxPos = 0;
@@ -1014,14 +1008,14 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
             mMaxPos = mWaveformView.maxPos();
         }
 
-        mStartMarker = (MarkerView)findViewById(R.id.startmarker);
+        mStartMarker = (MarkerView) findViewById(R.id.startmarker);
         mStartMarker.setListener(this);
         mStartMarker.setAlpha(1f);
         mStartMarker.setFocusable(true);
         mStartMarker.setFocusableInTouchMode(true);
         mStartVisible = true;
 
-        mEndMarker = (MarkerView)findViewById(R.id.endmarker);
+        mEndMarker = (MarkerView) findViewById(R.id.endmarker);
         mEndMarker.setListener(this);
         mEndMarker.setAlpha(1f);
         mEndMarker.setFocusable(true);
@@ -1042,6 +1036,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
             onPlay(mStartPos);
         }
     };
+
     private synchronized void onPlay(int startPosition) {
         if (mIsPlaying) {
             handlePause();
@@ -1079,6 +1074,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
             return;
         }
     }
+
     private View.OnClickListener mRewindListener = new View.OnClickListener() {
         public void onClick(View sender) {
             if (mIsPlaying) {
@@ -1354,7 +1350,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
 
     @Override
     public void waveformTouchMove(float x) {
-        mOffset = trap((int)(mTouchInitialOffset + (mTouchStart - x)));
+        mOffset = trap((int) (mTouchInitialOffset + (mTouchStart - x)));
         updateDisplay();
     }
 
@@ -1367,7 +1363,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         if (elapsedMsec < 300) {
             if (mIsPlaying) {
                 int seekMsec = mWaveformView.pixelsToMillisecs(
-                        (int)(mTouchStart + mOffset));
+                        (int) (mTouchStart + mOffset));
                 if (seekMsec >= mPlayStartMsec &&
                         seekMsec < mPlayEndMsec) {
                     mPlayer.seekTo(seekMsec);
@@ -1375,7 +1371,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
                     handlePause();
                 }
             } else {
-                onPlay((int)(mTouchStart + mOffset));
+                onPlay((int) (mTouchStart + mOffset));
             }
         }
     }
@@ -1384,7 +1380,7 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
     public void waveformFling(float vx) {
         mTouchDragging = false;
         mOffsetGoal = mOffset;
-        mFlingVelocity = (int)(-vx);
+        mFlingVelocity = (int) (-vx);
         updateDisplay();
     }
 
@@ -1446,10 +1442,10 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
         float delta = x - mTouchStart;
 
         if (marker == mStartMarker) {
-            mStartPos = trap((int)(mTouchInitialStartPos + delta));
-            mEndPos = trap((int)(mTouchInitialEndPos + delta));
+            mStartPos = trap((int) (mTouchInitialStartPos + delta));
+            mEndPos = trap((int) (mTouchInitialEndPos + delta));
         } else {
-            mEndPos = trap((int)(mTouchInitialEndPos + delta));
+            mEndPos = trap((int) (mTouchInitialEndPos + delta));
             if (mEndPos < mStartPos)
                 mEndPos = mStartPos;
         }
@@ -1557,8 +1553,8 @@ public class RingDroidActivity extends AbsPermissionsActivity implements MarkerV
     }
 
     private String formatDecimal(double x) {
-        int xWhole = (int)x;
-        int xFrac = (int)(100 * (x - xWhole) + 0.5);
+        int xWhole = (int) x;
+        int xFrac = (int) (100 * (x - xWhole) + 0.5);
 
         if (xFrac >= 100) {
             xWhole++; //Round up

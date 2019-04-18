@@ -26,10 +26,9 @@ public class NowPlayingActivity extends BaseMainActivity implements ATEActivityT
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_now_playing);
 
         SharedPreferences prefs = getSharedPreferences(Constants.FRAGMENT_ID, Context.MODE_PRIVATE);
-        String fragmentID = prefs.getString(Constants.NOWPLAYING_FRAGMENT_ID, Constants.TIMBER5);
+        String fragmentID = prefs.getString(Constants.NOWPLAYING_FRAGMENT_ID, Constants.JAZZ4);
 
         Fragment fragment = NavigationUtil.getFragmentForNowplayingID(fragmentID);
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -50,8 +49,6 @@ public class NowPlayingActivity extends BaseMainActivity implements ATEActivityT
     public int getActivityTheme() {
         return PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false) ? R.style.AppTheme_FullScreen_Dark : R.style.AppTheme_FullScreen_Light;
     }
-
-
 
     @Override
     public void onResume() {

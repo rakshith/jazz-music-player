@@ -14,7 +14,7 @@ import android.util.Log;
 
 import com.rak.dj.djmusicplayer.R;
 import com.rak.dj.djmusicplayer.models.upgraded.Artist;
-import com.rak.dj.djmusicplayer.musiceditmanager.RingDroidActivity;
+import com.rak.dj.djmusicplayer.musiceditmanager.JazzMusicEditActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +83,7 @@ public class MusicUtil {
         try {
             Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse("record"));
             intent.putExtra("was_get_content_intent", mWasGetContentIntent);
-            intent.setClassName( "com.rak.dj.djmusicplayer", "com.rak.dj.djmusicplayer.musiceditmanager.RingDroidActivity");
+            intent.setClassName( "com.rak.dj.djmusicplayer", "com.rak.dj.djmusicplayer.musiceditmanager.JazzMusicEditActivity");
             startActivityForResult(intent, REQUEST_CODE_EDIT);
         } catch (Exception e) {
             Log.e("Jazz Music Player", e.getMessage());
@@ -92,10 +92,10 @@ public class MusicUtil {
 
     public static void startRingdroidEditor(@NonNull Context context, String filename) {
         try {
-            Intent intent = new Intent(context, RingDroidActivity.class);
+            Intent intent = new Intent(context, JazzMusicEditActivity.class);
             intent.setData(Uri.parse(filename));
             //intent.putExtra("was_get_content_intent", mWasGetContentIntent);
-            //intent.setClassName( "com.rak.dj.djmusicplayer", "com.rak.dj.djmusicplayer.musiceditmanager.RingDroidActivity");
+            //intent.setClassName( "com.rak.dj.djmusicplayer", "com.rak.dj.djmusicplayer.musiceditmanager.JazzMusicEditActivity");
             context.startActivity(intent);
         } catch (Exception e) {
             Log.e("Jazz Music Player", e.getMessage());
