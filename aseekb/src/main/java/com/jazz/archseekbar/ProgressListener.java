@@ -1,5 +1,5 @@
 package com.jazz.archseekbar;
 
 public interface ProgressListener {
-    void invoke(int progress);
+    void invoke(int progress, boolean fromUser);
 }

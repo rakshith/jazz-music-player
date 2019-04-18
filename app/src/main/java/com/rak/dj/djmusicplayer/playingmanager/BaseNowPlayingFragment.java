@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.afollestad.appthemeengine.Config;
 import com.jazz.archseekbar.ArcSeekBar;
+import com.jazz.archseekbar.ProgressListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -539,6 +540,15 @@ public class BaseNowPlayingFragment extends Fragment implements MusicStateListen
 
                 }
             });
+        }
+
+        if(mArcProgress != null) {
+            ProgressListener progressListener = (progress, fromUser) -> {
+                if(fromUser) {
+                    MusicPlayer.seek(progress);
+                }
+            };
+            mArcProgress.setOnProgressChangedListener(progressListener);
         }
     }
 
